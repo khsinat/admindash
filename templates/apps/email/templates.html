@@ -1,0 +1,47 @@
+{% extends "partials/base.html" %}
+
+{% load static %}
+
+{% block title %}Email Templates{% endblock title %}
+
+{% block extra_css %}
+
+{% endblock extra_css %}
+
+{% block topbar %}
+    {% include "partials/topbar.html" with pagetitle="Email Templates" %}
+{% endblock topbar %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h4 class="mb-3 header-title">Basic action email</h4>
+                        <a href="{% url 'templates-action' %}" target="_blank"> <img src="{% static 'images/email/1.png' %}" class="img-fluid" alt=""> </a>
+                    </div>
+                    <div class="col-md-4">
+                        <h4 class="mb-3 header-title">Email alert</h4>
+                        <a href="{% url 'templates-alert' %}" target="_blank"> <img src="{% static 'images/email/2.png' %}" class="img-fluid" alt=""> </a>
+                    </div>
+                    <div class="col-md-4">
+                        <h4 class="mb-3 header-title">Billing email</h4>
+                        <a href="{% url 'templates-billing' %}" target="_blank"> <img src="{% static 'images/email/3.png' %}" class="img-fluid" alt=""> </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+      
+    </div><!-- end col -->
+</div>
+<!-- end row -->
+{% include "partials/footer.html" %}
+
+{% endblock content %}
+
+{% block extra_js %}
+
+{% endblock extra_js %} 

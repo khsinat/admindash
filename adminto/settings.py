@@ -128,3 +128,32 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = '/'  # After login, go to admin dashboard
+LOGIN_URL = '/login/'  
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'db_file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': 'database_errors.log',  # Separate DB error log
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django.db.backends': {  # Logs database errors
+            'handlers': ['db_file'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+    },
+}

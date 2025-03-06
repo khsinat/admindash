@@ -129,7 +129,10 @@
                    href="#" role="button" aria-haspopup="false" aria-expanded="false">
                     <img src="{% static 'images/users/user-1.jpg' %}" alt="user-image" class="rounded-circle">
                     <span class="pro-user-name ms-1">
-                        Nowak <i class="mdi mdi-chevron-down"></i> 
+                    {% if request.user.is_authenticated %}
+                         {{request.user.username}}<i class="mdi mdi-chevron-down"></i> 
+                    {% endif %}
+
                     </span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end profile-dropdown ">
@@ -173,18 +176,18 @@
         <div class="logo-box">
             <a href="{% url 'index' %}" class="logo logo-light text-center">
                 <span class="logo-sm">
-                    <img src="{% static 'images/logo-sm.png' %}" alt="" height="22">
+                    {% comment %} <img src="{% static 'images/logo-sm.png' %}" alt="" height="22"> {% endcomment %}
                 </span>
                 <span class="logo-lg">
-                    <img src="{% static 'images/logo-light.png' %}" alt="" height="16">
+                    {% comment %} <img src="{% static 'images/logo-light.png' %}" alt="" height="16"> {% endcomment %}
                 </span>
             </a>
             <a href="{% url 'index' %}" class="logo logo-dark text-center">
                 <span class="logo-sm">
-                    <img src="{% static 'images/logo-sm.png' %}" alt="" height="22">
+                    {% comment %} <img src="{% static 'images/logo-sm.png' %}" alt="" height="22"> {% endcomment %}
                 </span>
                 <span class="logo-lg">
-                    <img src="{% static 'images/logo-dark.png' %}" alt="" height="16">
+                    {% comment %} <img src="{% static 'images/logo-dark.png' %}" alt="" height="16"> {% endcomment %}
                 </span>
             </a>
         </div>

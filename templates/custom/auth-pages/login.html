@@ -1,4 +1,4 @@
-{% load static %}
+{% comment %} {% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -31,7 +31,7 @@
 
                             <form action="#">
                                 <div class="mb-3">
-                                    <label for="emailaddress" class="form-label">Email address</label>
+                                    <label for="emailaddress" class="form-label">Username</label>
                                     <input class="form-control" type="email" id="emailaddress" required="" placeholder="Enter your email">
                                 </div>
 
@@ -79,4 +79,75 @@
     <!-- App js -->
     <script src="{% static 'js/app.min.js' %}"></script>
     
+</body> {% endcomment %}
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+{% include "partials/title-meta.html" with title="Login" %}
+{% include "partials/head-css.html" %}
+
+<body class="loading authentication-bg authentication-bg-pattern">
+
+    <div class="account-pages my-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6 col-xl-4">
+                    <div class="text-center">   
+                        <a href="{% url 'index' %}">
+                            <img src="{% static 'images/logo-dark.png' %}" alt="Logo" height="22" class="mx-auto">
+                        </a>
+                        <p class="text-muted mt-2 mb-4">Responsive Admin Dashboard</p>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-body p-4">
+                            <div class="text-center mb-4">
+                                <h4 class="text-uppercase mt-0">Sign In</h4>
+                            </div>
+
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <div class="alert alert-danger">{{ message }}</div>
+                                {% endfor %}
+                            {% endif %}
+
+                            <form method="POST">
+                                {% csrf_token %}
+                                
+                                <div class="mb-3">
+                                    <label for="username" class="form-label">Username</label>
+                                    <input class="form-control" type="text" name="username" id="username" required placeholder="Enter your username">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Password</label>
+                                    <input class="form-control" type="password" name="password" id="password" required placeholder="Enter your password">
+                                </div>
+
+                                <div class="mb-3 d-grid text-center">
+                                    <button class="btn btn-primary" type="submit"> Log In </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-12 text-center">
+                            {% comment %} <p><a href="{% url 'password_reset' %}" class="text-muted"><i class="fa fa-lock me-1"></i> Forgot your password?</a></p> {% endcomment %}
+                            <p class="text-muted">Don't have an account? <a href="{% url 'register' %}" class="text-dark"><b>Sign Up</b></a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include "partials/vendor.html" %}
+    <script src="{% static 'js/app.min.js' %}"></script>
+
 </body>
+</html>
+

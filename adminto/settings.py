@@ -9,8 +9,10 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
 from pathlib import Path
+from datetime import timedelta
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +27,8 @@ SECRET_KEY = 'django-insecure-=yt$!5wod)rc(uayt(owojm*lq*oeuxrz^88k1&edscj(ydt6z
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['54.86.221.207', 'localhost','127.0.0.1'] 
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000','http://localhost','http://54.86.221.207']
 
 
 # Application definition
@@ -40,11 +43,26 @@ INSTALLED_APPS = [
     'layouts.apps.LayoutsConfig',
     'apps.apps.AppsConfig',
     'custom.apps.CustomConfig',
-    'components.apps.ComponentsConfig'
+    'components.apps.ComponentsConfig',
+    'rest_framework',
+    'drf_yasg',
+    'drf_spectacular',
+    'api',
+    'rest_framework_simplejwt',
+
 ]
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ]
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -74,14 +92,31 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'adminto.wsgi.application'
 
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    },
+    'USE_SESSION_AUTH': False,
+}
+
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'cannabisnew',
+        'USER': 'debian-sys-maint',
+        'PASSWORD': 'wy8fNEX9J1BGYgNd',
+        'HOST': 'localhost',  # Or your database host
+        'PORT': '3306',
     }
 }
 
@@ -123,14 +158,20 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [BASE_DIR / "static"]
-
+STATIC_ROOT=BASE_DIR / "statics"
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = '/'  # After login, go to admin dashboard
 LOGIN_URL = '/login/'  
+
+# settings.py
+AUTH_USER_MODEL = 'apps.User'
+
+
 
 LOGGING = {
     'version': 1,
@@ -156,4 +197,19 @@ LOGGING = {
             'propagate': False,
         },
     },
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=48),  # Access token expires in 48 hours
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),   # Refresh token expires in 7 days
+    'ROTATE_REFRESH_TOKENS': True,  # Whether to rotate refresh tokens
+    'BLACKLIST_AFTER_ROTATION': True,  # Whether to blacklist refresh tokens after rotation
+    'ALGORITHM': 'HS256',  # You can also use other algorithms like 'RS256'
+    'SIGNING_KEY': 'your-secret-key',  # Use your secret key for signing tokens
+    'VERIFYING_KEY': None,
+    'AUDIENCE': None,
+    'ISSUER': None,
+    'AUTH_HEADER_TYPES': ('Bearer',),  # Default header type
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
 }

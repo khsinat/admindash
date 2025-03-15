@@ -38,4 +38,8 @@ path("login/", login_view, name="admin_login"),  # Login Page
     
     # Layouts
     path("layouts/", include("layouts.urls")),
+
+    #api 
+    path('', include('api.urls')),
+
 ]

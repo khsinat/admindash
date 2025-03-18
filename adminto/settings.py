@@ -101,6 +101,8 @@ SWAGGER_SETTINGS = {
         }
     },
     'USE_SESSION_AUTH': False,
+    'base_path': 'http://54.86.221.207'
+
 }
 
 
@@ -113,8 +115,8 @@ DATABASES = {
         # 'NAME': BASE_DIR / 'db.sqlite3',
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'cannabisnew',
-        'USER': 'debian-sys-maint',
-        'PASSWORD': 'wy8fNEX9J1BGYgNd',
+        'USER': 'admin',
+        'PASSWORD': 'Admin@123',
         'HOST': 'localhost',  # Or your database host
         'PORT': '3306',
     }

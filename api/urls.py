@@ -22,10 +22,10 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('api/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('signup/', SignupView.as_view(), name='signup'),
-    path('verify-otp/', VerifyOtpView.as_view(), name='verify-otp'),
-    path('api/login/', LoginView.as_view(), name='login'),  # Add the login path here
-    path('update-password/', UpdatePasswordView.as_view(), name='update-password'),  # New update password path
+    path('api/signup', SignupView.as_view(), name='signup'),
+    path('api/verify-otp', VerifyOtpView.as_view(), name='verify-otp'),
+    path('api/login', LoginView.as_view(), name='login'),  # Add the login path here
+    path('api/update-password', UpdatePasswordView.as_view(), name='update-password'),  # New update password path
 
 
     # path('api/signup/', signup, name='signup'),

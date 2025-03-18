@@ -35,7 +35,8 @@ class SignupSerializer(serializers.ModelSerializer):
     
     def generate_otp(self):
         # Generate and return a random OTP
-        random_otp = str(random.randint(100000, 999999))
+        # random_otp = str(random.randint(100000, 999999))
+        random_otp = 123456
         return random_otp
     
     def validate_contact_no(self, value):

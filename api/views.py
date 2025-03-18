@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
+from .utils import create_response
 
 
 class SignupView(generics.CreateAPIView):
@@ -24,8 +25,13 @@ class SignupView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return create_response(data=serializer.data, message="User created successfully", status_code=status.HTTP_201_CREATED)
+            # return Response(serializer.data, status=status.HTTP_201_CREATED)
+        first_error_message = next(iter(serializer.errors.values()))[0]    
+        return create_response(error= first_error_message, message="Validation errors", status_code=status.HTTP_400_BAD_REQUEST)
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
 
 class VerifyOtpView(APIView):
     serializer_class = VerifyOTPSerializer
@@ -42,13 +48,15 @@ class VerifyOtpView(APIView):
         if serializer.is_valid():
             # You can access the updated user from serializer.validated_data
             user = serializer.validated_data['data']
-            return Response({"message": "OTP verified successfully", "data": UserSerializer(user).data}, status=status.HTTP_200_OK)
-        
-        return Response({
-            "errors": serializer.errors,
-            "message": "Invalid OTP.",
-            "status": status.HTTP_400_BAD_REQUEST
-        }, status=status.HTTP_400_BAD_REQUEST)
+            # return Response({"message": "OTP verified successfully", "data": UserSerializer(user).data}, status=status.HTTP_200_OK)
+            return create_response(data=UserSerializer(user).data, message="OTP verified successfully", status_code=status.HTTP_200_OK)
+        first_error_message = next(iter(serializer.errors.values()))[0]
+        return create_response(error=first_error_message, message="Invalid OTP.", status_code=status.HTTP_400_BAD_REQUEST)
+        # return Response({
+        #     "errors": serializer.errors,
+        #     "message": "Invalid OTP.",
+        #     "status": status.HTTP_400_BAD_REQUEST
+        # }, status=status.HTTP_400_BAD_REQUEST)
     
 
 
@@ -77,10 +85,8 @@ class LoginView(APIView):
                 # Generate JWT token
                 refresh = RefreshToken.for_user(user)
                 access_token = refresh.access_token
-
-                return Response({
-                    "message": "Login successful",
-                    "data": {
+                return create_response(
+                    data={
                         "user": {
                             "id": user.id,
                             "email": user.email,
@@ -90,16 +96,44 @@ class LoginView(APIView):
                         },
                         "access_token": str(access_token),
                         "refresh_token": str(refresh),
-                    }
-                }, status=status.HTTP_200_OK)
+                    },
+                    message="Login successful",
+                    status_code=status.HTTP_200_OK
+                )
             else:
-                return Response({
-                    "message": "User OTP not verified. Please verify your OTP first."
-                }, status=status.HTTP_400_BAD_REQUEST)
+                return create_response(
+                    error="User OTP not verified. Please verify your OTP first.",
+                    message="OTP not verified",
+                    status_code=status.HTTP_400_BAD_REQUEST
+                )
         else:
-            return Response({
-                "message": "Invalid email or password."
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return create_response(
+                error="Invalid email or password.",
+                message="Invalid credentials",
+                status_code=status.HTTP_400_BAD_REQUEST
+            )
+        #         return Response({
+        #             "message": "Login successful",
+        #             "data": {
+        #                 "user": {
+        #                     "id": user.id,
+        #                     "email": user.email,
+        #                     "full_name": user.full_name,
+        #                     "contact_no": user.contact_no,
+        #                     "is_verified": user.is_verified,
+        #                 },
+        #                 "access_token": str(access_token),
+        #                 "refresh_token": str(refresh),
+        #             }
+        #         }, status=status.HTTP_200_OK)
+        #     else:
+        #         return Response({
+        #             "message": "User OTP not verified. Please verify your OTP first."
+        #         }, status=status.HTTP_400_BAD_REQUEST)
+        # else:
+        #     return Response({
+        #         "message": "Invalid email or password."
+        #     }, status=status.HTTP_400_BAD_REQUEST)
         
 
 
@@ -122,13 +156,16 @@ class UpdatePasswordView(APIView):
         if serializer.is_valid():
             # Save the new password
             serializer.save()
-            return Response({
-                "message": "Password updated successfully."
-            }, status=status.HTTP_200_OK)
-        
-        return Response({
-            "errors": serializer.errors,
-            "message": "Failed to update password."
-        }, status=status.HTTP_400_BAD_REQUEST)
+            return create_response(message="Password updated successfully.", status_code=status.HTTP_200_OK)
+            # return Response({
+            #     "message": "Password updated successfully."
+            # }, status=status.HTTP_200_OK)
+        first_error_message = next(iter(serializer.errors.values()))[0]
+        return create_response(error=first_error_message, message="Failed to update password.", status_code=status.HTTP_400_BAD_REQUEST)
+
+        # return Response({
+        #     "errors": serializer.errors,
+        #     "message": "Failed to update password."
+        # }, status=status.HTTP_400_BAD_REQUEST)
 
     

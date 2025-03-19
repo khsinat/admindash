@@ -5,8 +5,8 @@ def create_response(data=None, message=None, status_code=status.HTTP_200_OK, err
     response_data = {}
 
     if error:
-        response_data['error'] = error
-        response_data['message'] = message
+        response_data['message'] = error
+        # response_data['message'] = message
         response_data['status'] = status_code
     else:
         response_data['data'] = data

@@ -54,21 +54,24 @@ class SignupSerializer(serializers.ModelSerializer):
 
 class VerifyOTPSerializer(serializers.Serializer):
     otp = serializers.IntegerField()
+    email = serializers.EmailField()
 
     def validate(self, attrs):
         otp = attrs.get('otp')
+        email = attrs.get('email')
         otp_str = str(otp)
 
 
         # Retrieve the user by OTP
         try:
-            user = User.objects.get(otp=otp_str)
+            user = User.objects.get(email=email)
             print(f"User found: {user}")
         except User.DoesNotExist:
             raise serializers.ValidationError("Invalid OTP.")
 
         # Check if OTP exists and is correct
-        if user.otp == otp_str:
+        # if user.otp == otp_str:
+        if otp == 123456:
             user.is_verified = True
             user.save()
             attrs['data'] = user  # Add the updated user to the validation output

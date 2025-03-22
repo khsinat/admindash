@@ -4,12 +4,15 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
-from .serializers import SignupSerializer,VerifyOTPSerializer,UserSerializer,LoginSerializer,UpdatePasswordSerializer
+from .serializers import SignupSerializer,VerifyOTPSerializer,UserSerializer,LoginSerializer,UpdatePasswordSerializer, SendOtpSerializer, ResetPasswordSerializer
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
 from .utils import create_response
+from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
+# from .models import OTP
 
 
 class SignupView(generics.CreateAPIView):
@@ -167,5 +170,55 @@ class UpdatePasswordView(APIView):
         #     "errors": serializer.errors,
         #     "message": "Failed to update password."
         # }, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SendOtpView(APIView):
+    serializer_class = SendOtpSerializer
+
+    @swagger_auto_schema(
+        operation_summary="Generate and return OTP",
+        operation_description="This endpoint generates an OTP for the provided email address and returns it.",
+        request_body=SendOtpSerializer,
+        responses={200: 'OTP generated successfully', 400: 'Invalid email'}
+    )
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            otp = serializer.save()
+            return Response({"message": "OTP generated successfully", "otp": otp}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class ResetPasswordView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Reset user password",
+        operation_description="This endpoint resets the user's password using the provided new password and confirmation.",
+        request_body=ResetPasswordSerializer,
+        responses={
+            200: 'Password reset successfully',
+            400: 'Bad Request (e.g., passwords do not match or missing fields)',
+            404: 'User not found'
+        }
+    )
+    def post(self, request, *args, **kwargs):
+        new_password = request.data.get('new_password')
+        confirm_password = request.data.get('confirm_password')
+        email = request.data.get('email')
+
+        if not new_password or not confirm_password or not email:
+            return Response({"error": "New password, confirm password, and email are required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if new_password != confirm_password:
+            return Response({"error": "Passwords do not match."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({"error": "User with this email does not exist."}, status=status.HTTP_404_NOT_FOUND)
+
+        user.password = make_password(new_password)
+        user.save()
+
+        return Response({"message": "Password reset successfully."}, status=status.HTTP_200_OK)
 
     

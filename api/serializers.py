@@ -147,3 +147,30 @@ class UpdatePasswordSerializer(serializers.Serializer):
         password = self.validated_data.get('password')
         self.user.set_password(password)
         self.user.save()
+        
+        
+class SendOtpSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate_email(self, value):
+        try:
+            self.user = User.objects.get(email=value)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("User with this email does not exist.")
+        return value
+
+    def save(self):
+        otp = random.randint(100000, 999999)  # Generate a random 6-digit OTP
+        self.user.otp = otp  # Assuming you have an 'otp' field in your User model
+        self.user.save()
+        return otp
+    
+class ResetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    new_password = serializers.CharField(write_only=True)
+    confirm_password = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        if data['new_password'] != data['confirm_password']:
+            raise serializers.ValidationError("Passwords do not match.")
+        return data

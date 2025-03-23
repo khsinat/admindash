@@ -4,7 +4,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
-from .serializers import SignupSerializer,VerifyOTPSerializer,UserSerializer,LoginSerializer,UpdatePasswordSerializer, SendOtpSerializer, ResetPasswordSerializer
+from .serializers import SignupSerializer,VerifyOTPSerializer,UserSerializer,LoginSerializer,UpdatePasswordSerializer, SendOtpSerializer, ResetPasswordSerializer, ForgotPasswordSerializer
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
@@ -276,3 +276,22 @@ class LogoutView(APIView):
         except Exception as e:
 
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+
+class ForgotPasswordView(APIView):
+    serializer_class = ForgotPasswordSerializer
+
+    @swagger_auto_schema(
+        operation_summary="Forgot Password",
+        operation_description="This endpoint sends an OTP to the user's email for password reset.",
+        request_body=ForgotPasswordSerializer,
+        responses={200: 'OTP sent successfully', 400: 'Invalid email'}
+    )
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            otp = serializer.save()
+            return create_response(data={"message": "OTP sent successfully", "otp": otp}, message ="OTP sent successfully" ,status_code=status.HTTP_200_OK)
+        first_error_message = next(iter(serializer.errors.values()))[0]
+        return create_response(error=first_error_message, message="Invalid email.", status_code=status.HTTP_400_BAD_REQUEST)

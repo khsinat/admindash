@@ -188,3 +188,20 @@ class ResetPasswordSerializer(serializers.Serializer):
         except User.DoesNotExist:
             raise serializers.ValidationError("User with this email does not exist.")
         return value
+    
+    
+
+class ForgotPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate_email(self, value):
+        if not User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("User with this email does not exist.")
+        return value
+
+    def save(self):
+        email = self.validated_data['email']
+        # otp = send_otp_via_email(email)  # Assuming this function sends OTP via email and returns the OTP
+        otp = 123456
+        return otp
+         

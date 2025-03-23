@@ -13,6 +13,8 @@ from .utils import create_response
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 # from .models import OTP
+from django.contrib.auth import get_user_model
+from django.contrib.auth import logout
 
 
 class SignupView(generics.CreateAPIView):
@@ -158,8 +160,12 @@ class UpdatePasswordView(APIView):
 
         if serializer.is_valid():
             # Save the new password
-            serializer.save()
-            return create_response(message="Password updated successfully.", status_code=status.HTTP_200_OK)
+            user_value = serializer.save()
+            return_value = {
+                                "id": user_value.id,
+                                "email": user_value.email,
+                            }
+            return create_response(return_value,message="Password updated successfully.", status_code=status.HTTP_200_OK)
             # return Response({
             #     "message": "Password updated successfully."
             # }, status=status.HTTP_200_OK)
@@ -188,37 +194,85 @@ class SendOtpView(APIView):
             return Response({"message": "OTP generated successfully", "otp": otp}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    
+User = get_user_model()
 
 class ResetPasswordView(APIView):
     @swagger_auto_schema(
         operation_summary="Reset user password",
-        operation_description="This endpoint resets the user's password using the provided new password and confirmation.",
+        operation_description="This endpoint resets the user's password using the provided new password, confirmation, and OTP.",
         request_body=ResetPasswordSerializer,
         responses={
             200: 'Password reset successfully',
-            400: 'Bad Request (e.g., passwords do not match or missing fields)',
+            400: 'Bad Request (e.g., passwords do not match or invalid OTP)',
             404: 'User not found'
         }
     )
     def post(self, request, *args, **kwargs):
-        new_password = request.data.get('new_password')
-        confirm_password = request.data.get('confirm_password')
-        email = request.data.get('email')
+        serializer = ResetPasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            new_password = serializer.validated_data['new_password']
 
-        if not new_password or not confirm_password or not email:
-            return Response({"error": "New password, confirm password, and email are required."}, status=status.HTTP_400_BAD_REQUEST)
+            try:
+                user = User.objects.get(email=email)
+                user.set_password(new_password)
+                user.save()
+                return Response({"message": "Password reset successfully."}, status=status.HTTP_200_OK)
+            except User.DoesNotExist:
+                return Response({"error": "User with this email does not exist."}, status=status.HTTP_404_NOT_FOUND)
 
-        if new_password != confirm_password:
-            return Response({"error": "Passwords do not match."}, status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            user = User.objects.get(email=email)
-        except User.DoesNotExist:
-            return Response({"error": "User with this email does not exist."}, status=status.HTTP_404_NOT_FOUND)
-
-        user.password = make_password(new_password)
-        user.save()
-
-        return Response({"message": "Password reset successfully."}, status=status.HTTP_200_OK)
-
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+ 
+class LogoutView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+
+    @swagger_auto_schema(
+
+        operation_summary="Log out the user",
+
+        operation_description="This endpoint logs out the currently authenticated user.",
+
+        responses={
+
+            200: 'Logout successful',
+
+            401: 'Unauthorized (user not authenticated)',
+
+            400: 'Bad Request (invalid token format or other errors)',
+
+        }
+
+    )
+
+    def post(self, request, *args, **kwargs):
+
+        auth_header = request.headers.get('Authorization')
+
+        if not auth_header:
+
+            return Response({"error": "Authorization header not provided."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+        token_prefix = 'Bearer '
+
+        if not auth_header.startswith(token_prefix):
+
+            return Response({"error": "Invalid token format."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+        refresh_token = auth_header[len(token_prefix):]
+        try:
+
+            token = RefreshToken(refresh_token)
+            print(token)
+            token.blacklist()
+
+            return Response({"message": "Logout successful."}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

@@ -6,7 +6,9 @@ import random
 from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
-
+from rest_framework import serializers
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth import get_user_model
 
 class SignupSerializer(serializers.ModelSerializer):
     class Meta:
@@ -147,6 +149,7 @@ class UpdatePasswordSerializer(serializers.Serializer):
         password = self.validated_data.get('password')
         self.user.set_password(password)
         self.user.save()
+        return self.user
         
         
 class SendOtpSerializer(serializers.Serializer):
@@ -164,9 +167,10 @@ class SendOtpSerializer(serializers.Serializer):
         self.user.otp = otp  # Assuming you have an 'otp' field in your User model
         self.user.save()
         return otp
-    
+
 class ResetPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()
+    otp = serializers.CharField(max_length=6)
     new_password = serializers.CharField(write_only=True)
     confirm_password = serializers.CharField(write_only=True)
 
@@ -174,3 +178,13 @@ class ResetPasswordSerializer(serializers.Serializer):
         if data['new_password'] != data['confirm_password']:
             raise serializers.ValidationError("Passwords do not match.")
         return data
+
+    def validate_otp(self, value):
+        email = self.initial_data.get('email')
+        try:
+            user = User.objects.get(email=email)
+            if "123456" != value:
+                raise serializers.ValidationError("Invalid OTP.")
+        except User.DoesNotExist:
+            raise serializers.ValidationError("User with this email does not exist.")
+        return value

@@ -4,7 +4,7 @@ from django.urls import path
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-from .views import SignupView,VerifyOtpView,LoginView,UpdatePasswordView,SendOtpView,ResetPasswordView
+from .views import SignupView,VerifyOtpView,LoginView,UpdatePasswordView,SendOtpView,ResetPasswordView,LogoutView
 
 
 schema_view = get_schema_view(
@@ -30,6 +30,7 @@ urlpatterns = [
     path('api/update-password', UpdatePasswordView.as_view(), name='update-password'),  # New update password path
     path('api/resend-otp', SendOtpView.as_view(), name='resend-otp'),
     path('api/reset-password', ResetPasswordView.as_view(), name='reset-password'),
+    path('api/logout', LogoutView.as_view(), name='logout'),
 
     # path('api/signup/', signup, name='signup'),
     # path('api/login/', login, name='login'),

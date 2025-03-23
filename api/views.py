@@ -92,13 +92,11 @@ class LoginView(APIView):
                 access_token = refresh.access_token
                 return create_response(
                     data={
-                        "user": {
-                            "id": user.id,
-                            "email": user.email,
-                            "full_name": user.full_name,
-                            "contact_no": user.contact_no,
-                            "is_verified": user.is_verified,
-                        },
+                        "id": user.id,
+                        "email": user.email,
+                        "full_name": user.full_name,
+                        "contact_no": user.contact_no,
+                        "is_verified": user.is_verified,
                         "access_token": str(access_token),
                         "refresh_token": str(refresh),
                     },

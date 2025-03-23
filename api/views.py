@@ -189,7 +189,8 @@ class SendOtpView(APIView):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             otp = serializer.save()
-            return Response({"message": "OTP generated successfully", "otp": otp}, status=status.HTTP_200_OK)
+            return create_response(data=otp, message ="OTP generated successfully" ,status_code=status.HTTP_200_OK)
+            # return Response({"message": "OTP generated successfully", "otp": otp}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     

@@ -163,7 +163,8 @@ class SendOtpSerializer(serializers.Serializer):
         return value
 
     def save(self):
-        otp = random.randint(100000, 999999)  # Generate a random 6-digit OTP
+        # otp = random.randint(100000, 999999)  # Generate a random 6-digit OTP
+        otp = 123456
         self.user.otp = otp  # Assuming you have an 'otp' field in your User model
         self.user.save()
         return otp

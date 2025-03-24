@@ -206,23 +206,43 @@ class ForgotPasswordSerializer(serializers.Serializer):
         # otp = send_otp_via_email(email)  # Assuming this function sends OTP via email and returns the OTP
         otp = 123456
         return otp
-    
-    
+ 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['email', 'full_name', 'contact_no']
+        fields = ['email', 'full_name', 'contact_no', 'profile_file']
         extra_kwargs = {
             'email': {'read_only': True},  # Assuming email should not be editable
         }
 
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        if instance.profile_file:
+            # Construct the custom URL using the file name
+            file_name = instance.profile_file.name
+            custom_url = f"http://54.86.221.207/api/profile_file?file_path={file_name}"
+            representation['profile_file'] = custom_url
+        return representation
+
     def update(self, instance, validated_data):
-        # instance.image_url = validated_data.get('image_url', instance.image_url)
         instance.full_name = validated_data.get('full_name', instance.full_name)
         instance.contact_no = validated_data.get('contact_no', instance.contact_no)
-        # instance.grows_logged = validated_data.get('grows_logged', instance.grows_logged)
+        if 'profile_file' in validated_data:
+            # Save only the file name
+            instance.profile_file.name = validated_data.get('profile_file').name
         instance.save()
         return instance
+
+
+    def update(self, instance, validated_data):
+        instance.full_name = validated_data.get('full_name', instance.full_name)
+        instance.contact_no = validated_data.get('contact_no', instance.contact_no)
+        if 'profile_file' in validated_data:
+            instance.profile_file = validated_data.get('profile_file')
+        instance.save()
+        return instance
+
+
     
 
 class ContactUsSerializer(serializers.ModelSerializer):

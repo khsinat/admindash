@@ -20,7 +20,9 @@ from rest_framework_simplejwt.tokens import AccessToken
 from .models import BlacklistedToken , STATE_DELETED
 from .serializers import ChangePasswordSerializer
 from django.contrib.auth import update_session_auth_hash
-
+from rest_framework.parsers import MultiPartParser, FormParser
+from django.http import FileResponse, Http404
+from django.shortcuts import get_object_or_404
 
 
 class SignupView(generics.CreateAPIView):
@@ -295,9 +297,11 @@ class ForgotPasswordView(APIView):
         first_error_message = next(iter(serializer.errors.values()))[0]
         return create_response(error=first_error_message, message="Invalid email.", status_code=status.HTTP_400_BAD_REQUEST)
     
-    
+
+
 class ProfileView(APIView):
     permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser)
 
     @swagger_auto_schema(
         operation_summary="Fetch or Edit User Profile",
@@ -308,11 +312,9 @@ class ProfileView(APIView):
     def post(self, request, *args, **kwargs):
         user = request.user
         serializer = ProfileSerializer(user, data=request.data, partial=True)
-
         if serializer.is_valid():
             serializer.save()
             return create_response(data=serializer.data, message="Profile updated successfully", status_code=status.HTTP_200_OK)
-
         return create_response(error=serializer.errors, message="Validation errors", status_code=status.HTTP_400_BAD_REQUEST)
 
     @swagger_auto_schema(
@@ -325,9 +327,6 @@ class ProfileView(APIView):
         serializer = ProfileSerializer(user)
         return create_response(data=serializer.data, message="Profile fetched successfully", status_code=status.HTTP_200_OK)
     
-    
-    
-
 class ContactUsView(APIView):
     @swagger_auto_schema(
         operation_summary="Contact Us",
@@ -451,3 +450,21 @@ class ChangePasswordView(APIView):
             return create_response(error= serializer.errors, status_code=status.HTTP_400_BAD_REQUEST)
         
         
+class ProfileFileDownloadView(APIView):
+
+    def get(self, request, *args, **kwargs):
+        file_path = request.GET.get('file_path')
+        if not file_path:
+            return create_response(error="File path is required.", status_code=status.HTTP_400_BAD_REQUEST)
+
+        # Find the user with the specified profile file
+        user = get_object_or_404(User, profile_file=file_path)
+
+        # Ensure the file exists
+        try:
+            file = user.profile_file.open(mode='rb')
+            response = FileResponse(file, content_type='application/force-download')
+            response['Content-Disposition'] = f'attachment; filename="{user.profile_file.name}"'
+            return response
+        except FileNotFoundError:
+            raise Http404("File not found.")

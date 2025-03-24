@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.db import DatabaseError
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
+from django.contrib.auth import get_user_model
 
 # Configure database error logger
 db_logger = logging.getLogger("django.db.backends")
@@ -47,7 +48,7 @@ class DashboardView(TemplateView):
         context = super().get_context_data(**kwargs)
         context["user"] = self.request.user
         try:
-            users = User.objects.all()  # Fetch users
+            users = get_user_model().objects.all()  # Fetch users
             context["users"] = users
         except DatabaseError as e:
             db_logger.error(f"Database error occurred: {e}")  # Log error to file

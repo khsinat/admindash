@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
 # Custom User Manager
+
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         """Create and return a user with an email and password"""
@@ -15,9 +16,16 @@ class UserManager(BaseUserManager):
 
     def create_superuser(self, email, password=None, **extra_fields):
         """Create and return a superuser with an email and password"""
-        extra_fields.setdefault('is_verified', True)
-        return self.create_user(email, password, **extra_fields)
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_verified', True)  # Ensure is_verified is set if needed
 
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self.create_user(email, password, **extra_fields)
 # Custom User Model
 class User(AbstractBaseUser, PermissionsMixin):
     id = models.AutoField(primary_key=True)
@@ -31,9 +39,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     fcm_token = models.CharField(max_length=255, null=True, blank=True)
     otp = models.CharField(max_length=6, null=True, blank=True)
     is_verified = models.BooleanField(default=False)
-    profile_file = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
+    profile_file = models.ImageField(upload_to='profile_images/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    is_staff = models.BooleanField(default=False)
 
     # Custom manager
     objects = UserManager()

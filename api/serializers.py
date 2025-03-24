@@ -9,7 +9,8 @@ from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import get_user_model
-
+from .models import ContactUs
+from .models import Page
 class SignupSerializer(serializers.ModelSerializer):
     class Meta:
         model = User  # Reference the custom User model
@@ -205,4 +206,36 @@ class ForgotPasswordSerializer(serializers.Serializer):
         # otp = send_otp_via_email(email)  # Assuming this function sends OTP via email and returns the OTP
         otp = 123456
         return otp
+    
+    
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email', 'full_name', 'contact_no']
+        extra_kwargs = {
+            'email': {'read_only': True},  # Assuming email should not be editable
+        }
+
+    def update(self, instance, validated_data):
+        # instance.image_url = validated_data.get('image_url', instance.image_url)
+        instance.full_name = validated_data.get('full_name', instance.full_name)
+        instance.contact_no = validated_data.get('contact_no', instance.contact_no)
+        # instance.grows_logged = validated_data.get('grows_logged', instance.grows_logged)
+        instance.save()
+        return instance
+    
+
+class ContactUsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactUs
+        fields = ['full_name', 'email', 'contact_no', 'description']
+        
+        
+        
+class PageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Page
+        fields = ['id', 'title', 'description', 'state_id', 'type_id', 'created_on', 'updated_on', 'created_by']
+        read_only_fields = ['id', 'created_on', 'updated_on', 'created_by']
+
          

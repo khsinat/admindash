@@ -4,7 +4,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
-from .serializers import SignupSerializer,VerifyOTPSerializer,UserSerializer,LoginSerializer,UpdatePasswordSerializer, SendOtpSerializer, ResetPasswordSerializer, ForgotPasswordSerializer
+from .serializers import SignupSerializer,VerifyOTPSerializer,UserSerializer,LoginSerializer,UpdatePasswordSerializer, SendOtpSerializer, ResetPasswordSerializer, ForgotPasswordSerializer, ProfileSerializer, ContactUsSerializer, PageSerializer
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
@@ -15,6 +15,10 @@ from django.contrib.auth.hashers import make_password
 # from .models import OTP
 from django.contrib.auth import get_user_model
 from django.contrib.auth import logout
+from .models import Page
+from rest_framework_simplejwt.tokens import AccessToken
+from .models import BlacklistedToken
+
 
 
 class SignupView(generics.CreateAPIView):
@@ -223,58 +227,26 @@ class ResetPasswordView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
- 
+
+
+
 class LogoutView(APIView):
+    permission_classes = (IsAuthenticated,)
 
-    permission_classes = [IsAuthenticated]
-
-
-    @swagger_auto_schema(
-
-        operation_summary="Log out the user",
-
-        operation_description="This endpoint logs out the currently authenticated user.",
-
-        responses={
-
-            200: 'Logout successful',
-
-            401: 'Unauthorized (user not authenticated)',
-
-            400: 'Bad Request (invalid token format or other errors)',
-
-        }
-
-    )
-
-    def post(self, request, *args, **kwargs):
-
+    def post(self, request):
+        # Get the access token from the request
         auth_header = request.headers.get('Authorization')
-
-        if not auth_header:
-
-            return Response({"error": "Authorization header not provided."}, status=status.HTTP_400_BAD_REQUEST)
-
-
-        token_prefix = 'Bearer '
-
-        if not auth_header.startswith(token_prefix):
-
-            return Response({"error": "Invalid token format."}, status=status.HTTP_400_BAD_REQUEST)
-
-
-        refresh_token = auth_header[len(token_prefix):]
-        try:
-
-            token = RefreshToken(refresh_token)
-            print(token)
-            token.blacklist()
-
-            return Response({"message": "Logout successful."}, status=status.HTTP_200_OK)
-
-        except Exception as e:
-
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        if auth_header and auth_header.startswith('Bearer '):
+            token = auth_header.split(' ')[1]
+            try:
+                # Verify the token
+                AccessToken(token)
+                # Blacklist the token
+                BlacklistedToken.objects.create(token=token)
+                return Response({"detail": "Successfully logged out."}, status=status.HTTP_200_OK)
+            except Exception as e:
+                return Response({"detail": "Invalid token."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"detail": "Authorization header missing."}, status=status.HTTP_400_BAD_REQUEST)
         
 
 
@@ -294,3 +266,106 @@ class ForgotPasswordView(APIView):
             return create_response(data={"message": "OTP sent successfully", "otp": otp}, message ="OTP sent successfully" ,status_code=status.HTTP_200_OK)
         first_error_message = next(iter(serializer.errors.values()))[0]
         return create_response(error=first_error_message, message="Invalid email.", status_code=status.HTTP_400_BAD_REQUEST)
+    
+    
+class ProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_summary="Fetch or Edit User Profile",
+        operation_description="This endpoint allows fetching or editing the user's profile.",
+        request_body=ProfileSerializer,
+        responses={200: 'Profile fetched or updated successfully', 400: 'Bad Request'}
+    )
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        serializer = ProfileSerializer(user, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return create_response(data=serializer.data, message="Profile updated successfully", status_code=status.HTTP_200_OK)
+
+        return create_response(error=serializer.errors, message="Validation errors", status_code=status.HTTP_400_BAD_REQUEST)
+
+    @swagger_auto_schema(
+        operation_summary="Fetch User Profile",
+        operation_description="This endpoint allows fetching the user's profile.",
+        responses={200: 'Profile fetched successfully'}
+    )
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        serializer = ProfileSerializer(user)
+        return create_response(data=serializer.data, message="Profile fetched successfully", status_code=status.HTTP_200_OK)
+    
+    
+    
+
+class ContactUsView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Contact Us",
+        operation_description="This endpoint allows users to send a contact request.",
+        request_body=ContactUsSerializer,
+        responses={200: 'Contact request received successfully', 400: 'Bad Request'}
+    )
+    def post(self, request, *args, **kwargs):
+        serializer = ContactUsSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return create_response(serializer.data, message="Contact request received successfully", status_code=status.HTTP_200_OK)
+
+        return create_response(serializer.errors, message="Something went wrong.", status_code=status.HTTP_400_BAD_REQUEST)
+    
+    
+class DeleteAccountView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_summary="Delete Account",
+        operation_description="This endpoint allows the authenticated user to soft delete their account. "
+                              "The account will be marked as inactive and will not be permanently removed from the database.",
+        responses={
+            200: "Account deleted successfully",
+            401: "Unauthorized (user not authenticated)",
+            403: "Forbidden (user does not have permission)"
+        }
+    )
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        user.state_id = 2
+        user.save()
+        return Response({"message": "Account deleted successfully"}, status=status.HTTP_200_OK)
+    
+    
+
+class PageDetailView(generics.RetrieveAPIView):
+    serializer_class = PageSerializer
+
+    @swagger_auto_schema(
+        operation_summary="Get Page by Type",
+        operation_description="This endpoint allows fetching a page based on its type ID. "
+                              "Type ID 1 corresponds to 'Terms of Service', and Type ID 2 corresponds to 'Privacy Policy'.",
+        responses={200: 'Page retrieved successfully', 404: 'Page not found'}
+    )
+    def get(self, request, *args, **kwargs):
+        type_id = kwargs.get('type_id')
+        queryset = Page.objects.all()
+        if type_id is not None:
+            try:
+                # Filter the queryset based on type_id
+                page = Page.objects.get(type_id=type_id)
+                serializer = PageSerializer(page)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except Page.DoesNotExist:
+                return create_response(
+                    error="Page not found",
+                    message="The requested page does not exist.",
+                    status_code=status.HTTP_404_NOT_FOUND
+                )
+        return create_response(
+                    error="Type ID is required",
+                    status_code=status.HTTP_404_NOT_FOUND
+                )
+        return Response({"error": "Type ID is required"}, status=status.HTTP_400_BAD_REQUEST)    
+    
+    

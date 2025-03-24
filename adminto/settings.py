@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'api',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
 
 ]
 
@@ -69,6 +70,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'api.middleware.BlacklistMiddleware',
 ]
 
 ROOT_URLCONF = 'adminto.urls'
@@ -116,7 +118,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'cannabis_db',
         'USER': 'cannabis_user',
-        'PASSWORD': 'CanN!bIs$_3214',
+        'PASSWORD': 'CanN!bIs$_3214',  # Or your database host
         'PORT': '3306',
     }
 }

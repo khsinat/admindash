@@ -33,3 +33,13 @@ class BlacklistedToken(models.Model):
 
     def __str__(self):
         return self.token
+    
+
+#constants
+
+STATE_ACTIVE = 0
+    
+STATE_INACTIVE = 1    
+    
+STATE_DELETED = 2
+

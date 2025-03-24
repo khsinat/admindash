@@ -17,7 +17,9 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import logout
 from .models import Page
 from rest_framework_simplejwt.tokens import AccessToken
-from .models import BlacklistedToken
+from .models import BlacklistedToken , STATE_DELETED
+from .serializers import ChangePasswordSerializer
+from django.contrib.auth import update_session_auth_hash
 
 
 
@@ -57,6 +59,21 @@ class VerifyOtpView(APIView):
         if serializer.is_valid():
             # You can access the updated user from serializer.validated_data
             user = serializer.validated_data['data']
+            refresh = RefreshToken.for_user(user)
+            access_token = refresh.access_token
+            return create_response(
+                data={
+                    "id": user.id,
+                    "email": user.email,
+                    "full_name": user.full_name,
+                    "contact_no": user.contact_no,
+                    "is_verified": user.is_verified,
+                    "access_token": str(access_token),
+                    "refresh_token": str(refresh),
+                },
+                message="Otp Verified successfully",
+                status_code=status.HTTP_200_OK
+            )
             # return Response({"message": "OTP verified successfully", "data": UserSerializer(user).data}, status=status.HTTP_200_OK)
             return create_response(data=UserSerializer(user).data, message="OTP verified successfully", status_code=status.HTTP_200_OK)
         first_error_message = next(iter(serializer.errors.values()))[0]
@@ -85,40 +102,51 @@ class LoginView(APIView):
         # Extract email and password from the request
         email = request.data.get("email")
         password = request.data.get("password")
+        # Query the user by email and check if state_id is not equal to 3
 
-        # Authenticate the user
-        user = authenticate(request, email=email, password=password)
-        print(f"user valeu {user}")
-        if user is not None:
-            if user.is_verified:
-                # Generate JWT token
-                refresh = RefreshToken.for_user(user)
-                access_token = refresh.access_token
-                return create_response(
-                    data={
-                        "id": user.id,
-                        "email": user.email,
-                        "full_name": user.full_name,
-                        "contact_no": user.contact_no,
-                        "is_verified": user.is_verified,
-                        "access_token": str(access_token),
-                        "refresh_token": str(refresh),
-                    },
-                    message="Login successful",
-                    status_code=status.HTTP_200_OK
-                )
+        is_valid_user = User.objects.filter(email=email).exclude(state_id=STATE_DELETED)
+
+        if is_valid_user.exists():
+            user = is_valid_user.first()
+             # Authenticate the user
+            user = authenticate(request, email=email, password=password)
+            print(f"user valeu {user}")
+            if user is not None:
+                if user.is_verified:
+                    # Generate JWT token
+                    refresh = RefreshToken.for_user(user)
+                    access_token = refresh.access_token
+                    return create_response(
+                        data={
+                            "id": user.id,
+                            "email": user.email,
+                            "full_name": user.full_name,
+                            "contact_no": user.contact_no,
+                            "is_verified": user.is_verified,
+                            "access_token": str(access_token),
+                            "refresh_token": str(refresh),
+                        },
+                        message="Login successful",
+                        status_code=status.HTTP_200_OK
+                    )
+                else:
+                    return create_response(
+                        error="User OTP not verified. Please verify your OTP first.",
+                        message="OTP not verified",
+                        status_code=status.HTTP_400_BAD_REQUEST
+                    )
             else:
                 return create_response(
-                    error="User OTP not verified. Please verify your OTP first.",
-                    message="OTP not verified",
+                    error="Invalid email or password.",
+                    message="Invalid credentials",
                     status_code=status.HTTP_400_BAD_REQUEST
                 )
         else:
             return create_response(
-                error="Invalid email or password.",
-                message="Invalid credentials",
-                status_code=status.HTTP_400_BAD_REQUEST
-            )
+                    error="User does not exist.",
+                    status_code=status.HTTP_400_BAD_REQUEST
+                )
+       
         #         return Response({
         #             "message": "Login successful",
         #             "data": {
@@ -316,14 +344,14 @@ class ContactUsView(APIView):
 
         return create_response(serializer.errors, message="Something went wrong.", status_code=status.HTTP_400_BAD_REQUEST)
     
-    
+
 class DeleteAccountView(APIView):
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
         operation_summary="Delete Account",
         operation_description="This endpoint allows the authenticated user to soft delete their account. "
-                              "The account will be marked as inactive and will not be permanently removed from the database.",
+                              "The account will be marked as deleted and the token will be blacklisted.",
         responses={
             200: "Account deleted successfully",
             401: "Unauthorized (user not authenticated)",
@@ -332,9 +360,27 @@ class DeleteAccountView(APIView):
     )
     def post(self, request, *args, **kwargs):
         user = request.user
-        user.state_id = 2
+        user.state_id = STATE_DELETED
         user.save()
-        return Response({"message": "Account deleted successfully"}, status=status.HTTP_200_OK)
+
+        # Get the access token from the request
+        auth_header = request.headers.get('Authorization')
+        if auth_header and auth_header.startswith('Bearer '):
+            token = auth_header.split(' ')[1]
+            try:
+                # Verify the token
+                AccessToken(token)
+                # Blacklist the token
+                BlacklistedToken.objects.create(token=token)
+            except Exception as e:
+                return Response({"detail": "Invalid token."}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"detail": "Authorization header missing."}, status=status.HTTP_400_BAD_REQUEST)
+
+        return create_response(
+                    message= "Account deleted successfully",
+                    status_code=status.HTTP_200_OK
+                )
     
     
 
@@ -366,6 +412,42 @@ class PageDetailView(generics.RetrieveAPIView):
                     error="Type ID is required",
                     status_code=status.HTTP_404_NOT_FOUND
                 )
-        return Response({"error": "Type ID is required"}, status=status.HTTP_400_BAD_REQUEST)    
+        return Response({"error": "Type ID is required"}, status=status.HTTP_400_BAD_REQUEST)   
     
     
+    
+ 
+    
+
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_summary="Change Password",
+        operation_description="This endpoint allows the authenticated user to change their password by providing the old password and the new password.",
+        request_body=ChangePasswordSerializer,
+        responses={
+            200: "Password changed successfully",
+            400: "Invalid old password or new password does not meet the requirements",
+            401: "Unauthorized (user not authenticated)"
+        }
+    )
+    def post(self, request, *args, **kwargs):
+        serializer = ChangePasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            user = request.user
+            old_password = serializer.validated_data.get("old_password")
+            new_password = serializer.validated_data.get("new_password")
+
+            if user.check_password(old_password):
+                user.set_password(new_password)
+                user.save()
+                update_session_auth_hash(request, user)  # Keep the user logged in
+
+                return create_response(message= "Password changed successfully", status_code=status.HTTP_200_OK)
+            else:
+                return create_response(error= "Invalid old password", status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
+        else:
+            return create_response(error= serializer.errors, status_code=status.HTTP_400_BAD_REQUEST)
+        
+        

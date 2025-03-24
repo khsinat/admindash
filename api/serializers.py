@@ -238,4 +238,12 @@ class PageSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'description', 'state_id', 'type_id', 'created_on', 'updated_on', 'created_by']
         read_only_fields = ['id', 'created_on', 'updated_on', 'created_by']
 
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+    def validate_new_password(self, value):
+        validate_password(value)
+        return value
          

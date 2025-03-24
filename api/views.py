@@ -243,7 +243,7 @@ class LogoutView(APIView):
                 AccessToken(token)
                 # Blacklist the token
                 BlacklistedToken.objects.create(token=token)
-                return Response({"detail": "Successfully logged out."}, status=status.HTTP_200_OK)
+                return create_response(message ="Successfully logged out." ,status_code=status.HTTP_200_OK)
             except Exception as e:
                 return Response({"detail": "Invalid token."}, status=status.HTTP_400_BAD_REQUEST)
         return Response({"detail": "Authorization header missing."}, status=status.HTTP_400_BAD_REQUEST)

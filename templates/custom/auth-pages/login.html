@@ -7,13 +7,23 @@
 
 {% include "partials/head-css.html" %}
 
+<head>
+    <style>
+        body.authentication-bg {
+            background-image: url('{% static "images/background.jpg" %}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+    </style>
+</head>
 
 <body class="loading authentication-bg authentication-bg-pattern">
 
     <div class="account-pages my-5">
         <div class="container">
 
-            <div class="row justify-content-center">
+            <div class="row justify-content-center"  style="margin-top: -51px !important;">
                 <div class="col-md-8 col-lg-6 col-xl-4">
                     <div class="text-center">   
                         <a href="{% url 'index' %}">
@@ -99,7 +109,7 @@
                         <a href="{% url 'index' %}">
                             <img src="{% static 'images/cannabis_logo512.png' %}" alt="Logo" height="102" class="mx-auto">
                         </a>
-                        <p class="text-muted mt-2 mb-4">Responsive Admin Dashboard</p>
+                        <p class="text-muted mt-2 mb-4">Welcome Back</p>
                     </div>
                     
                     <div class="card">
@@ -134,12 +144,12 @@
                         </div>
                     </div>
 
-                    <div class="row mt-3">
+                    <!-- <div class="row mt-3">
                         <div class="col-12 text-center">
                             {% comment %} <p><a href="{% url 'password_reset' %}" class="text-muted"><i class="fa fa-lock me-1"></i> Forgot your password?</a></p> {% endcomment %}
                             <p class="text-muted">Don't have an account? <a href="{% url 'register' %}" class="text-dark"><b>Sign Up</b></a></p>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -147,7 +157,7 @@
 
     {% include "partials/vendor.html" %}
     <script src="{% static 'js/app.min.js' %}"></script>
-
+    {% include "partials/footer.html" %}
 </body>
 </html>
 

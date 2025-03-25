@@ -13778,6 +13778,16 @@ body[data-layout-color=dark] .page-title-box .page-title {
   left: 240px;
   background-color: var(--ct-footer-bg);
 }
+.footer {
+  bottom: 0;
+  padding: 19px 15px 20px;
+  position: absolute;
+  width: 100%; /* Ensure the footer spans the full width */
+  right: 0;
+  color: var(--ct-footer-color);
+  background-color: var(--ct-footer-bg);
+}
+
 .footer .footer-links a {
   color: var(--ct-footer-color);
   margin-left: 1.5rem;
@@ -17260,7 +17270,7 @@ body[data-layout-color=dark] .text-blue {
 }
 
 body.authentication-bg {
-  background-image: url("../images/bg-auth3.png");
+  background-image: url("../images/background.jpg");
   background-size: cover;
   background-position: center;
 }

@@ -58,3 +58,8 @@ class DashboardView(TemplateView):
 
 # Serve dashboard at '/'
 index_view = DashboardView.as_view()
+
+class UsersView(TemplateView):
+    pass
+
+users_view = DashboardView.as_view(template_name="custom/extra-pages/user-list.html")

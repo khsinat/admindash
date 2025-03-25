@@ -148,10 +148,10 @@
                     </a>
 
                     <!-- item-->
-                    <a href="{% url 'lock-screen' %}" class="dropdown-item notify-item">
+                    {% comment %} <a href="{% url 'lock-screen' %}" class="dropdown-item notify-item">
                         <i class="fe-lock"></i>
                         <span>Lock Screen</span>
-                    </a>
+                    </a> {% endcomment %}
 
                     <div class="dropdown-divider"></div>
 
@@ -164,11 +164,11 @@
                 </div>
             </li>
 
-            <li class="dropdown notification-list">
+            {% comment %} <li class="dropdown notification-list">
                 <a href="javascript:void(0);" class="nav-link right-bar-toggle waves-effect waves-light">
                     <i class="fe-settings noti-icon"></i>
                 </a>
-            </li>
+            </li> {% endcomment %}
 
         </ul>
 

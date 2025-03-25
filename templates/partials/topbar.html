@@ -3,7 +3,7 @@
 <div class="navbar-custom">
     <ul class="list-unstyled topnav-menu float-end mb-0">
 
-        <li class="d-none d-lg-block">
+        {% comment %} <li class="d-none d-lg-block">
             <form class="app-search">
                 <div class="app-search-box">
                     <div class="input-group">
@@ -70,7 +70,7 @@
                     </div>
                 </div>
             </form>
-        </li>
+        </li> {% endcomment %}
 
         <li class="dropdown d-inline-block d-lg-none">
             <a class="nav-link dropdown-toggle arrow-none waves-effect waves-light" data-bs-toggle="dropdown" href="#"
@@ -202,10 +202,10 @@
                 </a>
 
                 <!-- item-->
-                <a href="{% url 'lock-screen' %}" class="dropdown-item notify-item">
+                {% comment %} <a href="{% url 'lock-screen' %}" class="dropdown-item notify-item">
                     <i class="fe-lock"></i>
                     <span>Lock Screen</span>
-                </a>
+                </a> {% endcomment %}
 
                 <div class="dropdown-divider"></div>
 
@@ -218,11 +218,11 @@
             </div>
         </li>
 
-        <li class="dropdown notification-list">
+        {% comment %} <li class="dropdown notification-list">
             <a href="javascript:void(0);" class="nav-link right-bar-toggle waves-effect waves-light">
                 <i class="fe-settings noti-icon"></i>
             </a>
-        </li>
+        </li> {% endcomment %}
 
     </ul>
 

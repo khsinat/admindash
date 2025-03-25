@@ -1,7 +1,68 @@
-<ul>
-  {% for user in users %}
-    <li>{{ user.username }} - {{ user.email }}</li>
-  {% endfor %}
-</ul>
+{% extends "partials/base.html" %}
 
+{% load static %}
+
+{% block title %}Users List{% endblock title %}
+
+{% block extra_css %}
+
+{% endblock extra_css %}
+
+{% block topbar %}
+    {% include "partials/topbar.html" with pagetitle="User List" %}
+{% endblock topbar %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-sm-12">
+     <table class="table">
+        <thead>
+            <tr style="background: #386641; color: white; font-size: 16px;">
+                <th style="padding: 15px 25px; text-align: left;">Email</th>
+                <th style="padding: 15px 25px; text-align: left;">Designation</th>
+                <th style="padding: 15px 25px; text-align: left;">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr style="{% if forloop.counter|divisibleby:2 %}background: #f2f2f2;{% endif %} 
+                       transition: 0.3s;"
+                onmouseover="this.style.background='#d6e4f0'" 
+                onmouseout="this.style.background='{% if forloop.counter|divisibleby:2 %}#f2f2f2{% else %}#ffffff{% endif %}'">
+                <td style="padding: 15px 25px; text-align: left;">{{ user.email }}</td>
+                <td style="padding: 15px 25px; text-align: left; font-weight: bold; 
+                           color: {% if user.is_staff %} green {% else %} teal {% endif %};">
+                    {% if user.is_staff %}
+                            Staff 
+                    {% else %}
+                         Admin 
+                    {% endif %}
+                </td>
+                 <td style="padding: 15px 25px; text-align: left; font-weight: bold; 
+                           color: {% if user.is_verified %} green {% else %} red {% endif %};">
+                    {% if user.is_verified %}
+                         Verified
+                    {% else %}
+                         Not Verified
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2" style="text-align: center; padding: 15px; font-size: 16px;">No users found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</div>
 <!-- end row -->
+        
+{% include "partials/footer.html" %}
+
+{% endblock content %}
+
+{% block extra_js %}
+
+{% endblock extra_js %}

@@ -118,7 +118,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'cannabis_db',
         'USER': 'cannabis_user',
-        'PASSWORD': 'CanN!bIs$_3214',  # Or your database host
+        'PASSWORD': 'cannabis12345',  # Or your database host
+        'HOST':'127.0.0.1',
         'PORT': '3306',
     }
 }

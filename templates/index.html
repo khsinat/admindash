@@ -2,23 +2,23 @@
 
 {% load static %}
 
-{% block title %}Dashboard{% endblock title %}
+{% block title %}Home{% endblock title %}
 
 {% block extra_css %}
 
 {% endblock extra_css %}
 
 {% block topbar %}
-    {% include "partials/topbar.html" with pagetitle="Dashboard" %}
+    {% include "partials/topbar.html" with pagetitle="Home" %}
 {% endblock topbar %}
 
 {% block content %}
     <div class="row">
 
-        <div class="col-xl-3 col-md-6">
+        {% comment %} <div class="col-xl-3 col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <div class="dropdown float-end">
+                     <div class="dropdown float-end">
                         <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown"
                            aria-expanded="false">
                             <i class="mdi mdi-dots-vertical"></i>
@@ -33,7 +33,7 @@
                             <!-- item-->
                             <a href="javascript:void(0);" class="dropdown-item">Separated link</a>
                         </div>
-                    </div>
+                    </div> 
 
                     <h4 class="header-title mt-0 mb-4">Total Revenue</h4>
 
@@ -52,12 +52,12 @@
                     </div>
                 </div>
             </div>
-        </div><!-- end col -->
+        </div><!-- end col -->  {% endcomment %}
 
         <div class="col-xl-3 col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <div class="dropdown float-end">
+                   <div class="dropdown float-end">
                         <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown"
                            aria-expanded="false">
                             <i class="mdi mdi-dots-vertical"></i>
@@ -72,7 +72,7 @@
                             <!-- item-->
                             <a href="javascript:void(0);" class="dropdown-item">Separated link</a>
                         </div>
-                    </div>
+                    </div> 
 
                     <h4 class="header-title mt-0 mb-3">Sales Analytics</h4>
 
@@ -98,7 +98,7 @@
         <div class="col-xl-3 col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <div class="dropdown float-end">
+                    {% comment %} <div class="dropdown float-end">
                         <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown"
                            aria-expanded="false">
                             <i class="mdi mdi-dots-vertical"></i>
@@ -113,7 +113,7 @@
                             <!-- item-->
                             <a href="javascript:void(0);" class="dropdown-item">Separated link</a>
                         </div>
-                    </div>
+                    </div> {% endcomment %}
 
                     <h4 class="header-title mt-0 mb-4">Statistics</h4>
 
@@ -136,7 +136,7 @@
         <div class="col-xl-3 col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <div class="dropdown float-end">
+                    {% comment %} <div class="dropdown float-end">
                         <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown"
                            aria-expanded="false">
                             <i class="mdi mdi-dots-vertical"></i>
@@ -151,7 +151,7 @@
                             <!-- item-->
                             <a href="javascript:void(0);" class="dropdown-item">Separated link</a>
                         </div>
-                    </div>
+                    </div> {% endcomment %}
 
                     <h4 class="header-title mt-0 mb-3">Daily Sales</h4>
 
@@ -182,7 +182,7 @@
         <div class="col-xl-4">
             <div class="card">
                 <div class="card-body">
-                    <div class="dropdown float-end">
+                    {% comment %} <div class="dropdown float-end">
                         <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown"
                            aria-expanded="false">
                             <i class="mdi mdi-dots-vertical"></i>
@@ -197,7 +197,7 @@
                             <!-- item-->
                             <a href="javascript:void(0);" class="dropdown-item">Separated link</a>
                         </div>
-                    </div>
+                    </div> {% endcomment %}
 
                     <h4 class="header-title mt-0">Daily Sales</h4>
 
@@ -219,7 +219,7 @@
         <div class="col-xl-4">
             <div class="card">
                 <div class="card-body">
-                    <div class="dropdown float-end">
+                    {% comment %} <div class="dropdown float-end">
                         <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown"
                            aria-expanded="false">
                             <i class="mdi mdi-dots-vertical"></i>
@@ -234,7 +234,7 @@
                             <!-- item-->
                             <a href="javascript:void(0);" class="dropdown-item">Separated link</a>
                         </div>
-                    </div>
+                    </div> {% endcomment %}
                     <h4 class="header-title mt-0">Statistics</h4>
                     <div id="morris-bar-example" dir="ltr" style="height: 280px;" class="morris-chart"></div>
                 </div>
@@ -244,7 +244,7 @@
         <div class="col-xl-4">
             <div class="card">
                 <div class="card-body">
-                    <div class="dropdown float-end">
+                    {% comment %} <div class="dropdown float-end">
                         <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown"
                            aria-expanded="false">
                             <i class="mdi mdi-dots-vertical"></i>
@@ -259,7 +259,7 @@
                             <!-- item-->
                             <a href="javascript:void(0);" class="dropdown-item">Separated link</a>
                         </div>
-                    </div>
+                    </div> {% endcomment %}
                     <h4 class="header-title mt-0">Total Revenue</h4>
                     <div id="morris-line-example" dir="ltr" style="height: 280px;" class="morris-chart"></div>
                 </div>
@@ -270,13 +270,13 @@
 
 
     <div class="row">
-        {% for user in users %}
+        {% comment %} {% for user in users %} {% endcomment %}
     {% comment %} <li>{{ user.username }} - {{ user.email }}</li> {% endcomment %}
-        <div class="col-xl-3 col-md-6">
+        {% comment %} <div class="col-xl-3 col-md-6">
             <div class="card">
                 <div class="card-body widget-user">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0 avatar-lg me-3">
+                    <div class="d-flex align-items-center"> {% endcomment %}
+                        {% comment %} <div class="flex-shrink-0 avatar-lg me-3">
                             <img src="{% static 'images/users/user-3.jpg' %}" class="img-fluid rounded-circle"
                                  alt="user">
                         </div>
@@ -284,14 +284,15 @@
                             <h5 class="mt-0 mb-1">{{ user.username }}</h5>
                             <p class="text-muted mb-2 font-13 text-truncate">{{ user.email }}</p>
                             <small class="text-warning"><b>Admin</b></small>
-                        </div>
-                    </div>
+                        </div> {% endcomment %}
+
+                    {% comment %} </div>
                 </div>
             </div>
 
-        </div><!-- end col -->
+        </div><!-- end col --> {% endcomment %}
 
-        {% endfor %}
+        {% comment %} {% endfor %} {% endcomment %}
         {% comment %} <div class="col-xl-3 col-md-6">
             <div class="card">
                 <div class="card-body widget-user">

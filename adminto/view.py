@@ -8,6 +8,7 @@ from django.db import DatabaseError
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
 from django.contrib.auth import get_user_model
+from django.core.paginator import Paginator
 
 # Configure database error logger
 db_logger = logging.getLogger("django.db.backends")
@@ -60,9 +61,43 @@ class DashboardView(TemplateView):
 index_view = DashboardView.as_view()
 
 class UsersView(TemplateView):
-    pass
 
-users_view = DashboardView.as_view(template_name="custom/extra-pages/user-list.html")
+    template_name = "custom/extra-pages/user-list.html"
+
+
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+
+        
+
+        # Get all users
+
+        user_list = get_user_model().objects.all()  # Replace with your actual user model
+
+        paginator = Paginator(user_list, 10)  # Show 10 users per page
+
+
+        # Get the current page number from the request
+
+        page_number = self.request.GET.get('page')
+
+        users = paginator.get_page(page_number)
+
+
+        # Add the paginated users to the context
+
+        context['users'] = users
+
+        context['paginator'] = paginator  # Optional: if you want to use paginator info in the template
+
+
+        return context
+
+
+# Create an instance of the view
+
+users_view = UsersView.as_view()
 
 def user_detail(request, user_id):
     # Retrieve the user object or return a 404 error if not found

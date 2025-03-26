@@ -220,7 +220,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         if instance.profile_file:
             # Construct the custom URL using the file name
             file_name = instance.profile_file.name
-            custom_url = f"http://54.86.221.207/api/profile_file?file_path={file_name}"
+            custom_url = f"http://54.86.221.207/api/profile-file?file_path={file_name}"
             representation['profile_file'] = custom_url
         return representation
 

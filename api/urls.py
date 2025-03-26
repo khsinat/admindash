@@ -37,7 +37,7 @@ urlpatterns = [
     path('api/delete-account/', DeleteAccountView.as_view(), name='delete-account'),
     path('api/page/<int:type_id>/', PageDetailView.as_view(), name='page-detail'),
     path('api/change-password/', ChangePasswordView.as_view(), name='change-password'),
-    path('api/profile_file', ProfileFileDownloadView.as_view(), name='profile-file-download'),
+    path('api/profile-file', ProfileFileDownloadView.as_view(), name='profile-file-download'),
 
     # path('api/signup/', signup, name='signup'),
     # path('api/login/', login, name='login'),

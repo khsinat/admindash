@@ -63,6 +63,8 @@ class VerifyOtpView(APIView):
             user = serializer.validated_data['data']
             refresh = RefreshToken.for_user(user)
             access_token = refresh.access_token
+            file_name = user.profile_file.name
+            custom_url = f"http://54.86.221.207/api/profile-file?file_path={file_name}"
             return create_response(
                 data={
                     "id": user.id,
@@ -72,6 +74,7 @@ class VerifyOtpView(APIView):
                     "is_verified": user.is_verified,
                     "access_token": str(access_token),
                     "refresh_token": str(refresh),
+                    "profile_file" : custom_url
                 },
                 message="Otp Verified successfully",
                 status_code=status.HTTP_200_OK
@@ -118,6 +121,8 @@ class LoginView(APIView):
                     # Generate JWT token
                     refresh = RefreshToken.for_user(user)
                     access_token = refresh.access_token
+                    file_name = user.profile_file.name
+                    custom_url = f"http://54.86.221.207/api/profile-file?file_path={file_name}"
                     return create_response(
                         data={
                             "id": user.id,
@@ -127,6 +132,7 @@ class LoginView(APIView):
                             "is_verified": user.is_verified,
                             "access_token": str(access_token),
                             "refresh_token": str(refresh),
+                            "profile_file" : custom_url
                         },
                         message="Login successful",
                         status_code=status.HTTP_200_OK

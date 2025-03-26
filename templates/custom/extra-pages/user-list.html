@@ -5,7 +5,7 @@
 {% block title %}Users List{% endblock title %}
 
 {% block extra_css %}
-
+<!-- Add any extra CSS here if needed -->
 {% endblock extra_css %}
 
 {% block topbar %}
@@ -22,35 +22,49 @@
                 <th style="padding: 15px 25px; text-align: left;">Email</th>
                 <th style="padding: 15px 25px; text-align: left;">Designation</th>
                 <th style="padding: 15px 25px; text-align: left;">Status</th>
+                <th style="padding: 15px 25px; text-align: left;">Last Login</th>
+                <th style="padding: 15px 25px; text-align: left;">Created At</th>
+                <th style="padding: 15px 25px; text-align: left;">Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for user in users %}
-            <tr style="{% if forloop.counter|divisibleby:2 %}background: #f2f2f2;{% endif %} 
+            <tr style="{% if forloop.counter|divisibleby:2 %}background: #f2f2f2;{% endif %}
                        transition: 0.3s;"
-                onmouseover="this.style.background='#d6e4f0'" 
+                onmouseover="this.style.background='#d6e4f0'"
                 onmouseout="this.style.background='{% if forloop.counter|divisibleby:2 %}#f2f2f2{% else %}#ffffff{% endif %}'">
                 <td style="padding: 15px 25px; text-align: left;">{{ user.email }}</td>
-                <td style="padding: 15px 25px; text-align: left; font-weight: bold; 
+                <td style="padding: 15px 25px; text-align: left; font-weight: bold;
                            color: {% if user.is_staff %} green {% else %} teal {% endif %};">
-                    {% if user.is_staff %}
-                            Staff 
+                    {% if user.is_superuser == 0 %}
+                        User
+                    {% elif user.is_staff %}
+                        Staff
                     {% else %}
-                         Admin 
+                        Admin
                     {% endif %}
                 </td>
-                 <td style="padding: 15px 25px; text-align: left; font-weight: bold; 
+                <td style="padding: 15px 25px; text-align: left; font-weight: bold;
                            color: {% if user.is_verified %} green {% else %} red {% endif %};">
                     {% if user.is_verified %}
-                         Verified
+                        Verified
                     {% else %}
-                         Not Verified
+                        Not Verified
                     {% endif %}
+                </td>
+                <td style="padding: 15px 25px; text-align: left;">
+                    {{ user.last_login|date:"F j, Y, g:i a"|default:"Not Available" }}
+                </td>
+                <td style="padding: 15px 25px; text-align: left;">
+                    {{ user.created_at|date:"F j, Y, g:i a" }}
+                </td>
+                <td style="padding: 15px 25px; text-align: left;">
+                    <button class="btn btn-primary" onclick="viewUserDetails({{ user.id }})">View</button>
                 </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="2" style="text-align: center; padding: 15px; font-size: 16px;">No users found.</td>
+                <td colspan="6" style="text-align: center; padding: 15px; font-size: 16px;">No users found.</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -58,11 +72,16 @@
     </div>
 </div>
 <!-- end row -->
-        
+
 {% include "partials/footer.html" %}
 
 {% endblock content %}
 
 {% block extra_js %}
-
+<script>
+    function viewUserDetails(userId) {
+        // Implement the logic to view user details, e.g., redirect to a details page
+        window.location.href = '/user/details/' + userId;
+    }
+</script>
 {% endblock extra_js %}

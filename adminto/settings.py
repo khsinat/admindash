@@ -116,9 +116,9 @@ DATABASES = {
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': BASE_DIR / 'db.sqlite3',
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'cannabis_db',
-        'USER': 'cannabis_user',
-        'PASSWORD': 'CanN!bIs$_3214',  # Or your database host
+        'NAME': 'cannabisnew',
+        'USER': 'admin',
+        'PASSWORD': 'Admin@123',  # Or your database host
         'PORT': '3306',
     }
 }

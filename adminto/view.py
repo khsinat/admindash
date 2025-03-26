@@ -1,5 +1,5 @@
 import logging
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.views.generic.base import TemplateView
@@ -63,3 +63,11 @@ class UsersView(TemplateView):
     pass
 
 users_view = DashboardView.as_view(template_name="custom/extra-pages/user-list.html")
+
+def user_detail(request, user_id):
+    # Retrieve the user object or return a 404 error if not found
+    user = get_user_model()
+    user = get_object_or_404(user, id=user_id)
+
+    # Pass the user object to the template
+    return render(request, 'custom/extra-pages/user-detail.html', {'user': user})

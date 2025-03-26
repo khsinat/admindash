@@ -1,0 +1,77 @@
+{% extends "partials/base.html" %}
+
+{% load static %}
+
+{% block title %}User Details{% endblock title %}
+
+{% block extra_css %}
+<!-- Add any extra CSS here if needed -->
+{% endblock extra_css %}
+
+{% block topbar %}
+    {% include "partials/topbar.html" with pagetitle="User Details" %}
+{% endblock topbar %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-sm-12">
+        <h2>User Details</h2>
+        <button class="btn btn-secondary mb-3" onclick="history.back()">Back</button>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>Email</th>
+                    <td>{{ user.email }}</td>
+                </tr>
+                <tr>
+                    <th>Full Name</th>
+                    <td>{{ user.first_name }} {{ user.last_name }}</td>
+                </tr>
+                <tr>
+                    <th>Designation</th>
+                    <td>
+                        {% if user.is_superuser == 0 %}
+                            User
+                        {% elif user.is_staff %}
+                            Staff
+                        {% else %}
+                            Admin
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Status</th>
+                    <td style="color: {% if user.is_verified %} green {% else %} red {% endif %};">
+                        {% if user.is_verified %}
+                            Verified
+                        {% else %}
+                            Not Verified
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Last Login</th>
+                    <td>
+                        {{ user.last_login|date:"F j, Y, g:i a"|default:"Not Available" }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Created At</th>
+                    <td>
+                        {{ user.created_at|date:"F j, Y, g:i a"|default:"Not Available" }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- end row -->
+
+{% include "partials/footer.html" %}
+
+{% endblock content %}
+
+{% block extra_js %}
+<!-- Add any extra JS here if needed -->
+{% endblock extra_js %}

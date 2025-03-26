@@ -345,7 +345,7 @@ class ContactUsView(APIView):
 
         if serializer.is_valid():
             serializer.save()
-            return create_response(serializer.data, message="Contact request received successfully", status_code=status.HTTP_200_OK)
+            return create_response(serializer.data, message="Thanks for contacting Cannabis AI. You will receive a response shortly at your registered email address.", status_code=status.HTTP_200_OK)
 
         return create_response(serializer.errors, message="Something went wrong.", status_code=status.HTTP_400_BAD_REQUEST)
     

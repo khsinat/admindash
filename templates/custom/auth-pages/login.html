@@ -1,100 +1,8 @@
-{% comment %} {% load static %}
-
-<!DOCTYPE html>
-<html lang="en">
-
-{% include "partials/title-meta.html" with title="Login" %}
-
-{% include "partials/head-css.html" %}
-
-<head>
-    <style>
-        body.authentication-bg {
-            background-image: url('{% static "images/background.jpg" %}');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
-    </style>
-</head>
-
-<body class="loading authentication-bg authentication-bg-pattern">
-
-    <div class="account-pages my-5">
-        <div class="container">
-
-            <div class="row justify-content-center"  style="margin-top: -51px !important;">
-                <div class="col-md-8 col-lg-6 col-xl-4">
-                    <div class="text-center">   
-                        <a href="{% url 'index' %}">
-                            <img src="{% static 'images/logo-dark.png' %}" alt="" height="22" class="mx-auto">
-                        </a>
-                        <p class="text-muted mt-2 mb-4">Responsive Admin Dashboard</p>
-
-                    </div>
-                    <div class="card">
-                        <div class="card-body p-4">
-                            
-                            <div class="text-center mb-4">
-                                <h4 class="text-uppercase mt-0">Sign In</h4>
-                            </div>
-
-                            <form action="#">
-                                <div class="mb-3">
-                                    <label for="emailaddress" class="form-label">Email</label>
-                                    <input class="form-control" type="email" id="emailaddress" required="" placeholder="Enter your email">
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="password" class="form-label">Password</label>
-                                    <input class="form-control" type="password" required="" id="password" placeholder="Enter your password">
-                                </div>
-
-                                <div class="mb-3">
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" id="checkbox-signin" checked>
-                                        <label class="form-check-label" for="checkbox-signin">Remember me</label>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3 d-grid text-center">
-                                    <button class="btn btn-primary" type="submit"> Log In </button>
-                                </div>
-                            </form>
-
-                        </div> <!-- end card-body -->
-                    </div>
-                    <!-- end card -->
-
-                    <div class="row mt-3">
-                        <div class="col-12 text-center">
-                            <p> <a href="pages-recoverpw.html" class="text-muted ms-1"><i class="fa fa-lock me-1"></i>Forgot your password?</a></p>
-                            <p class="text-muted">Don't have an account? <a href="{% url 'register' %}" class="text-dark ms-1"><b>Sign Up</b></a></p>
-                        </div> <!-- end col -->
-                    </div>
-                    <!-- end row -->
-
-                </div> <!-- end col -->
-            </div>
-            <!-- end row -->
-        </div>
-        <!-- end container -->
-    </div>
-    <!-- end page -->
-
-    <!-- Vendor -->
-    {% include "partials/vendor.html" %}
-
-
-    <!-- App js -->
-    <script src="{% static 'js/app.min.js' %}"></script>
-    
-</body> {% endcomment %}
-
 {% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 {% include "partials/title-meta.html" with title="Login" %}
 {% include "partials/head-css.html" %}
@@ -105,13 +13,13 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-6 col-xl-4">
-                    <div class="text-center">   
+                    <div class="text-center">
                         <a href="{% url 'index' %}">
                             <img src="{% static 'images/cannabis_logo512.png' %}" alt="Logo" height="102" class="mx-auto">
                         </a>
-                        <p class="text-muted mt-2 mb-4">Welcome Back</p>
+                        <p class="welcome-back-text text-muted mt-2 mb-4">Welcome Back</p>
                     </div>
-                    
+
                     <div class="card">
                         <div class="card-body p-4">
                             <div class="text-center mb-4">
@@ -126,16 +34,22 @@
 
                             <form method="POST">
                                 {% csrf_token %}
-                                
+
                                 <div class="mb-3">
-                                    <label for="username" class="form-label">Email</label>
-                                    <input class="form-control" type="text" name="username" id="username" required placeholder="Enter your email">
+                                    <label for="username" class="form-label">Email Address</label>
+                                    <input class="form-control" type="text" name="username" id="username" required placeholder="Enter your email address">
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="password" class="form-label">Password</label>
-                                    <input class="form-control" type="password" name="password" id="password" required placeholder="Enter your password">
+                                    <div class="input-group">
+                                        <input class="form-control" type="password" name="password" id="password" required placeholder="Enter your password">
+                                        <span class="input-group-text toggle-password">
+                                            <i class="fa fa-eye" id="togglePasswordIcon"></i>
+                                        </span>
+                                    </div>
                                 </div>
+                                
 
                                 <div class="mb-3 d-grid text-center">
                                     <button class="btn btn-primary" type="submit" style="background: #386641;"> Log In </button>
@@ -158,6 +72,29 @@
     {% include "partials/vendor.html" %}
     <script src="{% static 'js/app.min.js' %}"></script>
     {% include "partials/footer.html" %}
+
+    <style>
+        .welcome-back-text {
+            font-weight: bold;
+            font-size: 1.5em; /* Adjust the font size as needed */
+        }
+    </style>
 </body>
 </html>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const togglePasswordIcon = document.getElementById('togglePasswordIcon');
+        const passwordField = document.getElementById('password');
+    
+        togglePasswordIcon.addEventListener('click', function () {
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+    
+            // Toggle the eye icon
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+    });
+    </script>
+    

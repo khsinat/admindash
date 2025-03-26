@@ -2,14 +2,15 @@
 <footer class="footer">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-6">
-                <p>&copy; 2025 Cannabis AI. All rights reserved.</p>
-            </div>
-            <div class="col-md-6">
-                <div class="text-md-end footer-links d-none d-sm-block">
-                    <a href="terms.html">Terms</a>
+            <div class="col-12 text-center" style="height: 17px;">
+                <p class="copyright-text" style="margin-top: -7px;">&copy; 2025 Cannabis AI. All rights reserved.</p>
+                {% if not user.is_authenticated %}                <div class="footer-links" style="margin-top: -15px;">
+                    <a href="terms.html">Terms</a> |
                     <a href="privacy-policy.html">Privacy Policy</a>
-                </div>
+                  
+                        <!-- Content for authenticated users -->
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>

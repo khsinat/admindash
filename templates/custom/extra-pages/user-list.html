@@ -20,11 +20,11 @@
             <thead>
                 <tr style="background: #386641; color: white; font-size: 16px;">
                     <th style="padding: 15px 25px; text-align: left;">Id</th>
+                    <th style="padding: 15px 25px; text-align: left;">Full-Name</th>
                     <th style="padding: 15px 25px; text-align: left;">Email</th>
-                    <th style="padding: 15px 25px; text-align: left;">Designation</th>
-                    <th style="padding: 15px 25px; text-align: left;">Status</th>
-                    <th style="padding: 15px 25px; text-align: left;">Last Login</th>
+                    <th style="padding: 15px 25px; text-align: left;">Role</th>
                     <th style="padding: 15px 25px; text-align: left;">Created At</th>
+                    <th style="padding: 15px 25px; text-align: left;">Status</th>
                     <th style="padding: 15px 25px; text-align: left;">Actions</th>
                 </tr>
             </thead>
@@ -37,6 +37,9 @@
                     <td style="padding: 15px 25px; text-align: left;">
                         {{ user.id }}
                     </td>
+                    <td style="padding: 15px 25px; text-align: left;">
+                        {{ user.full_name }}
+                    </td>
                     <td style="padding: 15px 25px; text-align: left;">{{ user.email }}</td>
                     <td style="padding: 15px 25px; text-align: left; font-weight: bold;
                                color: {% if user.is_staff %} green {% else %} teal {% endif %};">
@@ -48,6 +51,9 @@
                             Admin
                         {% endif %}
                     </td>
+                    <td style="padding: 15px 25px; text-align: left;">
+                        {{ user.created_at|date:"F j, Y, g:i a" }}
+                    </td>
                     <td style="padding: 15px 25px; text-align: left; font-weight: bold;
                                color: {% if user.is_verified %} green {% else %} red {% endif %};">
                         {% if user.is_verified %}
@@ -56,14 +62,9 @@
                             Not Verified
                         {% endif %}
                     </td>
+                    
                     <td style="padding: 15px 25px; text-align: left;">
-                        {{ user.last_login|date:"F j, Y, g:i a"|default:"Not Available" }}
-                    </td>
-                    <td style="padding: 15px 25px; text-align: left;">
-                        {{ user.created_at|date:"F j, Y, g:i a" }}
-                    </td>
-                    <td style="padding: 15px 25px; text-align: left;">
-                        <button class="btn btn-primary" onclick="viewUser Details({{ user.id }})">View</button>
+                        <a href="{% url 'user_detail' user.id %}" class="btn btn-primary">View</a>
                     </td>
                 </tr>
                 {% empty %}

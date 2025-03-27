@@ -18,7 +18,7 @@ schema_view = get_schema_view(
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
-    url='http://54.86.221.207/'
+    url='https://cannabis.nexusappdevelopers.com'
 
 )
 

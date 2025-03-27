@@ -64,7 +64,7 @@ class VerifyOtpView(APIView):
             refresh = RefreshToken.for_user(user)
             access_token = refresh.access_token
             file_name = user.profile_file.name
-            custom_url = f"http://54.86.221.207/api/profile-file?file_path={file_name}"
+            custom_url = f"https://cannabis.nexusappdevelopers.com/api/profile-file?file_path={file_name}"
             return create_response(
                 data={
                     "id": user.id,
@@ -122,7 +122,7 @@ class LoginView(APIView):
                     refresh = RefreshToken.for_user(user)
                     access_token = refresh.access_token
                     file_name = user.profile_file.name
-                    custom_url = f"http://54.86.221.207/api/profile-file?file_path={file_name}"
+                    custom_url = f"https://cannabis.nexusappdevelopers.com/api/profile-file?file_path={file_name}"
                     return create_response(
                         data={
                             "id": user.id,

@@ -27,8 +27,8 @@ SECRET_KEY = 'django-insecure-=yt$!5wod)rc(uayt(owojm*lq*oeuxrz^88k1&edscj(ydt6z
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['54.86.221.207', 'localhost','127.0.0.1'] 
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000','http://localhost','http://54.86.221.207']
+ALLOWED_HOSTS = ['54.86.221.207', 'localhost','127.0.0.1','cannabis.nexusappdevelopers.com'] 
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000','http://localhost','http://54.86.221.207','https://cannabis.nexusappdevelopers.com']
 
 
 # Application definition
@@ -103,7 +103,7 @@ SWAGGER_SETTINGS = {
         }
     },
     'USE_SESSION_AUTH': False,
-    'base_path': 'http://54.86.221.207'
+    'base_path': 'https://cannabis.nexusappdevelopers.com'
 
 }
 

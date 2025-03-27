@@ -1,0 +1,117 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    {% include "partials/title-meta.html" with title=title %}
+    {% include "partials/head-css.html" %}
+    <style>
+        .terms_desc ul {
+            display: block;
+            margin-block-start: 1em;
+            margin-block-end: 1em;
+            margin-inline-start: 0px;
+            margin-inline-end: 0px;
+            padding-inline-start: 40px;
+        }
+
+        .terms_desc ul ul ul li {
+            list-style-type: square !important;
+        }
+
+        .terms_desc ul li {
+            list-style-type: disc !important;
+        }
+
+        .terms_desc ul ul li {
+            list-style-type: circle !important;
+        }
+
+        .terms_desc p {
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumb-area {
+            background-color: #f8f9fa;
+            padding: 20px 0;
+        }
+
+        .breadcrumb-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .breadcrumb-content h2 {
+            margin-top: 0;
+        }
+
+        .breadcrumb-content p {
+            margin-bottom: 0;
+        }
+
+        .home-button {
+            background-color: #386641;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .home-button:hover {
+            background-color: #2f5537;
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-container img {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="section how-it-works ptb_100 pb-0">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="logo-container">
+                        <a href="{% url 'index' %}">
+                            <img src="{% static 'images/cannabis_logo512.png' %}" alt="Logo" height="102">
+                        </a>
+                    </div>
+                    <div class="term_conditions mb-4">
+                        {% if page %}
+                            <!-- <h3 class="mb-2">{{ page.title }}</h3> -->
+                            <div class="terms_desc">{{ page.description|safe }}</div>
+                            <hr>
+                        {% else %}
+                            <p>Info will soon be available</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include "partials/vendor.html" %}
+    <script src="{% static 'js/app.min.js' %}"></script>
+    {% include "partials/footer.html" %}
+</body>
+</html>

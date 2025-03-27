@@ -12725,7 +12725,7 @@ body {
 
 .left-side-menu {
   width: 240px;
-  background: var(--ct-bg-leftbar);
+  background: #2f5537;
   bottom: 0;
   padding: 20px 0;
   position: fixed;

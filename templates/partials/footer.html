@@ -1,20 +1,28 @@
 <!-- Footer Start -->
-<footer class="footer" style="background-color: white;"> <!-- Change #333 to your desired color -->
+<footer class="footer" style="background-color: white; 
+    {% if user.is_authenticated %}
+        z-index: 1000; 
+        bottom: 0; 
+        padding: 19px 15px 20px; 
+        position: absolute; 
+        right: 0; 
+        color: var(--ct-footer-color); 
+        left: 240px; 
+        width: calc(100% - 240px); /* Adjust width to account for the sidebar */
+    {% else %}
+        padding: 19px 15px 20px; /* Default padding for unauthenticated users */
+    {% endif %}
+"> <!-- Change #333 to your desired color -->
     <div class="container-fluid">
         <div class="row">
             <div class="col-12 text-center" style="height: 17px;">
                 <p class="copyright-text" style="margin-top: -7px; color: #386641;">&copy; 2025 Cannabis AI. All rights reserved.</p>
                 {% if not user.is_authenticated %}
                 <div class="footer-links" style="margin-top: -15px; display: flex; justify-content: center; align-items: center;">
-
-                    <a href="terms.html" style="color: #386641; margin: 0 10px;">Terms and Conditions</a>
-
+                    <a href="{% url 'page_detail' type='2' %}" style="color: #386641; margin: 0 10px;">Terms and Conditions</a>
                     <span style="color: #386641; margin: 0 10px;">|</span>
-
-                    <a href="privacy-policy.html" style="color: #386641; margin: 0 10px;">Privacy Policy</a>
-
+                    <a href="{% url 'page_detail' type='1' %}" style="color: #386641; margin: 0 10px;">Privacy Policy</a>
                 </div>
-                
                 {% endif %}
             </div>
         </div>

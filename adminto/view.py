@@ -1,5 +1,5 @@
 import logging
-from django.shortcuts import render, redirect,get_object_or_404
+from django.shortcuts import render, redirect,get_object_or_404,get_list_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.views.generic.base import TemplateView
@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
+from api.models import Page,PAGE_TYPE_TERMS_AND_CONDITIONS,PAGE_TYPE_PRIVACY_POLICY
 
 # Configure database error logger
 db_logger = logging.getLogger("django.db.backends")
@@ -106,3 +107,17 @@ def user_detail(request, user_id):
 
     # Pass the user object to the template
     return render(request, 'custom/extra-pages/user-detail.html', {'user': user})
+
+def page_detail(request, type):
+    page = get_object_or_404(Page, type_id=type)
+    print(page.description,"page page")
+    context = {
+        'page': page,
+        'title': page.title,
+        'description': page.description,
+        # 'copyright_year': COPYRIGHT_YEAR,
+        # 'company_name': COMPANY_NAME,
+        'terms_type': PAGE_TYPE_TERMS_AND_CONDITIONS,
+        'privacy_policy_type': PAGE_TYPE_PRIVACY_POLICY,
+    }
+    return render(request, 'partials/page.html', context)

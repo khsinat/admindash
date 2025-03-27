@@ -30,18 +30,6 @@
                     <td>{{ user.first_name }} {{ user.last_name }}</td>
                 </tr>
                 <tr>
-                    <th>Role</th>
-                    <td>
-                        {% if user.is_superuser == 0 %}
-                            User
-                        {% elif user.is_staff %}
-                            Staff
-                        {% else %}
-                            Admin
-                        {% endif %}
-                    </td>
-                </tr>
-                <tr>
                     <th>Status</th>
                     <td style="color: {% if user.is_verified %} green {% else %} red {% endif %};">
                         {% if user.is_verified %}

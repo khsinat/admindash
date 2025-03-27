@@ -22,7 +22,6 @@
                     <th style="padding: 15px 25px; text-align: left;">Id</th>
                     <th style="padding: 15px 25px; text-align: left;">Full-Name</th>
                     <th style="padding: 15px 25px; text-align: left;">Email</th>
-                    <th style="padding: 15px 25px; text-align: left;">Role</th>
                     <th style="padding: 15px 25px; text-align: left;">Created At</th>
                     <th style="padding: 15px 25px; text-align: left;">Status</th>
                     <th style="padding: 15px 25px; text-align: left;">Actions</th>
@@ -41,16 +40,6 @@
                         {{ user.full_name }}
                     </td>
                     <td style="padding: 15px 25px; text-align: left;">{{ user.email }}</td>
-                    <td style="padding: 15px 25px; text-align: left; font-weight: bold;
-                               color: {% if user.is_staff %} green {% else %} teal {% endif %};">
-                        {% if user.is_superuser == 0 %}
-                            User
-                        {% elif user.is_staff %}
-                            Staff
-                        {% else %}
-                            Admin
-                        {% endif %}
-                    </td>
                     <td style="padding: 15px 25px; text-align: left;">
                         {{ user.created_at|date:"F j, Y, g:i a" }}
                     </td>

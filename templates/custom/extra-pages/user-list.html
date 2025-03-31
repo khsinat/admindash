@@ -16,15 +16,36 @@
 
 <div class="row">
     <div class="col-sm-12">
-        <table class="table">
+        <table class=" table table-bordered table-sm">
             <thead>
                 <tr style="background: #386641; color: white; font-size: 16px;">
-                    <th style="padding: 15px 25px; text-align: left;">Id</th>
-                    <th style="padding: 15px 25px; text-align: left;">Full-Name</th>
-                    <th style="padding: 15px 25px; text-align: left;">Email</th>
-                    <th style="padding: 15px 25px; text-align: left;">Created At</th>
-                    <th style="padding: 15px 25px; text-align: left;">Status</th>
-                    <th style="padding: 15px 25px; text-align: left;">Actions</th>
+                    <th style="padding: 15px 25px; text-align: left; width:4%">Id</th>
+                    <th style="padding: 15px 25px; text-align: left; width:4%">Full-Name</th>
+                    <th style="padding: 15px 25px; text-align: left; width:3%">Username</th>
+                    <th style="padding: 15px 25px; text-align: left; width:3%">State</th>
+                    <th style="padding: 15px 25px; text-align: left; width:3%">Email</th>
+                    <th style="padding: 15px 25px; text-align: left; width:3%">Created On</th>
+                    <th style="padding: 15px 25px; text-align: left; width:3%">Created By</th>
+                    <th style="padding: 15px 25px; text-align: left; width:3%">Actions</th>
+                </tr>
+            <tr>
+            <th><input type="text" onkeyup="filterTable(0)" placeholder="Search ID" 
+                style="width: 80%; padding: 8px; margin: 5px auto; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;"></th>
+            <th><input type="text" onkeyup="filterTable(1)" placeholder="Search Name" 
+                style="width: 80%; padding: 8px; margin: 5px auto; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;"></th>
+            <th><input type="text" onkeyup="filterTable(2)" placeholder="Search Username" 
+                style="width: 80%; padding: 8px; margin: 5px auto; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;"></th>
+            <th><input type="text" onkeyup="filterTable(3)" placeholder="Search State" 
+                style="width: 80%; padding: 8px; margin: 5px auto; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;"></th>
+            <th><input type="text" onkeyup="filterTable(4)" placeholder="Search Email" 
+                style="width: 80%; padding: 8px; margin: 5px auto; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;"></th>
+            <th><input type="text" onkeyup="filterTable(5)" placeholder="Search Date" 
+                style="width: 80%; padding: 8px; margin: 5px auto; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;"></th>
+            <th><input type="text" onkeyup="filterTable(6)" placeholder="Search Creator" 
+                style="width: 80%; padding: 8px; margin: 5px auto; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;"></th>
+            <th></th> <!-- No filter for action column -->
+
+
                 </tr>
             </thead>
             <tbody>
@@ -33,27 +54,44 @@
                            transition: 0.3s;"
                     onmouseover="this.style.background='#d6e4f0'"
                     onmouseout="this.style.background='{% if forloop.counter|divisibleby:2 %}#f2f2f2{% else %}#ffffff{% endif %}'">
+
                     <td style="padding: 15px 25px; text-align: left;">
                         {{ user.id }}
                     </td>
                     <td style="padding: 15px 25px; text-align: left;">
                         {{ user.full_name }}
                     </td>
-                    <td style="padding: 15px 25px; text-align: left;">{{ user.email }}</td>
+
+                    <td style="padding: 15px 25px; text-align: left;">Username</td>
+                    <td style="padding: 15px 25px; text-align: center;">
+                    <div  class="badge badge-soft-success">
+                        Active
+                    </div> 
+                    </td>
+
+                    <td style="padding: 15px 25px; text-align: left; " class="text-primary">{{ user.email }}</td>
                     <td style="padding: 15px 25px; text-align: left;">
                         {{ user.created_at|date:"F j, Y, g:i a" }}
                     </td>
-                    <td style="padding: 15px 25px; text-align: left; font-weight: bold;
+                    <td style="padding: 15px 25px; text-align: left; " class="text-primary">
+                        Admin 
+                    </td>
+                   <!--<td style="padding: 15px 25px; text-align: left; font-weight: bold;
                                color: {% if user.is_verified %} green {% else %} red {% endif %};">
                         {% if user.is_verified %}
                             Verified
                         {% else %}
                             Not Verified
                         {% endif %}
-                    </td>
+                    </td>-->
                     
-                    <td style="padding: 15px 25px; text-align: left;">
-                        <a href="{% url 'user_detail' user.id %}" class="btn btn-primary">View</a>
+                    <td style="padding: 15px 25px; text-align: left; color: blue">
+                        <a href="{% url 'user_detail' user.id %}" class="btn btn-soft-info">
+                        <i class="fas fa-solid fa-eye"></i>
+                        </a>
+                        <a href="{% url 'user_detail' user.id %}" class="btn btn-soft-danger">
+                        <i class="fas fa-solid fa-trash"></i>
+                        </a>
                     </td>
                 </tr>
                 {% empty %}

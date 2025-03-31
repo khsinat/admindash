@@ -119,6 +119,7 @@ DATABASES = {
         'NAME': 'cannabis_db',
         'USER': 'cannabis_user',
         'PASSWORD': 'CanN!bIs$_3214',
+        'HOST':'127.0.0.1',
         'PORT': '3306',
     }
 }

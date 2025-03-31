@@ -13,48 +13,171 @@
 {% endblock topbar %}
 
 {% block content %}
+<div class="row">
+   <div class="col-12">
+    <div class="card">
+        <div class="card-body"> 
+            <div class="row">
+                <div class="col-md-6"><h3 >{{user.email}}</h3></div>
+                <div class="col-md-6">
+                    <div class="text-md-end">
+                        <a href="{% url 'user_detail' user.id %}" class="btn btn-soft-danger">
+                        <i class="fas fa-solid fa-trash"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   </div> 
+</div>
+
 
 <div class="row">
-    <div class="col-sm-12">
-        <h2>User Details</h2>
-        <button class="btn btn-secondary mb-3" onclick="history.back()">Back</button>
-        <table class="table">
+   <div class="col-12">
+    <div class="card">
+        <div class="card-body"> 
+            <div class="row">
+                <div class="col-md-3  text-md-center">
+                    <div class="card ">
+                        <div class="card-body">
+                            <h4 class="card-title">Profile</h4>
+                        </div>
+                        <img class="card-img " src="{% static '/images/gallery/4.jpg' %}">
+
+                    </div>
+                </div>
+        <div class="col-md-9">
+        <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead>
+            </thead>
             <tbody>
-                
-                <tr>
-                    <th>Email</th>
-                    <td>{{ user.email }}</td>
+                <tr >
+
+                    <td style="padding: 15px 25px; text-align: left; font-weight: bold">
+                    Id</td>
+                    <td style="padding: 15px 25px; text-align: left;">
+                        {{ user.id }}
+                    </td>
+                    <td style="padding: 15px 25px; text-align: left;font-weight: bold">
+                    Full Name</td>
+                    <td style="padding: 15px 25px; text-align: left;">
+                        {{ user.full_name }}
+                    </td>
                 </tr>
                 <tr>
-                    <th>Full Name</th>
-                    <td>{{ user.first_name }} {{ user.last_name }}</td>
+                    <td style="padding: 15px 25px; text-align: left;font-weight: bold">
+                    Email</td>
+                    <td style="padding: 15px 25px; text-align: left;">
+                        {{ user.email }}
+                    </td>
+                    <td style="padding: 15px 25px; text-align: left;font-weight: bold">
+                    Contact Number</td>
+                    <td style="padding: 15px 25px; text-align: left;">
+                        {{ user.contact }}
+                    </td>
                 </tr>
                 <tr>
-                    <th>Status</th>
-                    <td style="color: {% if user.is_verified %} green {% else %} red {% endif %};">
+                    <td style="padding: 15px 25px; text-align: left;font-weight: bold">
+                    Username</td>
+                    <td style="padding: 15px 25px; text-align: left;">
+                        {{ user.username }}
+                    </td>
+                    <td style="padding: 15px 25px; text-align: left;font-weight: bold">
+                    Country </td>
+                    <td style="padding: 15px 25px; text-align: left;">
+                        {{ user.country }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 15px 25px; text-align: left;font-weight: bold">
+                    Zipcode</td>
+                    <td style="padding: 15px 25px; text-align: left;">
+                        {{user.zipcode}}
+                    </td>
+                    <td style="padding: 15px 25px; text-align: left;font-weight: bold">
+                    Role </td>
+                    <td style="padding: 15px 25px; text-align: left;">
+                        {{user.role}}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 15px 25px; text-align: left;font-weight: bold">
+                    Wallet amount</td>
+                    <td style="padding: 15px 25px; text-align: left;">
+                        {{user.wallet_amount}}
+                    </td>
+                    <td style="padding: 15px 25px; text-align: left;font-weight: bold">
+                    State </td>
+                    <td style="padding: 15px 25px; text-align: left;">
+                        {{user.state}}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 15px 25px; text-align: left;font-weight: bold">
+                     Created On</td>
+                    <td style="padding: 15px 25px; text-align: left;">
+                        {{user.created_at}}
+                    </td>
+                    <td style="padding: 15px 25px; text-align: left;font-weight: bold">
+                    Created By </td>
+                    <td style="padding: 15px 25px; text-align: left;">
+                        {{user.created_by}}
+                    </td>
+                </tr>
+                   <!--<td style="padding: 15px 25px; text-align: left; font-weight: bold;
+                               color: {% if user.is_verified %} green {% else %} red {% endif %};">
                         {% if user.is_verified %}
                             Verified
                         {% else %}
                             Not Verified
                         {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                    <th>Last Login</th>
-                    <td>
-                        {{ user.last_login|date:"F j, Y, g:i a"|default:"Not Available" }}
-                    </td>
-                </tr>
-                <tr>
-                    <th>Created At</th>
-                    <td>
-                        {{ user.created_at|date:"F j, Y, g:i a"|default:"Not Available" }}
-                    </td>
-                </tr>
+                    </td>-->
+                    
+                   
+                <!--<tr>
+                    <td colspan="7" style="text-align: center; padding: 15px; font-size: 16px;">No users found.</td>
+                </tr>-->
             </tbody>
         </table>
     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   </div> 
 </div>
+<footer>
+<div class="row">
+   <div class="col-12">
+    <div class="card">
+        <div class="card-body"> 
+            <div class="row">
+                <div class="col-md-6"><h3 >User Actions</h3></div>
+                <div class="col-md-6">
+                    <div class="text-md-end">
+                        <div class="button-list">
+                        <button type="button" class="btn btn-soft-secondary waves-effect waves-light">
+                            Inactive
+                        </button>
+
+                        <button type="button" class="btn btn-soft-warning waves-effect waves-light">
+                            Banned 
+                        </button>
+                        <button type="button" class="btn btn-soft-danger waves-effect waves-light">
+                           Deleted 
+                        </button>
+ 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   </div> 
+</div>
+
+</footer>
 <!-- end row -->
 
 {% include "partials/footer.html" %}

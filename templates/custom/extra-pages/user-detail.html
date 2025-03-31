@@ -43,7 +43,13 @@
                         <div class="card-body">
                             <h4 class="card-title">Profile</h4>
                         </div>
-                        <img class="card-img " src="{% static '/images/gallery/4.jpg' %}">
+
+
+                          {% if profile_image_url %}
+                                <img class="card-img" src="{{ profile_image_url }}" alt="Profile Image">
+                            {% else %}
+                                <img class="card-img" src="{% static '/images/gallery/4.jpg' %}" alt="Default Image">
+                            {% endif %}
 
                     </div>
                 </div>

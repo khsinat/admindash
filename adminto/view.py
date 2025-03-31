@@ -100,13 +100,30 @@ class UsersView(TemplateView):
 
 users_view = UsersView.as_view()
 
+# def user_detail(request, user_id):
+#     # Retrieve the user object or return a 404 error if not found
+#     user = get_user_model()
+#     user = get_object_or_404(user, id=user_id)
+
+#     # Pass the user object to the template
+#     return render(request, 'custom/extra-pages/user-detail.html', {'user': user})
+
 def user_detail(request, user_id):
     # Retrieve the user object or return a 404 error if not found
-    user = get_user_model()
-    user = get_object_or_404(user, id=user_id)
+    User = get_user_model()
+    user = get_object_or_404(User, id=user_id)
 
-    # Pass the user object to the template
-    return render(request, 'custom/extra-pages/user-detail.html', {'user': user})
+    # Construct the custom URL for the profile image
+    file_name = user.profile_file.name if user.profile_file else None
+    profile_image_url = f"https://cannabis.nexusappdevelopers.com/api/profile-file?file_path={file_name}" if file_name else None
+
+    # Pass the user object and profile image URL to the template
+    context = {
+        'user': user,
+        'profile_image_url': profile_image_url,
+    }
+    return render(request, 'custom/extra-pages/user-detail.html', context)
+
 
 def page_detail(request, type):
     page = get_object_or_404(Page, type_id=type)
@@ -121,3 +138,15 @@ def page_detail(request, type):
         'privacy_policy_type': PAGE_TYPE_PRIVACY_POLICY,
     }
     return render(request, 'partials/page.html', context)
+
+
+def delete_user(request, user_id):
+    user = get_user_model()
+    user = get_object_or_404(user, id=user_id)
+    # Assuming state_id = 2 means the user is deleted or deactivated
+    user.state_id = 2
+    user.save()
+    messages.success(request, 'User has been successfully deleted.')
+    return redirect('users')  # Redirect to the user list page
+
+

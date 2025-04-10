@@ -100,6 +100,201 @@ class UsersView(TemplateView):
 
 users_view = UsersView.as_view()
 
+class TotalGrowLogsView(TemplateView):
+
+    template_name = "custom/extra-pages/total-grow-logs.html"
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        # Get all users
+        user_list = get_user_model().objects.all()  # Replace with your actual user model
+        paginator = Paginator(user_list, 10)  # Show 10 users per page
+        # Get the current page number from the request
+        page_number = self.request.GET.get('page')
+        users = paginator.get_page(page_number)
+
+        # Add the paginated users to the context
+        context['users'] = users
+        context['paginator'] = paginator  # Optional: if you want to use paginator info in the template
+        return context
+
+total_grow_logs_view= TotalGrowLogsView.as_view()
+class TotalAnalysisView(TemplateView):
+
+    template_name = "custom/extra-pages/total-analysis.html"
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        # Get all users
+        user_list = get_user_model().objects.all()  # Replace with your actual user model
+        paginator = Paginator(user_list, 10)  # Show 10 users per page
+        # Get the current page number from the request
+        page_number = self.request.GET.get('page')
+        users = paginator.get_page(page_number)
+
+        # Add the paginated users to the context
+        context['users'] = users
+        context['paginator'] = paginator  # Optional: if you want to use paginator info in the template
+        return context
+
+total_analysis_view= TotalAnalysisView.as_view()
+
+class PackagesView(TemplateView):
+
+    template_name = "custom/extra-pages/packages.html"
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        # Get all users
+        user_list = get_user_model().objects.all()  # Replace with your actual user model
+        paginator = Paginator(user_list, 10)  # Show 10 users per page
+        # Get the current page number from the request
+        page_number = self.request.GET.get('page')
+        users = paginator.get_page(page_number)
+
+        # Add the paginated users to the context
+        context['users'] = users
+        context['paginator'] = paginator  # Optional: if you want to use paginator info in the template
+        return context
+
+packages_view= PackagesView.as_view()
+
+class EmailsInQueue(TemplateView):
+
+    template_name = "custom/extra-pages/emails-in-queue.html"
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        # Get all users
+        user_list = get_user_model().objects.all()  # Replace with your actual user model
+        paginator = Paginator(user_list, 10)  # Show 10 users per page
+        # Get the current page number from the request
+        page_number = self.request.GET.get('page')
+        users = paginator.get_page(page_number)
+
+        # Add the paginated users to the context
+        context['users'] = users
+        context['paginator'] = paginator  # Optional: if you want to use paginator info in the template
+        return context
+
+emails_in_queue_view= EmailsInQueue.as_view()
+class TransactionsView(TemplateView):
+
+    template_name = "custom/extra-pages/transactions.html"
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        # Get all users
+        user_list = get_user_model().objects.all()  # Replace with your actual user model
+        paginator = Paginator(user_list, 10)  # Show 10 users per page
+        # Get the current page number from the request
+        page_number = self.request.GET.get('page')
+        users = paginator.get_page(page_number)
+
+        # Add the paginated users to the context
+        context['users'] = users
+        context['paginator'] = paginator  # Optional: if you want to use paginator info in the template
+        return context
+
+transactions_view= TransactionsView.as_view()
+class ContactusView(TemplateView):
+
+    template_name = "custom/extra-pages/contact-us.html"
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        # Get all users
+        user_list = get_user_model().objects.all()  # Replace with your actual user model
+        paginator = Paginator(user_list, 10)  # Show 10 users per page
+        # Get the current page number from the request
+        page_number = self.request.GET.get('page')
+        users = paginator.get_page(page_number)
+
+        # Add the paginated users to the context
+        context['users'] = users
+        context['paginator'] = paginator  # Optional: if you want to use paginator info in the template
+        return context
+
+contactus_view= ContactusView.as_view()
+class CmsView(TemplateView):
+
+    template_name = "custom/extra-pages/cms.html"
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        # Get all users
+        user_list = get_user_model().objects.all()  # Replace with your actual user model
+        paginator = Paginator(user_list, 10)  # Show 10 users per page
+        # Get the current page number from the request
+        page_number = self.request.GET.get('page')
+        users = paginator.get_page(page_number)
+
+        # Add the paginated users to the context
+        context['users'] = users
+        context['paginator'] = paginator  # Optional: if you want to use paginator info in the template
+        return context
+
+cms_view= CmsView.as_view()
+class NotificationsView(TemplateView):
+
+    template_name = "custom/extra-pages/notifications.html"
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        # Get all users
+        user_list = get_user_model().objects.all()  # Replace with your actual user model
+        paginator = Paginator(user_list, 10)  # Show 10 users per page
+        # Get the current page number from the request
+        page_number = self.request.GET.get('page')
+        users = paginator.get_page(page_number)
+
+        # Add the paginated users to the context
+        context['users'] = users
+        context['paginator'] = paginator  # Optional: if you want to use paginator info in the template
+        return context
+
+notifications_view= NotificationsView.as_view()
+
+class SettingsView(TemplateView):
+
+    template_name = "custom/extra-pages/settings.html"
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        # Get all users
+        user_list = get_user_model().objects.all()  # Replace with your actual user model
+        paginator = Paginator(user_list, 10)  # Show 10 users per page
+        # Get the current page number from the request
+        page_number = self.request.GET.get('page')
+        users = paginator.get_page(page_number)
+
+        # Add the paginated users to the context
+        context['users'] = users
+        context['paginator'] = paginator  # Optional: if you want to use paginator info in the template
+        return context
+
+settings_view= SettingsView.as_view()
+
+
+class MyprofileView(TemplateView):
+
+    template_name = "custom/extra-pages/myprofile.html"
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        # Get all users
+        user_list = get_user_model().objects.all()  # Replace with your actual user model
+        paginator = Paginator(user_list, 10)  # Show 10 users per page
+        # Get the current page number from the request
+        page_number = self.request.GET.get('page')
+        users = paginator.get_page(page_number)
+
+        # Add the paginated users to the context
+        context['users'] = users
+        context['paginator'] = paginator  # Optional: if you want to use paginator info in the template
+        return context
+
+myprofile_view= MyprofileView.as_view()
 # def user_detail(request, user_id):
 #     # Retrieve the user object or return a 404 error if not found
 #     user = get_user_model()

@@ -1,20 +1,22 @@
+
+
 {% extends "partials/base.html" %}
 
 {% load static %}
 
-{% block title %}Users List{% endblock title %}
+{% block title %}Settings{% endblock title %}
 
 {% block extra_css %}
 <!-- Add any extra CSS here if needed -->
 {% endblock extra_css %}
 
 {% block topbar %}
-    {% include "partials/topbar.html" with pagetitle="User  List" %}
+    {% include "partials/topbar.html" with pagetitle="Settings" %}
 {% endblock topbar %}
 
 {% block content %}
 
-{% include "partials/tables.html" %}
+<!-- end row -->
 
 {% include "partials/footer.html" %}
 
@@ -29,4 +31,3 @@
     }
 </script>
 {% endblock extra_js %}
-

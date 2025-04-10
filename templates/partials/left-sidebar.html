@@ -39,7 +39,7 @@
 
             <ul class="list-inline">
                 <li class="list-inline-item">
-                    <a href="#" class="text-muted left-user-info">
+                    <a href={% url 'settings' %} class="text-muted left-user-info">
                         <i class="mdi mdi-cog"></i>
                     </a>
                 </li>
@@ -67,49 +67,54 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{% url 'total-grow-logs' %}">
                         <i class="fas fa-seedling"></i>
                         <span> Total Grow Logs </span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{% url 'total-analysis' %}">
                         <i class="fas fa-chart-bar"></i>
                         <span> Total Analysis </span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{% url 'packages' %}">
                         <i class="fas fa-box"></i>
                         <span> Packages </span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{% url 'emails-in-queue' %}">
                         <i class="fas fa-envelope"></i>
                         <span> Emails In Queue</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{% url 'transactions' %}">
                         <i class="fas fa-exchange-alt"></i>
                         <span> Transactions </span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    {% comment %} <a href="{% url 'index' %}">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <!-- <span class="badge bg-success rounded-pill float-end">9+</span> -->
+                        <span> Home </span>
+                    </a> {% endcomment %}
+                    <a href={% url 'contactus' %}>
                         <i class="fas fa-address-book"></i>
                         <span> Contact Us</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{% url 'cms' %}">
                         <i class="fas fa-file-alt"></i>
                         <span> CMS </span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{% url 'notifications' %}">
                         <i class="fas fa-bell"></i>
                         <span> Notifications </span>
                     </a>

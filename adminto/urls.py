@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path , include
-from adminto.view import index_view, login_view,logout_view,users_view,user_detail,page_detail,delete_user
+from adminto.view import index_view, login_view,logout_view,users_view,user_detail,page_detail,delete_user,contactus_view,total_grow_logs_view,total_analysis_view,packages_view,emails_in_queue_view,transactions_view,cms_view,notifications_view,settings_view,myprofile_view
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -24,9 +24,20 @@ urlpatterns = [
 
     path("", view=index_view, name="index"),
 
-path("login/", login_view, name="admin_login"),  # Login Page
+    path("login/", login_view, name="admin_login"),  # Login Page
     path("logout/", logout_view, name="admin_logout"),  # Logout Page
     path("users/",users_view,name="users"),
+    path("total-grow-logs/",total_grow_logs_view,name="total-grow-logs"),
+    path("total-analysis/",total_analysis_view,name="total-analysis"),
+    path("packages/",packages_view,name="packages"),
+    path("emails-in-queue/",emails_in_queue_view,name="emails-in-queue"),
+    path("transactions/",transactions_view,name="transactions"),
+    path("contactus/",contactus_view,name="contactus"),
+    path("cms/",cms_view,name="cms"),
+    path("notifications/",notifications_view,name="notifications"),
+    path("settings/",settings_view,name="settings"),
+    path("myprofile/",myprofile_view,name="myprofile"),
+
     path('user/details/<int:user_id>/', user_detail, name='user_detail'),
     #Apps
     path("apps/", include("apps.urls")),
@@ -34,8 +45,6 @@ path("login/", login_view, name="admin_login"),  # Login Page
     #Custom
     path("custom/", include("custom.urls")),
 
-    #Components
-    path("components/", include("components.urls")),
     
     # Layouts
     path("layouts/", include("layouts.urls")),

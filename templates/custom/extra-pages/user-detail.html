@@ -81,56 +81,33 @@
                     <td style="padding: 15px 25px; text-align: left;font-weight: bold">
                     Contact Number</td>
                     <td style="padding: 15px 25px; text-align: left;">
-                        {{ user.contact }}
+                        1234567891
                     </td>
                 </tr>
-                <tr>
-                    <td style="padding: 15px 25px; text-align: left;font-weight: bold">
-                    Username</td>
-                    <td style="padding: 15px 25px; text-align: left;">
-                        {{ user.username }}
-                    </td>
-                    <td style="padding: 15px 25px; text-align: left;font-weight: bold">
-                    Country </td>
-                    <td style="padding: 15px 25px; text-align: left;">
-                        {{ user.country }}
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 15px 25px; text-align: left;font-weight: bold">
-                    Zipcode</td>
-                    <td style="padding: 15px 25px; text-align: left;">
-                        {{user.zipcode}}
-                    </td>
-                    <td style="padding: 15px 25px; text-align: left;font-weight: bold">
-                    Role </td>
-                    <td style="padding: 15px 25px; text-align: left;">
-                        {{user.role}}
-                    </td>
-                </tr>
+               
+
                 <tr>
                     <td style="padding: 15px 25px; text-align: left;font-weight: bold">
                     Wallet amount</td>
                     <td style="padding: 15px 25px; text-align: left;">
-                        {{user.wallet_amount}}
+                        $100
                     </td>
                     <td style="padding: 15px 25px; text-align: left;font-weight: bold">
                     State </td>
-                    <td style="padding: 15px 25px; text-align: left;">
-                        {{user.state}}
+                    <td style="padding: 15px 25px; text-align: center;">
+                    <div  class="badge badge-soft-success">
+                        Active
+                    </div> 
                     </td>
                 </tr>
                 <tr>
                     <td style="padding: 15px 25px; text-align: left;font-weight: bold">
-                     Created On</td>
+                     Created On
+                    </td>
                     <td style="padding: 15px 25px; text-align: left;">
                         {{user.created_at}}
                     </td>
-                    <td style="padding: 15px 25px; text-align: left;font-weight: bold">
-                    Created By </td>
-                    <td style="padding: 15px 25px; text-align: left;">
-                        {{user.created_by}}
-                    </td>
+
                 </tr>
                    <!--<td style="padding: 15px 25px; text-align: left; font-weight: bold;
                                color: {% if user.is_verified %} green {% else %} red {% endif %};">
@@ -155,6 +132,21 @@
    </div> 
 </div>
 <footer>
+                        <!-- Warning Alert Modal -->
+                        <div id="warning-alert-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog modal-sm">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <div class="text-center">
+                                            <i class="dripicons-warning h1 text-warning"></i>
+                                            <h4 class="mt-2">Block this user?</h4>
+                                            <p class="mt-3">After being blocked the user will no longer be able to use any of the services.</p>
+                                            <button type="button" class="btn btn-warning my-2" data-bs-dismiss="modal">Continue</button>
+                                        </div>
+                                    </div>
+                                </div><!-- /.modal-content -->
+                            </div><!-- /.modal-dialog -->
+                        </div><!-- /.modal -->
 <div class="row">
    <div class="col-12">
     <div class="card">
@@ -168,13 +160,16 @@
                             Inactive
                         </button>
 
-                        <button type="button" class="btn btn-soft-warning waves-effect waves-light">
-                            Banned 
+                        <button type="button" class="btn btn-soft-warning waves-effect waves-light" data-bs-toggle="modal" 
+                         data-bs-target="#warning-alert-modal">
+                            Block 
                         </button>
-                        <button type="button" class="btn btn-soft-danger waves-effect waves-light">
-                           Deleted 
+                         <button type="button" class="btn btn-soft-primary waves-effect waves-light" >
+                           Grow Log History 
                         </button>
- 
+                        <button type="button" class="btn btn-soft-success waves-effect waves-light">
+                           Transaction History 
+                        </button>
                     </div>
                 </div>
             </div>

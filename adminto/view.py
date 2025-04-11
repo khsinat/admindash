@@ -10,6 +10,8 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
 from api.models import Page,PAGE_TYPE_TERMS_AND_CONDITIONS,PAGE_TYPE_PRIVACY_POLICY
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 # Configure database error logger
 db_logger = logging.getLogger("django.db.backends")
@@ -220,21 +222,20 @@ class CmsView(TemplateView):
 
     template_name = "custom/extra-pages/cms.html"
     def get_context_data(self, **kwargs):
-
         context = super().get_context_data(**kwargs)
-        # Get all users
-        user_list = get_user_model().objects.all()  # Replace with your actual user model
-        paginator = Paginator(user_list, 10)  # Show 10 users per page
-        # Get the current page number from the request
-        page_number = self.request.GET.get('page')
-        users = paginator.get_page(page_number)
-
-        # Add the paginated users to the context
-        context['users'] = users
-        context['paginator'] = paginator  # Optional: if you want to use paginator info in the template
+        context['pages'] = Page.objects.all().order_by('-created_on')  # or any ordering you prefer
         return context
+    def post(self, request, *args, **kwargs):
+        page_id = request.POST.get("delete_page_id")
+        if page_id:
+            page = get_object_or_404(Page, type_id=page_id)
+            if request.user == page.created_by or request.user.is_staff:  # optional permission check
+                page.delete()
+        return redirect('cms')
+
 
 cms_view= CmsView.as_view()
+
 class NotificationsView(TemplateView):
 
     template_name = "custom/extra-pages/notifications.html"
@@ -280,7 +281,6 @@ class MyprofileView(TemplateView):
 
     template_name = "custom/extra-pages/myprofile.html"
     def get_context_data(self, **kwargs):
-
         context = super().get_context_data(**kwargs)
         # Get all users
         user_list = get_user_model().objects.all()  # Replace with your actual user model
@@ -295,6 +295,95 @@ class MyprofileView(TemplateView):
         return context
 
 myprofile_view= MyprofileView.as_view()
+
+class EditUserView(TemplateView):
+
+    template_name = "custom/extra-pages/edit-user.html"
+    def post(self , request, *args, **kwargs):
+        user_id=   kwargs.get('user_id') 
+        user_obj= get_object_or_404(User,id=user_id)
+
+        full_name=request.POST.get("full_name")
+        email=request.POST.get("email")
+        profile_file=request.FILES.get("profile_file")
+
+        if full_name:
+            user_obj.full_name=full_name
+        if email:
+            user_obj.email=email
+        if profile_file:
+            user_obj.profile_file=profile_file
+
+        user_obj.save()
+        return redirect('myprofile')
+edit_user_view= EditUserView.as_view()
+class AddPageView(TemplateView):
+    template_name = "custom/extra-pages/add-page.html"
+
+
+    def post(self, request, *args, **kwargs):
+        title = request.POST.get("title")
+        type_id = request.POST.get("type_id")
+        description = request.POST.get("description")
+
+        if Page.objects.filter(type_id=type_id).exists():
+            messages.error(request, "A page with this type already exists.")
+            return redirect('cms')  # or wherever your 
+
+        Page.objects.create(
+            title=title,
+            type_id=type_id or None,
+            description=description,
+            created_by=request.user
+        )
+
+        return redirect('cms')  # or another success page name
+
+
+
+add_page_view= AddPageView.as_view()
+
+class ViewPageView(TemplateView):
+    template_name = "custom/extra-pages/view-page.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        page_id = self.kwargs.get('type_id')  # assuming you use <int:pk> in URL
+        context['page'] = get_object_or_404(Page, type_id=page_id)
+        return context
+
+
+view_page_view= ViewPageView.as_view()
+
+class EditPageView(TemplateView):
+    template_name = "custom/extra-pages/edit-page.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        page_id = self.kwargs.get('type_id')  # assuming you use <int:pk> in URL
+        context['page'] = get_object_or_404(Page, type_id=page_id)
+        return context
+    def post(self, request, *args, **kwargs):
+        title= request.POST.get("title")
+        type_id = request.POST.get("type_id")
+        description = request.POST.get("description")
+        try:
+            page = Page.objects.get(type_id=type_id)
+            page.title = title
+            page.description = description
+            page.save()
+            return redirect('cms')
+        except Page.DoesNotExist:
+        # Optional: handle error if no page found with given type_id
+            return render(request, 'error.html', {'message': 'Page not found.'})
+        except Page.MultipleObjectsReturned:
+        # Optional: handle duplicates
+            return render(request, 'error.html', {'message': 'Multiple pages found for the given type_id.'})
+
+
+
+
+edit_page_view= EditPageView.as_view()
 # def user_detail(request, user_id):
 #     # Retrieve the user object or return a 404 error if not found
 #     user = get_user_model()

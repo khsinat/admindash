@@ -1,0 +1,98 @@
+
+
+
+{% extends "partials/base.html" %}
+
+{% load static %}
+
+{% block title %}Create Page{% endblock title %}
+
+{% block extra_css %}
+ <!-- Plugins css -->
+ <link href="{% static 'libs/quill/quill.core.css' %}" rel="stylesheet" type="text/css" />
+ <link href="{% static 'libs/quill/quill.bubble.css' %}" rel="stylesheet" type="text/css" />
+ <link href="{% static 'libs/quill/quill.snow.css' %}" rel="stylesheet" type="text/css" />
+
+
+{% endblock extra_css %}
+
+{% block topbar %}
+    {% include "partials/topbar.html" with pagetitle="Create Page" %}
+{% endblock topbar %}
+
+{% block content %}
+
+<div class="row">
+   <div class="col-12">
+    <div class="card">
+        <div class="card-body p-2"> 
+            <div class="row">
+                <div class="col-md-6"><h3 >Create Page</h3></div>
+            </div>
+        </div>
+    </div>
+   </div> 
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+        <form method="POST" id="cms-form">
+            {% csrf_token %}
+            <div class="card-body">
+                <div class="row mb-4" >
+                <div class="col-6">
+                    <h4>Title</h4> 
+                    <input type="text" name="title" placeholder="Input title" 
+                    style="width: 100%; padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;">
+                </div>
+                <div class="col-6"> 
+                    <h4>Type</h4> 
+                        <select name="type_id"
+                        style="width: 100%; padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;">
+                        <option value="">-- Select Type --</option>
+                        <option value="1">Terms of Service</option>
+                        <option value="2">Privacy Policy</option>
+                        <option value="3">About Us</option>
+                        <option value="4">FAQ</option>
+                        </select>
+                </div>
+                </div>
+                <h4>Description</h4>
+                <input type="hidden" name="description" id="hidden-description">
+                <div id="snow-editor" style="height: 300px;" >
+                </div> <!-- end Snow-editor-->
+                <button type="submit" class="btn btn-soft-primary waves-effect waves-light mt-3">submit</button> 
+            </div> <!-- end card-body-->
+        </form>
+        </div> <!-- end card-->
+    </div><!-- end col -->
+</div>
+
+<!-- end row -->
+
+{% include "partials/footer.html" %}
+
+{% endblock content %}
+
+{% block extra_js %}
+<!-- Plugins js -->
+<script src="{% static 'libs/quill/quill.min.js' %}"></script>
+
+<!-- Init js-->
+{% comment %} <script src="{% static 'js/pages/form-quilljs.init.js' %}"></script>  {% endcomment %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Initialize Quill
+    const quill = new Quill("#snow-editor", { theme: "snow", modules: { toolbar: [[{ font: [] }, { size: [] }], ["bold", "italic", "underline", "strike"], [{ color: [] }, { background: [] }], [{ script: "super" }, { script: "sub" }], [{ header: [!1, 1, 2, 3, 4, 5, 6] }, "blockquote", "code-block"], [{ list: "ordered" }, { list: "bullet" }, { indent: "-1" }, { indent: "+1" }], ["direction", { align: [] }], ["link", "image", "video"], ["clean"]] } })
+
+    // On form submit, copy HTML from editor to hidden input
+    document.getElementById("cms-form").addEventListener("submit", function (e) {
+      const descriptionInput = document.getElementById("hidden-description");
+      descriptionInput.value = quill.root.innerHTML;
+    });
+  });
+
+
+</script>
+{% endblock extra_js %}

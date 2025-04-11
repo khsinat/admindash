@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path , include
-from adminto.view import index_view, login_view,logout_view,users_view,user_detail,page_detail,delete_user,contactus_view,total_grow_logs_view,total_analysis_view,packages_view,emails_in_queue_view,transactions_view,cms_view,notifications_view,settings_view,myprofile_view
+from adminto.view import index_view, login_view,logout_view,users_view,user_detail,page_detail,delete_user,contactus_view,total_grow_logs_view,total_analysis_view,packages_view,emails_in_queue_view,transactions_view,cms_view,notifications_view,settings_view,myprofile_view,add_page_view,view_page_view,edit_user_view,edit_page_view
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -34,9 +34,13 @@ urlpatterns = [
     path("transactions/",transactions_view,name="transactions"),
     path("contactus/",contactus_view,name="contactus"),
     path("cms/",cms_view,name="cms"),
+    path("cms/add-page",add_page_view,name="add-page"),
+    path('cms/page/<int:type_id>/', view_page_view, name='view-page'),
+    path('cms/edit/<int:type_id>/', edit_page_view, name='edit-page'),
     path("notifications/",notifications_view,name="notifications"),
     path("settings/",settings_view,name="settings"),
     path("myprofile/",myprofile_view,name="myprofile"),
+    path("myprofile/edit/<int:user_id>",edit_user_view,name="edit-user"),
 
     path('user/details/<int:user_id>/', user_detail, name='user_detail'),
     #Apps

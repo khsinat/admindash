@@ -1,0 +1,77 @@
+{% extends "partials/base.html" %}
+
+{% load static %}
+
+{% block title %}Notifications{% endblock title %}
+
+{% block extra_css %}
+<!-- Add any extra CSS here if needed -->
+{% endblock extra_css %}
+
+{% block topbar %}
+    {% include "partials/topbar.html" with pagetitle="Notifications" %}
+{% endblock topbar %}
+
+{% block content %}
+
+<div class="row">
+   <div class="col-12">
+    <div class="card">
+        <div class="card-body p-2"> 
+            <div class="row">
+                <div class="col-md-12"><h3 >Update Profile</h3></div>
+            </div>
+        </div>
+    </div>
+   </div> 
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+            <div class="card-body">
+                <div class="row mb-4" >
+                <div class="col-6">
+                    <h4>Name</h4> 
+                    <input type="text" name="full_name" value="{{user.full_name}}" 
+                    style="width: 100%; padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;">
+                </div>
+                <div class="col-6"> 
+                    <h4>Email</h4> 
+                    <input type="text" name="email" value="{{user.email}}" 
+                    style="width: 100%; padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;">
+                </div>
+                </div>
+                <div class="row mb-4" >
+                
+                <div class="col-6"> 
+                    <h4>Upload File</h4> 
+                        <input type="file" name="profile_file" 
+                        style="width: 100%; padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;">
+
+                </div>
+                </div>
+                <button type="submit" class="btn btn-soft-primary waves-effect waves-light mt-3">submit</button> 
+            </div> <!-- end card-body-->
+        </form>
+        </div> <!-- end card-->
+    </div><!-- end col -->
+</div>
+
+<!-- end row -->
+
+{% include "partials/footer.html" %}
+
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+    
+    function viewUserDetails(userId) {
+        // Implement the logic to view user details, e.g., redirect to a details page
+        window.location.href = '/user/details/' + userId;
+    }
+</script>
+{% endblock extra_js %}

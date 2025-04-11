@@ -11,6 +11,8 @@ from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
 from api.models import Page,PAGE_TYPE_TERMS_AND_CONDITIONS,PAGE_TYPE_PRIVACY_POLICY
 from django.contrib.auth import get_user_model
+from .forms import PageForm
+
 User = get_user_model()
 
 # Configure database error logger
@@ -319,29 +321,25 @@ class EditUserView(TemplateView):
 edit_user_view= EditUserView.as_view()
 class AddPageView(TemplateView):
     template_name = "custom/extra-pages/add-page.html"
-
-
     def post(self, request, *args, **kwargs):
-        title = request.POST.get("title")
-        type_id = request.POST.get("type_id")
-        description = request.POST.get("description")
+        form = PageForm(request.POST)
+        if form.is_valid():
+            Page.objects.create(
+                title=form.cleaned_data['title'],
+                type_id=form.cleaned_data['type_id'],
+                description=form.cleaned_data['description'],
+                created_by=request.user
 
-        if Page.objects.filter(type_id=type_id).exists():
-            messages.error(request, "A page with this type already exists.")
-            return redirect('cms')  # or wherever your 
+            )
+            messages.success(request, "Page created successfully.")
+            return redirect('cms')
 
-        Page.objects.create(
-            title=title,
-            type_id=type_id or None,
-            description=description,
-            created_by=request.user
-        )
-
-        return redirect('cms')  # or another success page name
-
+        else:
+            messages.error(request, "Please correct the errors below.")
+        return render(request, self.template_name, {'form': form})
 
 
-add_page_view= AddPageView.as_view()
+add_page_view = AddPageView.as_view()
 
 class ViewPageView(TemplateView):
     template_name = "custom/extra-pages/view-page.html"

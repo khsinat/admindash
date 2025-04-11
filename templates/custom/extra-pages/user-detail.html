@@ -41,12 +41,12 @@
                 <div class="col-md-3  text-md-center">
                     <div class="card ">
                         <div class="card-body">
-                            <h4 class="card-title">Profile</h4>
                         </div>
 
 
                           {% if profile_image_url %}
-                                <img class="card-img" src="{{ profile_image_url }}" alt="Profile Image">
+                          <img class="card-img" src="{% url 'profile-file-download' %}?file_path={{ user.profile_file.name }}" alt="Profile Image">
+                                
                             {% else %}
                                 <img class="card-img" src="{% static '/images/gallery/4.jpg' %}" alt="Default Image">
                             {% endif %}
@@ -95,9 +95,9 @@
                     <td style="padding: 15px 25px; text-align: left;font-weight: bold">
                     State </td>
                     <td style="padding: 15px 25px; text-align: center;">
-                    <div  class="badge badge-soft-success">
+                    <!-- <div  class="badge badge-soft-success"> -->
                         Active
-                    </div> 
+                    <!-- </div>  -->
                     </td>
                 </tr>
                 <tr>

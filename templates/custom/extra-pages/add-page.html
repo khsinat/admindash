@@ -1,79 +1,144 @@
-
-
-
 {% extends "partials/base.html" %}
+
 
 {% load static %}
 
+
 {% block title %}Create Page{% endblock title %}
 
-{% block extra_css %}
- <!-- Plugins css -->
- <link href="{% static 'libs/quill/quill.core.css' %}" rel="stylesheet" type="text/css" />
- <link href="{% static 'libs/quill/quill.bubble.css' %}" rel="stylesheet" type="text/css" />
- <link href="{% static 'libs/quill/quill.snow.css' %}" rel="stylesheet" type="text/css" />
 
+{% block extra_css %}
+
+<!-- Plugins css -->
+
+<link href="{% static 'libs/quill/quill.core.css' %}" rel="stylesheet" type="text/css" />
+
+<link href="{% static 'libs/quill/quill.bubble.css' %}" rel="stylesheet" type="text/css" />
+
+<link href="{% static 'libs/quill/quill.snow.css' %}" rel="stylesheet" type="text/css" />
 
 {% endblock extra_css %}
 
+
 {% block topbar %}
+
     {% include "partials/topbar.html" with pagetitle="Create Page" %}
+
 {% endblock topbar %}
+
 
 {% block content %}
 
 <div class="row">
+
    <div class="col-12">
+
     <div class="card">
+
         <div class="card-body p-2"> 
+
             <div class="row">
-                <div class="col-md-6"><h3 >Create Page</h3></div>
+
+                <div class="col-md-6"><h3>Create Page</h3></div>
+
             </div>
+
         </div>
+
     </div>
+
    </div> 
+
 </div>
+
 
 <div class="row">
+
     <div class="col-12">
+
         <div class="card">
+
         <form method="POST" id="cms-form">
+
             {% csrf_token %}
+
             <div class="card-body">
-                <div class="row mb-4" >
-                <div class="col-6">
-                    <h4>Title</h4> 
-                    <input type="text" name="title" placeholder="Input title" 
-                    style="width: 100%; padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;">
-                </div>
-                <div class="col-6"> 
-                    <h4>Type</h4> 
-                        <select name="type_id"
-                        style="width: 100%; padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;">
-                        <option value="">-- Select Type --</option>
-                        <option value="1">Terms of Service</option>
-                        <option value="2">Privacy Policy</option>
-                        <option value="3">About Us</option>
-                        <option value="4">FAQ</option>
+
+                {% if messages %}
+
+                    {% for message in messages %}
+
+                        <div class="alert alert-danger">{{ message }}</div>
+
+                    {% endfor %}
+
+                {% endif %}
+
+                <div class="row mb-4">
+
+                    <div class="col-6">
+
+                        <h4>Title</h4> 
+
+                        <input type="text" name="title" placeholder="Input title" 
+
+                        style="width: 100%; padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;" >
+                        {% if form.title.errors %}
+                        <div class="alert alert-danger">{{ form.title.errors }}</div>
+                    {% endif %}
+                    </div>
+
+                    <div class="col-6"> 
+
+                        <h4>Type</h4> 
+
+                        <select name="type_id" style="width: 100%; padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;">
+
+                            <option value="">-- Select Type --</option>
+
+                            <option value="1">Terms of Service</option>
+
+                            <option value="2">Privacy Policy</option>
+
+                            <option value="3">About Us</option>
+
+                            <option value="4">FAQ</option>
+
                         </select>
+
+                        {% if form.type_id.errors %}
+                        <div class="alert alert-danger">{{ form.type_id.errors }}</div>
+                    {% endif %}
+
+                    </div>
+
                 </div>
-                </div>
+
                 <h4>Description</h4>
-                <input type="hidden" name="description" id="hidden-description">
-                <div id="snow-editor" style="height: 300px;" >
-                </div> <!-- end Snow-editor-->
-                <button type="submit" class="btn btn-soft-primary waves-effect waves-light mt-3">submit</button> 
+
+                <input type="hidden" name="description" id="hidden-description" >
+
+                <div id="snow-editor" style="height: 300px;"></div> <!-- end Snow-editor-->
+  {% if form.description.errors %}
+                        <div class="alert alert-danger">{{ form.description.errors }}</div>
+                    {% endif %}
+                <button type="submit" class="btn btn-soft-primary waves-effect waves-light mt-3">Submit</button> 
+
             </div> <!-- end card-body-->
+
         </form>
+
         </div> <!-- end card-->
+
     </div><!-- end col -->
+
 </div>
 
-<!-- end row -->
 
 {% include "partials/footer.html" %}
 
 {% endblock content %}
+
 
 {% block extra_js %}
 <!-- Plugins js -->

@@ -36,7 +36,9 @@
         <div class="card-body"> 
             <div class="row">
                 <div class="col-md-2">
-                                <img class="card-img" src="{{user.profile_file}}" alt="Default Image" >
+                    
+                    <img class="card-img" src="{% url 'profile-file-download' %}?file_path={{ user.profile_file.name }}" alt="Profile Image">
+
                                 </div>
                 <div class="col-md-10 pt-2">
             <div class="table-responsive">

@@ -53,10 +53,10 @@
                 </div>
                 </div>
                 <h4>Description</h4>
-                <input type="hidden" id="initial-description" value="{{ page.description|safe }}">
+               
 
                 <input type="hidden" name="description" id="hidden-description">
-                <div id="snow-editor" style="height: 300px;" value="{{page.description}}">
+                <div id="snow-editor" style="height: 300px;" value="{{page.description|safe}}">
                 </div> <!-- end Snow-editor-->
                 <button type="submit" class="btn btn-soft-primary waves-effect waves-light mt-3">submit</button> 
             </div> <!-- end card-body-->

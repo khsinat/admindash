@@ -12,23 +12,7 @@
                     <th style="padding: 15px 25px; text-align: left; width:3%">Created By</th>
                     <th style="padding: 15px 25px; text-align: left; width:3%">Actions</th>
                 </tr>
-            <tr>
-            <th><input type="text" onkeyup="filterTable(0)" placeholder="Search ID" 
-                style="width: 80%; padding: 8px; margin: 5px auto; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;"></th>
-            <th><input type="text" onkeyup="filterTable(1)" placeholder="Search Name" 
-                style="width: 80%; padding: 8px; margin: 5px auto; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;"></th>
-            <th><input type="text" onkeyup="filterTable(3)" placeholder="Search State" 
-                style="width: 80%; padding: 8px; margin: 5px auto; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;"></th>
-            <th><input type="text" onkeyup="filterTable(4)" placeholder="Search Email" 
-                style="width: 80%; padding: 8px; margin: 5px auto; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;"></th>
-            <th><input type="text" onkeyup="filterTable(5)" placeholder="Search Date" 
-                style="width: 80%; padding: 8px; margin: 5px auto; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;"></th>
-            <th><input type="text" onkeyup="filterTable(6)" placeholder="Search Creator" 
-                style="width: 80%; padding: 8px; margin: 5px auto; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;"></th>
-            <th></th> <!-- No filter for action column -->
-
-
-                </tr>
+          
             </thead>
             <tbody>
                 {% for user in users %}
@@ -44,19 +28,18 @@
                         {{ user.full_name }}
                     </td>
 
-                    <td style="padding: 15px 25px; text-align: center;">
-                    <div  class="badge 
-                    {% if user.state_id == 1%}
-                    badge-soft-secondary
-                    {% elif user.state_id == 0%}
-                    badge-soft-success
-                    {% else %}
-                    badge-soft-danger
-                    {% endif %}
-                    ">
-                    {% if user.state_id == 0 %}Active{% elif user.state_id == 1 %}Inactive{% else %} Deleted {% endif %}
-                    </div> 
-                    </td>
+                   
+<td style="padding: 15px 25px; text-align: center;">
+    {% if user.state_id == 0 %}
+        <div class="badge badge-soft-success">Active</div>
+    {% elif user.state_id == 1 %}
+        <div class="badge badge-soft-warning">Inactive</div>
+    {% elif user.state_id == 2 %}
+        <div class="badge badge-soft-danger">Deleted</div>
+    {% else %}
+        <div class="badge badge-soft-secondary">Unknown</div>
+    {% endif %}
+</td>
 
                     <td style="padding: 15px 25px; text-align: left; " class="text-primary">{{ user.email }}</td>
                     <td style="padding: 15px 25px; text-align: left;">
@@ -125,4 +108,3 @@
         </div>
     </div>
 </div>
-<!-- end row -->

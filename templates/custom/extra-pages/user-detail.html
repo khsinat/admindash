@@ -95,9 +95,15 @@
                     <td style="padding: 15px 25px; text-align: left;font-weight: bold">
                     State </td>
                     <td style="padding: 15px 25px; text-align: center;">
-                    <!-- <div  class="badge badge-soft-success"> -->
-                        Active
-                    <!-- </div>  -->
+                        {% if selected_user.state_id == 0 %}
+                            <div class="badge badge-soft-success">Active</div>
+                        {% elif selected_user.state_id == 1 %}
+                            <div class="badge badge-soft-warning">Inactive</div>
+                        {% elif selected_user.state_id == 2 %}
+                            <div class="badge badge-soft-danger">Deleted</div>
+                        {% else %}
+                            <div class="badge badge-soft-secondary">Unknown</div>
+                        {% endif %}
                     </td>
                 </tr>
                 <tr>
@@ -175,9 +181,9 @@
                            {% endif %}
                             waves-effect waves-light">
 
-                            {% if selected_user.state_id == 1 %}
+                            {% if selected_user.state_id == 0 %}
                                 Active
-                            {% elif selected_user.state_id == 0%}
+                            {% elif selected_user.state_id == 1%}
                                 Inactive
                             {%else%}
                                 Active

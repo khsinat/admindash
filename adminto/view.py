@@ -230,7 +230,7 @@ class CmsView(TemplateView):
     def post(self, request, *args, **kwargs):
         page_id = request.POST.get("delete_page_id")
         if page_id:
-            page = get_object_or_404(Page, type_id=page_id)
+            page = get_object_or_404(Page, id=page_id)
             if request.user == page.created_by or request.user.is_staff:  # optional permission check
                 page.delete()
         return redirect('cms')
@@ -353,35 +353,52 @@ class ViewPageView(TemplateView):
 
 view_page_view= ViewPageView.as_view()
 
+
 class EditPageView(TemplateView):
     template_name = "custom/extra-pages/edit-page.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        page_id = self.kwargs.get('type_id')  # assuming you use <int:pk> in URL
-        context['page'] = get_object_or_404(Page, type_id=page_id)
+        page_id = self.kwargs.get('page_id')  # Use 'page_id' instead of 'type_id'
+        context['page'] = get_object_or_404(Page, id=page_id)
+        context['form'] = PageForm(initial={
+            'title': context['page'].title,
+            'type_id': context['page'].type_id,
+            'description': context['page'].description,
+        })
         return context
+
     def post(self, request, *args, **kwargs):
-        title= request.POST.get("title")
-        type_id = request.POST.get("type_id")
-        description = request.POST.get("description")
-        try:
-            page = Page.objects.get(type_id=type_id)
-            page.title = title
-            page.description = description
-            page.save()
-            return redirect('cms')
-        except Page.DoesNotExist:
-        # Optional: handle error if no page found with given type_id
-            return render(request, 'error.html', {'message': 'Page not found.'})
-        except Page.MultipleObjectsReturned:
-        # Optional: handle duplicates
-            return render(request, 'error.html', {'message': 'Multiple pages found for the given type_id.'})
+        page_id = self.kwargs.get('page_id')  # Use 'page_id' instead of 'type_id'
+        form = PageForm(request.POST)
 
+        if form.is_valid():
+            try:
+                page_instance = Page.objects.get(id=page_id)
+            except Page.DoesNotExist:
+                return render(request, 'error.html', {'message': 'Page not found.'})
 
+            # Check if another page with the submitted type_id already exists
+            if Page.objects.exclude(id=page_id).filter(type_id=form.cleaned_data['type_id']).exists():
+                # Add the error message to the form
+                form.add_error('type_id', f"A page with type ID '{form.cleaned_data['type_id']}' already exists.")
+                return render(request, self.template_name, {'page': page_instance, 'form': form})
 
+            try:
+                page_instance.title = form.cleaned_data['title']
+                page_instance.description = form.cleaned_data['description']
+                page_instance.type_id = form.cleaned_data['type_id']
+                page_instance.save()
+                messages.success(request, "Page updated successfully.")
+                return redirect('cms')
+            except Exception as e:
+                # Consider logging the error for debugging
+                return render(request, 'error.html', {'message': f'An error occurred: {e}'})
+        else:
+            messages.error(request, "Please correct the errors below.")
+            return render(request, self.template_name, {'page': get_object_or_404(Page, id=page_id), 'form': form})
 
-edit_page_view= EditPageView.as_view()
+edit_page_view = EditPageView.as_view()
 # def user_detail(request, user_id):
 #     # Retrieve the user object or return a 404 error if not found
 #     user = get_user_model()

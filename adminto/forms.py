@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import PasswordChangeForm
-
+from api.models import Page
 class MyProfileForm(forms.ModelForm):
     password = forms.CharField(
         label='New Password',
@@ -41,3 +41,11 @@ class PageForm(forms.Form):
     title = forms.CharField(max_length=100, required=True)
     type_id = forms.ChoiceField(choices=[(1, 'Terms of Service'), (2, 'Privacy Policy'), (3, 'About Us'), (4, 'FAQ')], required=True)
     description = forms.CharField(required=True)
+    
+    def clean_type_id(self):
+        type_id = self.cleaned_data.get('type_id')
+        if Page.objects.filter(type_id=type_id).exists():
+            raise forms.ValidationError("A page with this type already exists.")
+        return type_id
+    
+    

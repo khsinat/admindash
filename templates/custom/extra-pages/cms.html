@@ -65,11 +65,17 @@
                     </td>
 
                     <td style="padding: 15px 25px; text-align: center;">
-                    <!--<div  class="badge badge-soft-success">
-                        Active
-                    </div> -->
-                    {{page.type_id}}
-                    
+                        {% if page.type_id == 1 %}
+                            Terms of Service
+                        {% elif page.type_id == 2 %}
+                            Privacy Policy
+                        {% elif page.type_id == 3 %}
+                            About Us
+                        {% elif page.type_id == 4 %}
+                            FAQ
+                        {% else %}
+                            Unknown
+                        {% endif %}
                     </td>
 
                     
@@ -88,15 +94,15 @@
                     </td>-->
                     
                     <td style="padding: 15px 25px; text-align: center; color: blue">
-                        <a href="{% url 'view-page' page.type_id %}" class="btn btn-soft-success">
+                        <a href="{% url 'view-page' page.id %}" class="btn btn-soft-success">
                         <i class="fas fa-solid fa-eye"></i>
                         </a>
-                        <a href="{% url 'edit-page' page.type_id %}" class="btn btn-soft-info">
+                        <a href="{% url 'edit-page' page.id %}" class="btn btn-soft-info">
                         <i class="fas fa-solid fa-pen"></i>
                         </a>
                         <form method="POST" style="display:inline;">
                            {% csrf_token %} 
-                           <input type="hidden" name="delete_page_id" value="{{ page.type_id }}">
+                           <input type="hidden" name="delete_page_id" value="{{ page.id }}">
                         <button type="submit" class="btn btn-soft-danger" onclick="return confirm('Are you sure you want to delete this user?')">
                             <i class="fas fa-solid fa-trash"></i>
                         </button>

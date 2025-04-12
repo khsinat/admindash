@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'api',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
+    'adminto'
+    
 
 ]
 
@@ -116,9 +118,9 @@ DATABASES = {
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': BASE_DIR / 'db.sqlite3',
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'cannabis_db',
-        'USER': 'cannabis_user',
-        'PASSWORD': 'CanN!bIs$_3214',
+        'NAME': 'cannabisnew',
+        'USER': 'admin',
+        'PASSWORD': 'Admin@123',
         'HOST':'127.0.0.1',
         'PORT': '3306',
     }

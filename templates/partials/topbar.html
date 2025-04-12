@@ -184,7 +184,7 @@
                 <img class="card-img" src="{% url 'profile-file-download' %}?file_path={{ user.profile_file.name }}" alt="user-image">
                 <span class="pro-user-name ms-1">
                     {% if request.user.is_authenticated %}
-                         {{request.user.username}}<i class="mdi mdi-chevron-down"></i> 
+                         {{request.user.full_name}}<i class="mdi mdi-chevron-down"></i> 
                     {% endif %}
 
                     </span>

@@ -45,8 +45,16 @@
                     </td>
 
                     <td style="padding: 15px 25px; text-align: center;">
-                    <div  class="badge badge-soft-success">
-                        Active
+                    <div  class="badge 
+                    {% if user.state_id == 1%}
+                    badge-soft-secondary
+                    {% elif user.state_id == 0%}
+                    badge-soft-success
+                    {% else %}
+                    badge-soft-danger
+                    {% endif %}
+                    ">
+                    {% if user.state_id == 0 %}Active{% elif user.state_id == 1 %}Inactive{% else %} Deleted {% endif %}
                     </div> 
                     </td>
 

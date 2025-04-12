@@ -393,15 +393,15 @@ edit_page_view= EditPageView.as_view()
 def user_detail(request, user_id):
     # Retrieve the user object or return a 404 error if not found
     User = get_user_model()
-    user = get_object_or_404(User, id=user_id)
+    selected_user = get_object_or_404(User, id=user_id)
 
     # Construct the custom URL for the profile image
-    file_name = user.profile_file.name if user.profile_file else None
+    file_name = selected_user.profile_file.name if selected_user.profile_file else None
     profile_image_url = f"https://cannabis.nexusappdevelopers.com/api/profile-file?file_path={file_name}" if file_name else None
 
     # Pass the user object and profile image URL to the template
     context = {
-        'user': user,
+        'selected_user': selected_user,
         'profile_image_url': profile_image_url,
     }
     return render(request, 'custom/extra-pages/user-detail.html', context)
@@ -432,3 +432,21 @@ def delete_user(request, user_id):
     return redirect('users')  # Redirect to the user list page
 
 
+def inactivate_user(request, user_id):
+    user = get_user_model()
+    user = get_object_or_404(user, id=user_id)
+    # Assuming state_id = 1 means the user is inactive 
+    user.state_id = 1
+    user.save()
+    messages.success(request, 'User has been successfully inactivated.')
+    print(user)
+    return redirect('users')  # Redirect to the user list page
+
+def activate_user(request, user_id):
+    user = get_user_model()
+    user = get_object_or_404(user, id=user_id)
+    # Assuming state_id = 0 means the user is active
+    user.state_id = 0
+    user.save()
+    messages.success(request, 'User has been successfully activated.')
+    return redirect('users')  # Redirect to the user list page

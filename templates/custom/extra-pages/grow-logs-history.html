@@ -1,0 +1,33 @@
+
+
+{% extends "partials/base.html" %}
+
+{% load static %}
+
+{% block title %}Grow logs history{% endblock title %}
+
+{% block extra_css %}
+<!-- Add any extra CSS here if needed -->
+{% endblock extra_css %}
+
+{% block topbar %}
+    {% include "partials/topbar.html" with pagetitle="Grow Logs History" %}
+{% endblock topbar %}
+
+{% block content %}
+
+<!-- end row -->
+
+{% include "partials/footer.html" %}
+
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+    
+    function viewUserDetails(userId) {
+        // Implement the logic to view user details, e.g., redirect to a details page
+        window.location.href = '/user/details/' + userId;
+    }
+</script>
+{% endblock extra_js %}

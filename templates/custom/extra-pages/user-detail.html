@@ -20,7 +20,61 @@
             <div class="row">
                 <div class="col-md-6"><h3 >{{selected_user.email}}</h3></div>
                 <div class="col-md-6">
-                    <div class="text-md-end">
+                    <div class="text-md-end button-list">
+                        <a type="button" 
+                        {% if selected_user.state_id == 1 %}
+                        href="{% url 'activate_user' selected_user.id %}"  
+                        {% elif selected_user.state_id == 0%}
+                        href="{% url 'inactivate_user' selected_user.id %}"  
+                        {%else%}
+                        href="{% url 'activate_user' selected_user.id %}"  
+                        {% endif %}
+    
+                        class="btn 
+                            {% if selected_user.state_id == 1 %}
+                            btn-soft-success 
+                            {% elif selected_user.state_id == 0 %}
+                            btn-soft-secondary 
+                            {% else %}
+                            btn-soft-success
+                           {% endif %}
+                            waves-effect waves-light">
+    
+                            {% if selected_user.state_id == 0 %}
+                                Active
+                            {% elif selected_user.state_id == 1%}
+                                Inactive
+                            {%else%}
+                                Active
+                            {% endif %}
+                        </a>
+                        <a type="button" 
+                        {% if selected_user.state_id == 1 %}
+                        href="{% url 'activate_user' selected_user.id %}"  
+                        {% elif selected_user.state_id == 0%}
+                        href="{% url 'inactivate_user' selected_user.id %}"  
+                        {%else%}
+                        href="{% url 'activate_user' selected_user.id %}"  
+                        {% endif %}
+    
+                        class="btn 
+                            {% if selected_user.state_id == 1 %}
+                            btn-soft-info 
+                            {% elif selected_user.state_id == 0 %}
+                            btn-soft-warning 
+                            {% else %}
+                            btn-soft-success
+                           {% endif %}
+                            waves-effect waves-light">
+    
+                            {% if selected_user.state_id == 0 %}
+                               Block  
+                            {% elif selected_user.state_id == 1%}
+                               Unblock 
+                            {%else%}
+                                Active
+                            {% endif %}
+                        </a>
                         <a href="{% url 'delete_user' selected_user.id %}" class="btn btn-soft-danger" onclick="return confirm('Are you sure you want to delete this user?')">
                             <i class="fas fa-solid fa-trash"></i>
                         </a>
@@ -38,9 +92,9 @@
     <div class="card">
         <div class="card-body"> 
             <div class="row">
-                <div class="col-md-3  text-md-center">
+                <div class="col-md-3 ">
                     <div class="card ">
-                        <div class="card-body">
+                        <div class="card-body pt-1.25">
                         </div>
 
 
@@ -54,7 +108,7 @@
                     </div>
                 </div>
         <div class="col-md-9">
-        <div class="table-responsive">
+        <div class="table-responsive mt-4">
         <table class="table table-bordered table-hover">
             <thead>
             </thead>
@@ -88,9 +142,9 @@
 
                 <tr>
                     <td style="padding: 15px 25px; text-align: left;font-weight: bold">
-                    Wallet amount</td>
+                     Total Coins</td>
                     <td style="padding: 15px 25px; text-align: left;">
-                        $100
+                        100
                     </td>
                     <td style="padding: 15px 25px; text-align: left;font-weight: bold">
                     State </td>
@@ -113,7 +167,12 @@
                     <td style="padding: 15px 25px; text-align: left;">
                         {{user.created_at}}
                     </td>
-
+                    <td style="padding: 15px 25px; text-align: left;font-weight: bold">
+                     Total Grow Logs 
+                    </td>
+                    <td style="padding: 15px 25px; text-align: left;">
+                        10
+                    </td>
                 </tr>
                    <!--<td style="padding: 15px 25px; text-align: left; font-weight: bold;
                                color: {% if user.is_verified %} green {% else %} red {% endif %};">
@@ -162,44 +221,18 @@
                 <div class="col-md-6">
                     <div class="text-md-end">
                         <div class="button-list">
-                        <a type="button" 
-                        {% if selected_user.state_id == 1 %}
-                        href="{% url 'activate_user' selected_user.id %}"  
-                        {% elif selected_user.state_id == 0%}
-                        href="{% url 'inactivate_user' selected_user.id %}"  
-                        {%else%}
-                        href="{% url 'activate_user' selected_user.id %}"  
-                        {% endif %}
-
-                        class="btn 
-                            {% if selected_user.state_id == 1 %}
-                            btn-soft-success 
-                            {% elif selected_user.state_id == 0 %}
-                            btn-soft-secondary 
-                            {% else %}
-                            btn-soft-success
-                           {% endif %}
-                            waves-effect waves-light">
-
-                            {% if selected_user.state_id == 0 %}
-                                Active
-                            {% elif selected_user.state_id == 1%}
-                                Inactive
-                            {%else%}
-                                Active
-                            {% endif %}
-                        </a>
+                       
 
                         <!--<button type="button" class="btn btn-soft-warning waves-effect waves-light" data-bs-toggle="modal" 
                          data-bs-target="#warning-alert-modal">
                             Block 
                         </button>-->
-                         <button type="button" class="btn btn-soft-primary waves-effect waves-light" >
+                         <a href="{%url 'grow-logs-history' selected_user.id%}" type="button" class="btn btn-soft-primary waves-effect waves-light" >
                            Grow Log History 
-                        </button>
-                        <button type="button" class="btn btn-soft-success waves-effect waves-light">
+                         </a>
+                        <a href="{%url 'transaction-history' selected_user.id%}" type="button" class="btn btn-soft-success waves-effect waves-light">
                            Transaction History 
-                        </button>
+                        </a >
                     </div>
                 </div>
             </div>

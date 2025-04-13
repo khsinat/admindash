@@ -10,7 +10,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
 from api.models import Page,PAGE_TYPE_TERMS_AND_CONDITIONS,PAGE_TYPE_PRIVACY_POLICY
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model,update_session_auth_hash
 from .forms import PageForm
 from django.utils import timezone
 from datetime import timedelta
@@ -423,6 +423,26 @@ edit_page_view = EditPageView.as_view()
 #     # Pass the user object to the template
 #     return render(request, 'custom/extra-pages/user-detail.html', {'user': user})
 
+class ChangePasswordView(TemplateView):
+    template_name = "custom/extra-pages/change-password.html"
+    def post(self, request, *args, **kwargs):
+        new_password = request.POST.get("new_password")
+        confirm_password = request.POST.get("confirm_password")
+        print(new_password, confirm_password)
+        user = request.user
+
+        if new_password != confirm_password:
+            messages.error(request, "New password and confirmation do not match.")
+            return render(request, self.template_name)
+        user.set_password(new_password)
+        user.save()
+        update_session_auth_hash(request, user)  # Keeps user logged in
+        messages.success(request, "Password changed successfully.")
+        logout(request)
+        return redirect("admin_login")
+
+
+change_password_view= ChangePasswordView.as_view()
 def user_detail(request, user_id):
     # Retrieve the user object or return a 404 error if not found
     User = get_user_model()
@@ -439,7 +459,15 @@ def user_detail(request, user_id):
     }
     return render(request, 'custom/extra-pages/user-detail.html', context)
 
+class GrowLogsHistoryView(TemplateView):
+    template_name = "custom/extra-pages/grow-logs-history.html"
+grow_logs_history_view = GrowLogsHistoryView.as_view()
 
+class TransactionHistoryView(TemplateView):
+    template_name = "custom/extra-pages/transaction-history.html"
+transaction_history_view = TransactionHistoryView.as_view()
+
+grow_logs_history_view = GrowLogsHistoryView.as_view()
 def page_detail(request, type):
     page = get_object_or_404(Page, type_id=type)
     print(page.description,"page page")

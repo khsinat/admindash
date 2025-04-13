@@ -2,14 +2,14 @@
 
 {% load static %}
 
-{% block title %}Users contacted before{% endblock title %}
+{% block title %}Users contact {% endblock title %}
 
 {% block extra_css %}
 <!-- Add any extra CSS here if needed -->
 {% endblock extra_css %}
 
 {% block topbar %}
-    {% include "partials/topbar.html" with pagetitle="Users contacted before" %}
+    {% include "partials/topbar.html" with pagetitle="Users contact " %}
 {% endblock topbar %}
 
 {% block content %}
@@ -22,20 +22,16 @@
                     <th style="padding: 15px 25px; text-align: left; ">Id</th>
                     <th style="padding: 15px 25px; text-align: left; ">Fullname</th>
                     <th style="padding: 15px 25px; text-align: left; ">Email</th>
-                    <th style="padding: 15px 25px; text-align: left; ">Contacted On</th>
+                    <th style="padding: 15px 25px; text-align: left; ">Contact On</th>
                 </tr>
             <tr>
             <th><input type="text" onkeyup="filterTable(0)" placeholder="Search ID" 
                 style="width: 80%; padding: 8px; margin: 5px auto; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;"></th>
             <th><input type="text" onkeyup="filterTable(1)" placeholder="Search Name" 
                 style="width: 80%; padding: 8px; margin: 5px auto; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;"></th>
-            <th><input type="text" onkeyup="filterTable(4)" placeholder="Search Email" 
+            <th><input type="text" onkeyup="filterTable(2)" placeholder="Search Email" 
                 style="width: 80%; padding: 8px; margin: 5px auto; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;"></th>
-            <th><input type="text" onkeyup="filterTable(6)" placeholder="Search Date" 
-                style="width: 80%; padding: 8px; margin: 5px auto; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;"></th>
-
-
-                </tr>
+            </tr>
             </thead>
             <tbody>
                 {% for user in users %}
@@ -119,7 +115,21 @@
 
 {% block extra_js %}
 <script>
-    
+    function filterTable(colIndex) {
+    const table = document.querySelector("table");
+    const input = document.querySelectorAll("thead input")[colIndex];
+    const filter = input.value.toUpperCase();
+    const rows = table.querySelectorAll("tbody tr");
+
+    rows.forEach(row => {
+        const cell = row.cells[colIndex];
+        if (cell) {
+            const txtValue = cell.textContent || cell.innerText;
+            row.style.display = txtValue.toUpperCase().includes(filter) ? "" : "none";
+        }
+    });
+}
+
     function viewUserDetails(userId) {
         // Implement the logic to view user details, e.g., redirect to a details page
         window.location.href = '/user/details/' + userId;

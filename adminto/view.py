@@ -12,6 +12,8 @@ from django.core.paginator import Paginator
 from api.models import Page,PAGE_TYPE_TERMS_AND_CONDITIONS,PAGE_TYPE_PRIVACY_POLICY
 from django.contrib.auth import get_user_model
 from .forms import PageForm
+from django.utils import timezone
+from datetime import timedelta
 
 User = get_user_model()
 
@@ -47,18 +49,32 @@ def logout_view(request):
 # Dashboard View (Admin-Only)
 @method_decorator(login_required(login_url="/login/"), name="dispatch")
 @method_decorator(user_passes_test(is_admin, login_url="/login/"), name="dispatch")
+
+
 class DashboardView(TemplateView):
     template_name = "index.html"
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["user"] = self.request.user
         try:
-            users = get_user_model().objects.all()  # Fetch users
+            users = get_user_model().objects.all()  # Fetch all users
+            total_users = users.count()  # Count the total number of users
+
+            one_month_ago = timezone.now() - timedelta(days=30)
+            recent_users = get_user_model().objects.filter(created_at=one_month_ago)
+            recent_user_count = recent_users.count()  # Count users registered in the last month     
+            if total_users > 0:
+                increment = recent_user_count  # Increment is the count of recent users
+            else:
+                increment = 0  # No users registered yet
             context["users"] = users
+            context["total_users"] = total_users  # Add total users to context
+            context["increment"] = increment  # Add increment to context
         except DatabaseError as e:
             db_logger.error(f"Database error occurred: {e}")  # Log error to file
             context["users"] = []  # Ensure template doesn't break
+            context["total_users"] = 0  # Set total users to 0 in case of error
+            context["increment"] = 0  # Set increment to 0 in case of error
             context["db_error"] = f"Database error: {str(e)}"  # Display error in template
         return context
 

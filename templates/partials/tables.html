@@ -6,10 +6,9 @@
                 <tr style="background: #386641; color: white; font-size: 16px;">
                     <th style="padding: 15px 25px; text-align: left; width:4%">Id</th>
                     <th style="padding: 15px 25px; text-align: left; width:4%">Fullname</th>
-                    <th style="padding: 15px 25px; text-align: left; width:3%">State</th>
                     <th style="padding: 15px 25px; text-align: left; width:3%">Email</th>
+                    <th style="padding: 15px 25px; text-align: left; width:3%">State</th>
                     <th style="padding: 15px 25px; text-align: left; width:3%">Created On</th>
-                    <th style="padding: 15px 25px; text-align: left; width:3%">Created By</th>
                     <th style="padding: 15px 25px; text-align: left; width:3%">Actions</th>
                 </tr>
           
@@ -28,6 +27,7 @@
                         {{ user.full_name }}
                     </td>
 
+                    <td style="padding: 15px 25px; text-align: left; " class="text-primary">{{ user.email }}</td>
                    
 <td style="padding: 15px 25px; text-align: center;">
     {% if user.state_id == 0 %}
@@ -41,13 +41,12 @@
     {% endif %}
 </td>
 
-                    <td style="padding: 15px 25px; text-align: left; " class="text-primary">{{ user.email }}</td>
                     <td style="padding: 15px 25px; text-align: left;">
                         {{ user.created_at|date:"F j, Y, g:i a" }}
                     </td>
-                    <td style="padding: 15px 25px; text-align: left; " class="text-primary">
+                    {% comment %} <td style="padding: 15px 25px; text-align: left; " class="text-primary">
                         Admin 
-                    </td>
+                    </td> {% endcomment %}
                    <!--<td style="padding: 15px 25px; text-align: left; font-weight: bold;
                                color: {% if user.is_verified %} green {% else %} red {% endif %};">
                         {% if user.is_verified %}

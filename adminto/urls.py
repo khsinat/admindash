@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path , include
-from adminto.view import index_view, login_view,logout_view,users_view,user_detail,page_detail,delete_user,contactus_view,total_grow_logs_view,total_analysis_view,packages_view,emails_in_queue_view,transactions_view,cms_view,notifications_view,settings_view,myprofile_view,add_page_view,view_page_view,edit_user_view,edit_page_view,inactivate_user,activate_user
+from adminto.view import index_view, login_view,logout_view,users_view,user_detail,page_detail,delete_user,contactus_view,total_grow_logs_view,total_analysis_view,packages_view,emails_in_queue_view,transactions_view,cms_view,notifications_view,settings_view,myprofile_view,add_page_view,view_page_view,edit_user_view,edit_page_view,inactivate_user,activate_user,change_password_view,grow_logs_history_view,transaction_history_view
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -40,9 +40,13 @@ urlpatterns = [
     path("notifications/",notifications_view,name="notifications"),
     path("settings/",settings_view,name="settings"),
     path("myprofile/",myprofile_view,name="myprofile"),
+    path("change-password",change_password_view,name="change-password-page"),
     path("myprofile/edit/<int:user_id>",edit_user_view,name="edit-user"),
 
     path('user/details/<int:user_id>/', user_detail, name='user_detail'),
+    path('user/grow-logs-history/<int:user_id>/', grow_logs_history_view, name='grow-logs-history'),
+    path('user/transaction-history/<int:user_id>/', transaction_history_view, name='transaction-history'),
+
     #Apps
     path("apps/", include("apps.urls")),
 

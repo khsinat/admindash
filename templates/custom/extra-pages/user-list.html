@@ -5,11 +5,12 @@
 {% block title %}Users List{% endblock title %}
 
 {% block extra_css %}
-<!-- Add any extra CSS here if needed -->
+<!-- Add DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 {% endblock extra_css %}
 
 {% block topbar %}
-    {% include "partials/topbar.html" with pagetitle="User  List" %}
+    {% include "partials/topbar.html" with pagetitle="User List" %}
 {% endblock topbar %}
 
 {% block content %}
@@ -21,12 +22,26 @@
 {% endblock content %}
 
 {% block extra_js %}
+<!-- Add DataTables JS -->
+<script type="text/javascript" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
 <script>
-    
+    $(document).ready(function() {
+        $('#usersTable').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    });
+
     function viewUserDetails(userId) {
         // Implement the logic to view user details, e.g., redirect to a details page
         window.location.href = '/user/details/' + userId;
     }
 </script>
 {% endblock extra_js %}
-

@@ -2,36 +2,30 @@
 
 {% load static %}
 
-{% block title %}Users contact {% endblock title %}
+{% block title %}Users contact{% endblock title %}
 
 {% block extra_css %}
-<!-- Add any extra CSS here if needed -->
+<!-- Add DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 {% endblock extra_css %}
 
 {% block topbar %}
-    {% include "partials/topbar.html" with pagetitle="Users contact " %}
+    {% include "partials/topbar.html" with pagetitle="Users contact" %}
 {% endblock topbar %}
 
 {% block content %}
 
 <div class="row">
     <div class="col-sm-12">
-        <table class=" table table-bordered table-sm">
+        <table id="usersTable" class="table table-bordered table-sm">
             <thead>
                 <tr style="background: #386641; color: white; font-size: 16px;">
-                    <th style="padding: 15px 25px; text-align: left; ">Id</th>
-                    <th style="padding: 15px 25px; text-align: left; ">Fullname</th>
-                    <th style="padding: 15px 25px; text-align: left; ">Email</th>
-                    <th style="padding: 15px 25px; text-align: left; ">Contact On</th>
+                    <th style="padding: 15px 25px; text-align: left;">Id</th>
+                    <th style="padding: 15px 25px; text-align: left;">Fullname</th>
+                    <th style="padding: 15px 25px; text-align: left;">Email</th>
+                    <th style="padding: 15px 25px; text-align: left;">Description</th>
+                    <th style="padding: 15px 25px; text-align: left;">Created At</th>
                 </tr>
-            <tr>
-            <th><input type="text" onkeyup="filterTable(0)" placeholder="Search ID" 
-                style="width: 80%; padding: 8px; margin: 5px auto; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;"></th>
-            <th><input type="text" onkeyup="filterTable(1)" placeholder="Search Name" 
-                style="width: 80%; padding: 8px; margin: 5px auto; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;"></th>
-            <th><input type="text" onkeyup="filterTable(2)" placeholder="Search Email" 
-                style="width: 80%; padding: 8px; margin: 5px auto; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;"></th>
-            </tr>
             </thead>
             <tbody>
                 {% for user in users %}
@@ -39,72 +33,19 @@
                            transition: 0.3s;"
                     onmouseover="this.style.background='#d6e4f0'"
                     onmouseout="this.style.background='{% if forloop.counter|divisibleby:2 %}#f2f2f2{% else %}#ffffff{% endif %}'">
-
-                    <td style="padding: 15px 25px; text-align: left;">
-                        {{ user.id }}
-                    </td>
-                    <td style="padding: 15px 25px; text-align: left;">
-                        {{ user.full_name }}
-                    </td>
-
-                    
-
-                    <td style="padding: 15px 25px; text-align: left; " class="text-primary">{{ user.email }}</td>
-                    <td style="padding: 15px 25px; text-align: left;">
-                        {{ user.created_at|date:"F j, Y, g:i a" }}
-                    </td>
-
-                   <!--<td style="padding: 15px 25px; text-align: left; font-weight: bold;
-                               color: {% if user.is_verified %} green {% else %} red {% endif %};">
-                        {% if user.is_verified %}
-                            Verified
-                        {% else %}
-                            Not Verified
-                        {% endif %}
-                    </td>-->
-                    
-                    
+                    <td style="padding: 15px 25px; text-align: left;">{{ user.id }}</td>
+                    <td style="padding: 15px 25px; text-align: left;">{{ user.full_name }}</td>
+                    <td style="padding: 15px 25px; text-align: left;" class="text-primary">{{ user.email }}</td>
+                    <td style="padding: 15px 25px; text-align: left;" class="text-primary">{{ user.description }}</td>
+                    <td style="padding: 15px 25px; text-align: left;">{{ user.created_at|date:"F j, Y, g:i a" }}</td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="7" style="text-align: center; padding: 15px; font-size: 16px;">No users found.</td>
+                    <td colspan="4" style="text-align: center; padding: 15px; font-size: 16px;">No users found.</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-
-        <!-- Pagination Controls -->
-        <div class="pagination">
-
-            <span class="step-links">
-
-                {% if users.has_previous %}
-
-                    <a href="?page=1">&laquo; first</a>
-
-                    <a href="?page={{ users.previous_page_number }}">previous</a>
-
-                {% endif %}
-
-
-                <span class="current">
-
-                    Page {{ users.number }} of {{ users.paginator.num_pages }}.
-
-                </span>
-
-
-                {% if users.has_next %}
-
-                    <a href="?page={{ users.next_page_number }}">next</a>
-
-                    <a href="?page={{ users.paginator.num_pages }}">last &raquo;</a>
-
-                {% endif %}
-
-            </span>
-
-        </div>
     </div>
 </div>
 <!-- end row -->
@@ -114,21 +55,22 @@
 {% endblock content %}
 
 {% block extra_js %}
-<script>
-    function filterTable(colIndex) {
-    const table = document.querySelector("table");
-    const input = document.querySelectorAll("thead input")[colIndex];
-    const filter = input.value.toUpperCase();
-    const rows = table.querySelectorAll("tbody tr");
+<!-- Add DataTables JS -->
+<script type="text/javascript" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
-    rows.forEach(row => {
-        const cell = row.cells[colIndex];
-        if (cell) {
-            const txtValue = cell.textContent || cell.innerText;
-            row.style.display = txtValue.toUpperCase().includes(filter) ? "" : "none";
-        }
+<script>
+    $(document).ready(function() {
+        $('#usersTable').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
     });
-}
 
     function viewUserDetails(userId) {
         // Implement the logic to view user details, e.g., redirect to a details page

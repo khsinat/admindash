@@ -1,13 +1,12 @@
-
-
 {% extends "partials/base.html" %}
 
 {% load static %}
 
-{% block title %}Grow logs history{% endblock title %}
+{% block title %}Grow Logs History{% endblock title %}
 
 {% block extra_css %}
-<!-- Add any extra CSS here if needed -->
+<!-- Add DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 {% endblock extra_css %}
 
 {% block topbar %}
@@ -15,19 +14,63 @@
 {% endblock topbar %}
 
 {% block content %}
-
-<!-- end row -->
+<div class="row">
+    <div class="col-sm-12">
+        <table id="growLogsTable" class="table table-bordered table-sm">
+            <thead>
+                <tr style="background: #386641; color: white; font-size: 16px;">
+                    <th style="padding: 15px 25px; text-align: left;">ID</th>
+                    <th style="padding: 15px 25px; text-align: left;">User</th>
+                    <th style="padding: 15px 25px; text-align: left;">Action</th>
+                    <th style="padding: 15px 25px; text-align: left;">Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Dummy Data -->
+                <tr>
+                    <td style="padding: 15px 25px; text-align: left;">1</td>
+                    <td style="padding: 15px 25px; text-align: left;">John Doe</td>
+                    <td style="padding: 15px 25px; text-align: left;">Created</td>
+                    <td style="padding: 15px 25px; text-align: left;">2023-10-01 10:00 AM</td>
+                </tr>
+                <tr>
+                    <td style="padding: 15px 25px; text-align: left;">2</td>
+                    <td style="padding: 15px 25px; text-align: left;">Jane Smith</td>
+                    <td style="padding: 15px 25px; text-align: left;">Updated</td>
+                    <td style="padding: 15px 25px; text-align: left;">2023-10-02 11:30 AM</td>
+                </tr>
+                <tr>
+                    <td style="padding: 15px 25px; text-align: left;">3</td>
+                    <td style="padding: 15px 25px; text-align: left;">Alice Johnson</td>
+                    <td style="padding: 15px 25px; text-align: left;">Deleted</td>
+                    <td style="padding: 15px 25px; text-align: left;">2023-10-03 09:45 AM</td>
+                </tr>
+                <!-- Add more dummy data as needed -->
+            </tbody>
+        </table>
+    </div>
+</div>
 
 {% include "partials/footer.html" %}
 
 {% endblock content %}
 
 {% block extra_js %}
+<!-- Add DataTables JS -->
+<script type="text/javascript" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
 <script>
-    
-    function viewUserDetails(userId) {
-        // Implement the logic to view user details, e.g., redirect to a details page
-        window.location.href = '/user/details/' + userId;
-    }
+    $(document).ready(function() {
+        $('#growLogsTable').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    });
 </script>
 {% endblock extra_js %}

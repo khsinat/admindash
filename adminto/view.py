@@ -14,6 +14,7 @@ from django.contrib.auth import get_user_model,update_session_auth_hash
 from .forms import PageForm
 from django.utils import timezone
 from datetime import timedelta
+from api.models import ContactUs
 
 User = get_user_model()
 
@@ -57,11 +58,12 @@ class DashboardView(TemplateView):
         context = super().get_context_data(**kwargs)
         context["user"] = self.request.user
         try:
-            users = get_user_model().objects.all()  # Fetch all users
+            users = get_user_model().objects.filter(is_superuser=False)  # Fetch all users
             total_users = users.count()  # Count the total number of users
 
             one_month_ago = timezone.now() - timedelta(days=30)
-            recent_users = get_user_model().objects.filter(created_at=one_month_ago)
+            # recent_users = get_user_model().objects.filter(created_at=one_month_ago)
+            recent_users = get_user_model().objects.filter(created_at=one_month_ago, is_superuser=False)
             recent_user_count = recent_users.count()  # Count users registered in the last month     
             if total_users > 0:
                 increment = recent_user_count  # Increment is the count of recent users
@@ -94,8 +96,10 @@ class UsersView(TemplateView):
 
         # Get all users
 
-        user_list = get_user_model().objects.all()  # Replace with your actual user model
+        User = get_user_model()
 
+        # Filter users where is_superuser is not 1
+        user_list = User.objects.filter(is_superuser=False)
         paginator = Paginator(user_list, 10)  # Show 10 users per page
 
 
@@ -224,8 +228,8 @@ class ContactusView(TemplateView):
 
         context = super().get_context_data(**kwargs)
         # Get all users
-        user_list = get_user_model().objects.all()  # Replace with your actual user model
-        paginator = Paginator(user_list, 10)  # Show 10 users per page
+        contact_us_list = ContactUs.objects.all()
+        paginator = Paginator(contact_us_list, 10)  # Show 10 users per page
         # Get the current page number from the request
         page_number = self.request.GET.get('page')
         users = paginator.get_page(page_number)

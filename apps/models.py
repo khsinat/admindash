@@ -52,3 +52,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     # Specify the field used for login (email in this case)
     USERNAME_FIELD = 'email'
+
+
+    def save(self, *args, **kwargs):
+        # Set default value for state_id if it is None
+        if self.state_id is None:
+            self.state_id = 0
+        super().save(*args, **kwargs)

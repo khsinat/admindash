@@ -61,8 +61,7 @@
                         <div class="card-body pt-1.25">
                             {% if profile_image_url %}
                                 <img class="card-img" src="{% url 'profile-file-download' %}?file_path={{ selected_user.profile_file.name }}" alt="Profile Image">
-                            {% else %}
-                                <img class="card-img" src="{% static '/images/gallery/4.jpg' %}" alt="Default Image">
+                          
                             {% endif %}
                         </div>
                     </div>
@@ -81,7 +80,7 @@
                                     <td style="padding: 15px 25px; text-align: left; font-weight: bold;">Email</td>
                                     <td style="padding: 15px 25px; text-align: left;">{{ selected_user.email }}</td>
                                     <td style="padding: 15px 25px; text-align: left; font-weight: bold;">Contact Number</td>
-                                    <td style="padding: 15px 25px; text-align: left;">1234567891</td>
+                                    <td style="padding: 15px 25px; text-align: left;">{{ selected_user.contact_no }}</td>
                                 </tr>
                                 <tr>
                                     <td style="padding: 15px 25px; text-align: left; font-weight: bold;">Total Coins</td>

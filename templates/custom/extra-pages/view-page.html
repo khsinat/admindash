@@ -25,12 +25,16 @@
                 <div class="col-md-6">
                     <div class="text-md-end m-1">
                         <div class="button-list">
-                         <a href="{% url 'user_detail' user.id %}" class="btn btn-soft-info">
-                          <i class="fas fa-solid fa-pen"></i>
-                         </a>
-                         <a href="{% url 'user_detail' user.id %}" class="btn btn-soft-danger">
-                          <i class="fas fa-solid fa-trash"></i>
-                         </a>
+                         <a href="{% url 'edit-page' page.id %}" class="btn btn-soft-info">
+                            <i class="fas fa-solid fa-pen"></i>
+                        </a>
+                        <form method="POST" style="display:inline;">
+                            {% csrf_token %} 
+                            <input type="hidden" name="delete_page_id" value="{{ page.id }}">
+                         <button type="submit" class="btn btn-soft-danger" onclick="return confirm('Are you sure you want to delete this page?')">
+                             <i class="fas fa-solid fa-trash"></i>
+                         </button>
+                         </form>
                         </div>
                     </div>
                 </div>

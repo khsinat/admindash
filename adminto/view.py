@@ -390,7 +390,7 @@ class EditPageView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         page_id = self.kwargs.get('page_id')  # Use 'page_id' instead of 'type_id'
-        form = PageForm(request.POST)
+        form = PageForm(request.POST, page_id=page_id)
 
         if form.is_valid():
             try:

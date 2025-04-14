@@ -41,10 +41,17 @@ class PageForm(forms.Form):
     title = forms.CharField(max_length=100, required=True)
     type_id = forms.ChoiceField(choices=[(1, 'Terms of Service'), (2, 'Privacy Policy'), (3, 'About Us'), (4, 'FAQ')], required=True)
     description = forms.CharField(required=True)
-    
+
+    def __init__(self, *args, **kwargs):
+        self.page_id = kwargs.pop('page_id', None)  # get page_id if passed
+        super().__init__(*args, **kwargs)
+
     def clean_type_id(self):
         type_id = self.cleaned_data.get('type_id')
-        if Page.objects.filter(type_id=type_id).exists():
+        qs = Page.objects.filter(type_id=type_id)
+        if self.page_id:
+            qs = qs.exclude(id=self.page_id)
+        if qs.exists():
             raise forms.ValidationError("A page with this type already exists.")
         return type_id
     

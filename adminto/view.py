@@ -367,7 +367,7 @@ class ViewPageView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         page_id = self.kwargs.get('type_id')  # assuming you use <int:pk> in URL
-        context['page'] = get_object_or_404(Page, type_id=page_id)
+        context['page'] = get_object_or_404(Page, id=page_id)
         return context
 
 

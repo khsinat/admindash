@@ -34,11 +34,6 @@
         <form method="POST" id="cms-form">
             {% csrf_token %}
             <div class="card-body">
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-danger">{{ message }}</div>
-                    {% endfor %}
-                {% endif %}
                 <div class="row mb-4">
                     <div class="col-6 form-group">
                         <h4>Title</h4>

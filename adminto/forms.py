@@ -50,7 +50,9 @@ class PageForm(forms.Form):
         type_id = self.cleaned_data.get('type_id')
         qs = Page.objects.filter(type_id=type_id)
         if self.page_id:
+            print(self.page_id)
             qs = qs.exclude(id=self.page_id)
+            print(qs,"qs")
         if qs.exists():
             raise forms.ValidationError("A page with this type already exists.")
         return type_id

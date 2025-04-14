@@ -112,7 +112,7 @@ class UsersView(TemplateView):
 
         # Add the paginated users to the context
 
-        context['users'] = users
+        context['users'] = user_list
 
         context['paginator'] = paginator  # Optional: if you want to use paginator info in the template
 
@@ -235,7 +235,7 @@ class ContactusView(TemplateView):
         users = paginator.get_page(page_number)
 
         # Add the paginated users to the context
-        context['users'] = users
+        context['users'] = contact_us_list
         context['paginator'] = paginator  # Optional: if you want to use paginator info in the template
         return context
 

@@ -25,16 +25,16 @@
                             <a href="{% url 'inactivate_user' selected_user.id %}" class="btn btn-soft-secondary waves-effect waves-light">
                                 Inactive
                             </a>
-                            <a href="{% url 'delete_user' selected_user.id %}" class="btn btn-soft-warning waves-effect waves-light">
+                            <!-- <a href="{% url 'delete_user' selected_user.id %}" class="btn btn-soft-warning waves-effect waves-light">
                                 Block
-                            </a>
+                            </a> -->
                         {% elif selected_user.state_id == 1 %}
                             <a href="{% url 'activate_user' selected_user.id %}" class="btn btn-soft-success waves-effect waves-light">
                                 Active
                             </a>
-                            <a href="{% url 'delete_user' selected_user.id %}" class="btn btn-soft-warning waves-effect waves-light">
+                            <!-- <a href="{% url 'delete_user' selected_user.id %}" class="btn btn-soft-warning waves-effect waves-light">
                                 Block
-                            </a>
+                            </a> -->
                         {% elif selected_user.state_id == 2 %}
                             <a href="{% url 'activate_user' selected_user.id %}" class="btn btn-soft-success waves-effect waves-light">
                                 Active
@@ -61,7 +61,8 @@
                         <div class="card-body pt-1.25">
                             {% if profile_image_url %}
                                 <img class="card-img" src="{% url 'profile-file-download' %}?file_path={{ selected_user.profile_file.name }}" alt="Profile Image">
-                          
+                            {% else %}
+                                <img class="card-img" src="{% static '/images/gallery/photo_6334515813557585256_y.jpg' %}" alt="Default Image">
                             {% endif %}
                         </div>
                     </div>
@@ -92,7 +93,7 @@
                                         {% elif selected_user.state_id == 1 %}
                                             <div class="badge badge-soft-warning">Inactive</div>
                                         {% elif selected_user.state_id == 2 %}
-                                            <div class="badge badge-soft-danger">Deleted</div>
+                                            <div class="badge badge-soft-danger">Blocked</div>
                                         {% else %}
                                             <div class="badge badge-soft-secondary">Unknown</div>
                                         {% endif %}

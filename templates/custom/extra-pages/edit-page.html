@@ -55,8 +55,8 @@
                         <h4>Type</h4>
                         <select name="type_id" class="form-control" style="width: 100%; padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;">
                             <option value="">-- Select Type --</option>
-                            <option value="1" {% if form.type_id.value|default:page.type_id == 1 %}selected{% endif %}>Terms of Service</option>
-                            <option value="2" {% if form.type_id.value|default:page.type_id == 2 %}selected{% endif %}>Privacy Policy</option>
+                            <option value="1" {% if form.type_id.value|default:page.type_id == 2 %}selected{% endif %}>Terms of Service</option>
+                            <option value="2" {% if form.type_id.value|default:page.type_id == 1 %}selected{% endif %}>Privacy Policy</option>
                             <option value="3" {% if form.type_id.value|default:page.type_id == 3 %}selected{% endif %}>About Us</option>
                             <option value="4" {% if form.type_id.value|default:page.type_id == 4 %}selected{% endif %}>FAQ</option>
                         </select>

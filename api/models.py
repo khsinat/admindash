@@ -26,9 +26,9 @@ class Page(models.Model):
     def __str__(self):
         return self.title
 
-PAGE_TYPE_TERMS_AND_CONDITIONS = 1
+PAGE_TYPE_TERMS_AND_CONDITIONS = 2
  
-PAGE_TYPE_PRIVACY_POLICY = 2
+PAGE_TYPE_PRIVACY_POLICY = 1
 
     
 class BlacklistedToken(models.Model):

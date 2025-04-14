@@ -39,7 +39,7 @@ class MyProfileForm(forms.ModelForm):
 
 class PageForm(forms.Form):
     title = forms.CharField(max_length=100, required=True)
-    type_id = forms.ChoiceField(choices=[(1, 'Terms of Service'), (2, 'Privacy Policy'), (3, 'About Us'), (4, 'FAQ')], required=True)
+    type_id = forms.ChoiceField(choices=[(2, 'Terms of Service'), (1, 'Privacy Policy'), (3, 'About Us'), (4, 'FAQ')], required=True)
     description = forms.CharField(required=True)
 
     def __init__(self, *args, **kwargs):

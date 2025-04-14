@@ -11,7 +11,7 @@ from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
 from api.models import Page,PAGE_TYPE_TERMS_AND_CONDITIONS,PAGE_TYPE_PRIVACY_POLICY
 from django.contrib.auth import get_user_model,update_session_auth_hash
-from .forms import PageForm
+from .forms import PageForm, ChangePasswordForm
 from django.utils import timezone
 from datetime import timedelta
 from api.models import ContactUs
@@ -427,23 +427,40 @@ edit_page_view = EditPageView.as_view()
 #     # Pass the user object to the template
 #     return render(request, 'custom/extra-pages/user-detail.html', {'user': user})
 
+
 class ChangePasswordView(TemplateView):
+
     template_name = "custom/extra-pages/change-password.html"
+
+
     def post(self, request, *args, **kwargs):
-        new_password = request.POST.get("new_password")
-        confirm_password = request.POST.get("confirm_password")
-        print(new_password, confirm_password)
+
+        form = ChangePasswordForm(request.POST)
+
         user = request.user
 
-        if new_password != confirm_password:
-            messages.error(request, "New password and confirmation do not match.")
-            return render(request, self.template_name)
-        user.set_password(new_password)
-        user.save()
-        update_session_auth_hash(request, user)  # Keeps user logged in
-        messages.success(request, "Password changed successfully.")
-        logout(request)
-        return redirect("admin_login")
+
+        if form.is_valid():
+
+            new_password = form.cleaned_data['new_password']
+
+            user.set_password(new_password)
+
+            user.save()
+
+            update_session_auth_hash(request, user)  # Keeps user logged in
+
+            messages.success(request, "Password changed successfully.")
+
+            logout(request)
+
+            return redirect("admin_login")
+
+        
+
+        # If the form is not valid, render the form with errors
+
+        return render(request, self.template_name, {'form': form})
 
 
 change_password_view= ChangePasswordView.as_view()

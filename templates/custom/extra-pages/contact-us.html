@@ -11,20 +11,22 @@
 
 {% block topbar %}
     {% include "partials/topbar.html" with pagetitle="Users contact" %}
-{% endblock topbar %}
-
-{% block content %}
-
+    {% endblock topbar %}
+    
+    {% block content %}
+    
 <div class="row">
     <div class="col-sm-12">
-        <table id="usersTable" class="table table-bordered table-sm">
+        <table id="usersTable" class="table table-bordered table-sm"
+        data-users-exist="{% if users %}true{% else %}false{% endif %}" 
+        >
             <thead>
                 <tr style="background: #386641; color: white; font-size: 16px;">
-                    <th style="padding: 15px 25px; text-align: left;">Id</th>
-                    <th style="padding: 15px 25px; text-align: left;">Fullname</th>
-                    <th style="padding: 15px 25px; text-align: left;">Email</th>
-                    <th style="padding: 15px 25px; text-align: left;">Description</th>
-                    <th style="padding: 15px 25px; text-align: left;">Created At</th>
+                    <th style="padding: 15px 25px; text-align: left; width:4%">Id</th>
+                    <th style="padding: 15px 25px; text-align: left; width:4%">Fullname</th>
+                    <th style="padding: 15px 25px; text-align: left; width:3%">Email</th>
+                    <th style="padding: 15px 25px; text-align: left; width:3%">Description</th>
+                    <th style="padding: 15px 25px; text-align: left; width:3%">Created At</th>
                 </tr>
             </thead>
             <tbody>
@@ -39,11 +41,12 @@
                     <td style="padding: 15px 25px; text-align: left;" class="text-primary">{{ user.description }}</td>
                     <td style="padding: 15px 25px; text-align: left;">{{ user.created_at|date:"F j, Y, g:i a" }}</td>
                 </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="4" style="text-align: center; padding: 15px; font-size: 16px;">No users found.</td>
-                </tr>
                 {% endfor %}
+                {% if users|length == 0 %}
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 15px; font-size: 16px;">No users found.</td>
+                </tr>
+                {% endif %}
             </tbody>
         </table>
     </div>
@@ -61,6 +64,8 @@
 
 <script>
     $(document).ready(function() {
+        const hasUsers = $('#usersTable').data('users-exist');
+        if(hasUsers){
         $('#usersTable').DataTable({
             "paging": true,
             "lengthChange": false,
@@ -70,6 +75,7 @@
             "autoWidth": false,
             "responsive": true,
         });
+    }
     });
 
     function viewUserDetails(userId) {

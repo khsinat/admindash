@@ -28,6 +28,8 @@
 
 <script>
     $(document).ready(function() {
+        const hasUsers = $('#usersTable').data('users-exist');
+        if(hasUsers){
         $('#usersTable').DataTable({
             "paging": true,
             "lengthChange": false,
@@ -37,6 +39,7 @@
             "autoWidth": false,
             "responsive": true,
         });
+    }
     });
 
     function viewUserDetails(userId) {

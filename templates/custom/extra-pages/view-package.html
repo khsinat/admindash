@@ -1,0 +1,115 @@
+{% extends "partials/base.html" %}
+
+{% load static %}
+
+{% block title %}Package{% endblock title %}
+
+{% block extra_css %}
+<!-- Add any extra CSS here if needed -->
+{% endblock extra_css %}
+
+{% block topbar %}
+    {% include "partials/topbar.html" with pagetitle="Package Details" %}
+{% endblock topbar %}
+
+{% block content %}
+
+<div class="row">
+   <div class="col-12">
+    <div class="card">
+        <div class="card-body p-2"> 
+            <div class="row">
+                <div class="col-md-6"><h3 >{{package.title}}</h3></div>
+                <div class="col-md-6">
+                    <div class="text-md-end m-1">
+                        <div class="button-list">
+                         {% comment %} <a href="{% url 'edit-page' page.id %}" class="btn btn-soft-info">
+                            <i class="fas fa-solid fa-pen"></i>
+                        </a>  {% endcomment %}
+                         <form method="POST" action="{% url 'packages' %}" style="display:inline;">
+                            {% csrf_token %} 
+                            <input type="hidden" name="delete_package_id" value="{{ package.id }}">
+                         <button type="submit" class="btn btn-soft-danger" onclick="return confirm('Are you sure you want to delete this page?')">
+                             <i class="fas fa-solid fa-trash"></i>
+                         </button>
+                         </form> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   </div> 
+</div>
+<div class="col-12">
+    <div class="card">
+        <div class="card-body"> 
+            <div class="row">
+                <div class="col-md-12 pt-2">
+            <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+            <thead>
+            </thead>
+            <tbody>
+                <tr >
+
+                    <td style="padding: 15px 25px; text-align: left; font-weight: bold">
+                    ID</td>
+                    <td style="padding: 15px 25px; text-align: left;">
+                    {{package.id}} 
+                    </td>
+                    
+                </tr>
+                    <tr>
+                    <td style="padding: 15px 25px; text-align: left;font-weight: bold">
+                    Title</td>
+                    <td style="padding: 15px 25px; text-align: left;">
+                        {{ package.title }}
+                    </td>
+                </tr>
+                </tr>
+                    <tr>
+                    <td style="padding: 15px 25px; text-align: left;font-weight: bold">
+                    Description</td>
+                    <td style="padding: 15px 25px; text-align: left;">
+                        {{ package.description }}
+                    </td>
+                </tr>
+                </tr>
+                    <tr>
+                    <td style="padding: 15px 25px; text-align: left;font-weight: bold">
+                    Price</td>
+                    <td style="padding: 15px 25px; text-align: left;">
+                        {{package.price}}
+                    </td>
+                </tr>
+                
+            </tbody>
+        </table>
+        {{ package.description|safe }}
+            </div>
+                </div>
+            </div>
+       </div>
+     </div>
+   </div> 
+</div> 
+</div>
+
+
+
+<!-- end row -->
+
+{% include "partials/footer.html" %}
+
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+    
+    function viewUserDetails(userId) {
+        // Implement the logic to view user details, e.g., redirect to a details page
+        window.location.href = '/user/details/' + userId;
+    }
+</script>
+{% endblock extra_js %}

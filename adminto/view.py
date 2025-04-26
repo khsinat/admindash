@@ -1,4 +1,8 @@
 import logging
+import base64
+from decouple import config
+from openai import OpenAI
+
 from django.shortcuts import render, redirect,get_object_or_404,get_list_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -9,12 +13,14 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
-from api.models import Page,PAGE_TYPE_TERMS_AND_CONDITIONS,PAGE_TYPE_PRIVACY_POLICY
+from api.models import Page,PAGE_TYPE_TERMS_AND_CONDITIONS,PAGE_TYPE_PRIVACY_POLICY,Package
 from django.contrib.auth import get_user_model,update_session_auth_hash
-from .forms import PageForm, ChangePasswordForm
+from .forms import PageForm, ChangePasswordForm,PackageForm
 from django.utils import timezone
 from datetime import timedelta
 from api.models import ContactUs
+client = OpenAI(api_key=config('OPENAI_API'))
+
 
 User = get_user_model()
 
@@ -167,21 +173,81 @@ class PackagesView(TemplateView):
 
     template_name = "custom/extra-pages/packages.html"
     def get_context_data(self, **kwargs):
-
         context = super().get_context_data(**kwargs)
-        # Get all users
-        user_list = get_user_model().objects.all()  # Replace with your actual user model
-        paginator = Paginator(user_list, 10)  # Show 10 users per page
-        # Get the current page number from the request
-        page_number = self.request.GET.get('page')
-        users = paginator.get_page(page_number)
-
-        # Add the paginated users to the context
-        context['users'] = users
-        context['paginator'] = paginator  # Optional: if you want to use paginator info in the template
+        context['packages'] = Package.objects.all().order_by('-created_on')  # or any ordering you prefer
         return context
+    def post(self, request, *args, **kwargs):
+        package_id = request.POST.get("delete_package_id")
+        if package_id:
+            package = get_object_or_404(Package, id=package_id)
+            if request.user == package.created_by or request.user.is_staff:  # optional permission check
+                package.delete()
+        return redirect('packages')
 
 packages_view= PackagesView.as_view()
+
+
+
+class AddPackageView(TemplateView):
+    template_name = "custom/extra-pages/add-package.html"
+    def post(self, request, *args, **kwargs):
+        form = PackageForm(request.POST)
+        if form.is_valid():
+            Package.objects.create(
+                title=form.cleaned_data['title'],
+                description=form.cleaned_data['description'],
+                price=form.cleaned_data['price'],
+                created_by=request.user
+            )
+            messages.success(request, "Package created successfully.")
+            return redirect('packages')
+
+        else:
+            messages.error(request, "Please correct the errors below.")
+        return render(request, self.template_name, {'form': form})
+
+
+add_package_view = AddPackageView.as_view()
+
+class ViewPackageView(TemplateView):
+    template_name = "custom/extra-pages/view-package.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        package_id = self.kwargs.get('id')  # assuming you use <int:pk> in URL
+        context['package'] = get_object_or_404(Package, id=package_id)
+        return context
+
+
+view_package_view= ViewPackageView.as_view()
+
+class EditPackageView(TemplateView):
+
+    template_name = "custom/extra-pages/edit-package.html"
+    def get_context_data(self, **kwargs):
+       context = super().get_context_data(**kwargs)
+       package_id = self.kwargs.get('package_id')  # assuming you use <int:pk> in URL
+       context['package'] = get_object_or_404(Package, id=package_id)
+       return context
+   
+    def post(self , request, *args, **kwargs):
+        package_id=kwargs.get('package_id') 
+        package_obj= get_object_or_404(Package,id=package_id)
+
+        title=request.POST.get("title")
+        description=request.POST.get("description")
+        price=request.POST.get("price")
+
+        if title:
+            package_obj.title=title
+        if description:
+            package_obj.description=description
+        if price:
+            package_obj.price=price
+
+        package_obj.save()
+        return redirect('packages')
+edit_package_view= EditPackageView.as_view()
 
 class EmailsInQueue(TemplateView):
 
@@ -337,6 +403,22 @@ class EditUserView(TemplateView):
             user_obj.profile_file=profile_file
 
         user_obj.save()
+        prompt =  request.POST.get("prompt"); 
+        cannabis_file=request.FILES.get("cannabis_file")
+        b64_image = base64.b64encode(cannabis_file.read()).decode("utf-8")
+
+        response = client.responses.create(
+            model="gpt-4o-mini",
+            input=[
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "input_text", "text": prompt},
+                        {"type": "input_image", "image_url": f"data:image/png;base64,{b64_image}"},
+                    ],
+                }
+            ],
+        )
         return redirect('myprofile')
 edit_user_view= EditUserView.as_view()
 class AddPageView(TemplateView):
@@ -503,6 +585,33 @@ def page_detail(request, type):
     }
     return render(request, 'partials/page.html', context)
 
+class UploadView(TemplateView):
+    template_name = "custom/extra-pages/upload.html"
+    def post(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        prompt=request.POST.get("prompt")
+        cannabis_file=request.FILES.get("cannabis_file")
+        b64_image = base64.b64encode(cannabis_file.read()).decode("utf-8")
+        file_type=request.POST.get("file_type")
+        response = client.responses.create(
+            model="gpt-4o-mini",
+            input=[
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "input_text", "text": prompt},
+                        {"type": "input_image", "image_url": f"data:image/{file_type};base64,{b64_image}"},
+                    ],
+                }
+            ],
+        )
+        context["response"] = response.output_text
+        return self.render_to_response(context)
+
+
+
+
+upload_view= UploadView.as_view()
 
 def delete_user(request, user_id):
     user = get_user_model()

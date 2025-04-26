@@ -48,5 +48,14 @@ STATE_INACTIVE = 1
 STATE_DELETED = 2
 
 
+class Package(models.Model):
+    title = models.CharField(max_length=256)
+    description = models.TextField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True, null=True, blank=True)
+    created_by = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True, blank=True)
 
+    def __str__(self):
+        return self.title
 

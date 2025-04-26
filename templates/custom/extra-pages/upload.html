@@ -1,3 +1,4 @@
+
 {% extends "partials/base.html" %}
 
 {% load static %}
@@ -18,7 +19,7 @@
     <div class="card">
         <div class="card-body p-2"> 
             <div class="row">
-                <div class="col-md-12"><h3 >Update Profile</h3></div>
+                <div class="col-md-12"><h3 >Uplaod Cannabis</h3></div>
             </div>
         </div>
     </div>
@@ -31,28 +32,10 @@
             <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
             <div class="card-body">
-                <div class="row mb-4" >
-                <div class="col-6">
-                    <h4>Name</h4> 
-                    <input type="text" name="full_name" value="{{user.full_name}}" 
-                    style="width: 100%; padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;">
-                </div>
-                <div class="col-6"> 
-                    <h4>Email</h4> 
-                    <input type="text" name="email" value="{{user.email}}" 
-                    style="width: 100%; padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;">
-                </div>
-                </div>
-                <div class="row mb-4" >
                 
+                <div class="row mb-4" >
                 <div class="col-6"> 
-                    <h4>Upload File</h4> 
-                        <input type="file" name="profile_file" 
-                        style="width: 100%; padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;">
-
-                </div>
-                <div class="col-6"> 
-                    <h4>Upload cannabis File</h4> 
+                    <h4>Upload file</h4> 
                         <input type="file" name="cannabis_file" 
                         style="width: 100%; padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;">
 
@@ -62,7 +45,19 @@
                     <input type="text" name="prompt" 
                     style="width: 100%; padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;">
                 </div>
+                <div class="col-6">
+                        <h4>Type of file</h4>
+                        <select name="file_type" class="form-control" style="width: 100%; padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;">
+                            <option value="">-- Select Type --</option>
+                            <option value="jpg" >jpg</option>
+                            <option value="png">png</option>
+                            <option value="webp">webp</option>
+                        </select>
                 </div>
+                </div>
+                {% if response %} 
+                <p>{{ response }}</p>
+                {% endif %}
                 <button type="submit" class="btn btn-soft-primary waves-effect waves-light mt-3">submit</button> 
             </div> <!-- end card-body-->
         </form>

@@ -37,13 +37,33 @@ class MyProfileForm(forms.ModelForm):
             user.save()
         return user
 
+class PackageForm(forms.Form):
+    title = forms.CharField(max_length=100, required=True)
+    description = forms.CharField(required=True)
+    price=forms.DecimalField(max_digits=10, decimal_places=2)
+
+    def __init__(self, *args, **kwargs):
+        self.package_id = kwargs.pop('package_id', None)  # get package_id if passed
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        title = cleaned_data.get("title")
+        description = cleaned_data.get("description")
+
+        if title and description and title.lower() in description.lower():
+            raise forms.ValidationError("Description should not repeat the title.")
+
+        return cleaned_data
+
+    
 class PageForm(forms.Form):
     title = forms.CharField(max_length=100, required=True)
     type_id = forms.ChoiceField(choices=[(2, 'Terms of Service'), (1, 'Privacy Policy'), (3, 'About Us'), (4, 'FAQ')], required=True)
     description = forms.CharField(required=True)
 
     def __init__(self, *args, **kwargs):
-        self.page_id = kwargs.pop('page_id', None)  # get page_id if passed
+        self.package_id = kwargs.pop('package_id', None)  # get page_id if passed
         super().__init__(*args, **kwargs)
 
     def clean_type_id(self):
@@ -56,7 +76,7 @@ class PageForm(forms.Form):
         if qs.exists():
             raise forms.ValidationError("A page with this type already exists.")
         return type_id
-    
+
 class ChangePasswordForm(forms.Form):
     new_password = forms.CharField(widget=forms.PasswordInput, label="New Password", required=True)
     confirm_password = forms.CharField(widget=forms.PasswordInput, label="Confirm Password", required=True)

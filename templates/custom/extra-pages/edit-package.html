@@ -1,14 +1,14 @@
+
 {% extends "partials/base.html" %}
 
 {% load static %}
-
 
 {% block extra_css %}
 <!-- Add any extra CSS here if needed -->
 {% endblock extra_css %}
 
 {% block topbar %}
-    {% include "partials/topbar.html" with pagetitle="Profile" %}
+    {% include "partials/topbar.html" with pagetitle="Edit Package" %}
 {% endblock topbar %}
 
 {% block content %}
@@ -18,7 +18,7 @@
     <div class="card">
         <div class="card-body p-2"> 
             <div class="row">
-                <div class="col-md-12"><h3 >Update Profile</h3></div>
+                <div class="col-md-12"><h3 >Edit Package</h3></div>
             </div>
         </div>
     </div>
@@ -28,40 +28,28 @@
 <div class="row">
     <div class="col-12">
         <div class="card">
-            <form method="POST" enctype="multipart/form-data">
+            <form method="POST" >
                 {% csrf_token %}
             <div class="card-body">
                 <div class="row mb-4" >
                 <div class="col-6">
-                    <h4>Name</h4> 
-                    <input type="text" name="full_name" value="{{user.full_name}}" 
+                    <h4>Title</h4> 
+                    <input type="text" name="title" value="{{package.title}}"
                     style="width: 100%; padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;">
                 </div>
                 <div class="col-6"> 
-                    <h4>Email</h4> 
-                    <input type="text" name="email" value="{{user.email}}" 
+                    <h4>Description</h4> 
+                    <input type="text" name="description" value="{{package.description}}" 
                     style="width: 100%; padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;">
                 </div>
                 </div>
                 <div class="row mb-4" >
-                
-                <div class="col-6"> 
-                    <h4>Upload File</h4> 
-                        <input type="file" name="profile_file" 
-                        style="width: 100%; padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;">
-
-                </div>
-                <div class="col-6"> 
-                    <h4>Upload cannabis File</h4> 
-                        <input type="file" name="cannabis_file" 
-                        style="width: 100%; padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;">
-
-                </div>
-                <div class="col-6">
-                    <h4>Prompt</h4> 
-                    <input type="text" name="prompt" 
+                 <div class="col-6">
+                    <h4>Price</h4> 
+                    <input type="text" name="price" value="{{package.price}}"
                     style="width: 100%; padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; display: block;">
                 </div>
+                
                 </div>
                 <button type="submit" class="btn btn-soft-primary waves-effect waves-light mt-3">submit</button> 
             </div> <!-- end card-body-->

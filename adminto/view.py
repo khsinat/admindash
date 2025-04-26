@@ -605,8 +605,18 @@ class UploadView(TemplateView):
                 }
             ],
         )
-        context["response"] = response.output_text
+        request.session['result'] = response.output_text
+
+            # Redirect after successful POST
+        return redirect(request.path)
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        if 'result' in request.session:
+            context['response'] = request.session.pop('result')  # remove after reading
+
         return self.render_to_response(context)
+
+
 
 
 

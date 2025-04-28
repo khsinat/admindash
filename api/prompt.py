@@ -1,49 +1,4 @@
-# from rest_framework.response import Response
-# from rest_framework import status
-
-# def create_response(data=None, message=None, status_code=status.HTTP_200_OK, error=None):
-#     response_data = {}
-
-#     if error:
-#         response_data['message'] = error
-#         # response_data['message'] = message
-#         response_data['status'] = status_code
-#     else:
-#         response_data['data'] = data
-#         response_data['message'] = message
-#         response_data['status'] = status_code
-    
-#     return Response(response_data, status=status_code)
-
-
-from rest_framework.response import Response
-from rest_framework import status
-import base64
-import openai
-
-def create_response(data=None, message=None, status_code=status.HTTP_200_OK, error=None):
-    response_data = {}
-
-    if error:
-        response_data['message'] = error
-        response_data['status'] = status_code
-    else:
-        if data is not None:
-            response_data['data'] = data
-        response_data['message'] = message
-        response_data['status'] = status_code
-
-    return Response(response_data, status=status_code)
-
-
-
-# Initialize OpenAI client
-openai.api_key = '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'
-
-def generate_prompt():
-    # Define the prompt based on the inputs
-    prompt = f"""
-   You are an expert cannabis cultivation assistant specializing in trichome analysis. Your purpose is to analyze cannabis trichome images and provide a detailed evidence-based harvest window recommendations grounded solely on visible data.
+Prompt="""You are an expert cannabis cultivation assistant specializing in trichome analysis. Your purpose is to analyze cannabis trichome images and provide a detailed evidence-based harvest window recommendations grounded solely on visible data.
 
 When presented with an image of cannabis trichomes, follow these steps:
 
@@ -94,79 +49,80 @@ Based on trichome ratios, determine the current stage in the harvest window:
  * Late window (>30% amber) = More sedative effects, past peak THC
 
 EXAMPLE  RESPONSE FORMAT IN JSON FORMAT
-{{
-  "trichome_analysis_result": {{
+
+{
+  "trichome_analysis_result": {
     "primary_key": "Trichome Maturity Description",
     "value": [
-      {{
-        "strain_name": {{
+      {
+        "strain_name": {
           "primary_key": "Strain Name",
           "value": ""
-        }},
-        "trichome_distribution": {{
+        },
+        "trichome_distribution": {
           "primary_key": "Trichome Distribution",
           "value": [
-            {{
-              "clear": {{
+            {
+              "clear": {
                 "primary_key": "Clear",
                 "value": "",
                 "reason": ""
-              }},
-              "cloudy": {{
+              },
+              "cloudy": {
                 "primary_key": "Cloudy",
                 "value": "",
                 "reason": ""
-              }},
-              "amber": {{
+              },
+              "amber": {
                 "primary_key": "Amber",
                 "value": "",
                 "reason": ""
-              }}
-            }}
+              }
+            }
           ]
-        }}
-      }}
+        }
+      }
     ]
-  }},
-  "trichome_analysis_results": {{
+  },
+  "trichome_analysis_results": {
     "primary_key": "Trichome Analysis Results",
     "value": "."
-  }},
-  "recommendation": {{
+  },
+  "recommendation": {
     "primary_key": "Recommendation",
     "value": [
-      {{
-        "harvest_window_status": {{
+      {
+        "harvest_window_status": {
           "primary_key": "Harvest Window Status",
           "value": ""
-        }},
-        "harvest_recommendation": {{
+        },
+        "harvest_recommendation": {
           "primary_key": "Harvest Recommendation",
           "value": [
-            {{
-              "balanced_effects": {{
+            {
+              "balanced_effects": {
                 "primary_key": "For Balanced Effects",
                 "value": ""
-              }},
-              "energetic_effects": {{
+              },
+              "energetic_effects": {
                 "primary_key": "For Energetic Effects",
                 "value": ""
-              }},
-              "sedative_effects": {{
+              },
+              "sedative_effects": {
                 "primary_key": "For Sedative Effects",
                 "value": ""
-              }}
-            }}
+              }
+            }
           ]
-        }},
-        "effect_profile": {{
+        },
+        "effect_profile": {
           "primary_key": "Effect Profile at Current Stage",
           "value": ""
-        }}
-      }}
+        }
+      }
     ]
-  }}
-}}
+  }
+}
 
 STRICT INSTRUCTIONS TO FOLLOW 
 When analysing trichome images, you must:
@@ -196,30 +152,4 @@ When analysing trichome images, you must:
     * Label educational content and general information as distinct from image-specific analysis
     * Use conditional language for recommendations based on limited data
 
-Output Strictly in JSON Format, Provide only the complete JSON object.No additional text, backticks, markdown formatting, or explanations.
-    """
-    return prompt
-
-def analyze_with_openai(prompt, images):
-    # Encode images to base64
-    encoded_images = [base64.b64encode(image.read()).decode("utf-8") for image in images]
-
-    # Prepare the input for OpenAI
-    input_data = [
-        {
-            "role": "user",
-            "content": [
-                {"type": "input_text", "text": prompt},
-                *[{"type": "input_image", "image_url": f"data:image/jpeg;base64,{image}"} for image in encoded_images]
-            ],
-        }
-    ]
-
-    # Call OpenAI API
-    response = openai.responses.create(
-        model="gpt-4o-mini",
-        input=input_data,
-    )
-
-    return response.output_text
-
+Output Strictly in JSON Format, Provide only the complete JSON object.No additional text, backticks, markdown formatting, or explanations."""

@@ -4,12 +4,12 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
-from .serializers import SignupSerializer,VerifyOTPSerializer,UserSerializer,LoginSerializer,UpdatePasswordSerializer, SendOtpSerializer, ResetPasswordSerializer, ForgotPasswordSerializer, ProfileSerializer, ContactUsSerializer, PageSerializer,AnalysisSerializer,AnalysisImageSerializer
+from .serializers import SignupSerializer,VerifyOTPSerializer,UserSerializer,LoginSerializer,UpdatePasswordSerializer, SendOtpSerializer, ResetPasswordSerializer, ForgotPasswordSerializer, ProfileSerializer, ContactUsSerializer, PageSerializer,AnalysisSerializer
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
-from .utils import create_response
+from .utils import create_response, generate_prompt, analyze_with_openai
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 # from .models import OTP
@@ -17,7 +17,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import logout
 from .models import Page
 from rest_framework_simplejwt.tokens import AccessToken
-from .models import BlacklistedToken , STATE_DELETED
+from .models import BlacklistedToken , STATE_DELETED,Analysis
 from .serializers import ChangePasswordSerializer
 from django.contrib.auth import update_session_auth_hash
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -565,3 +565,85 @@ class AnalysisCreateView(generics.CreateAPIView):
         image.save(byte_io, format='JPG')
         byte_io.seek(0)
         return base64.b64encode(byte_io.read()).decode('utf-8')
+    
+    
+class AnalysisDetailView(generics.RetrieveAPIView):
+    serializer_class = AnalysisSerializer
+    queryset = Analysis.objects.all()
+
+    @swagger_auto_schema(
+        operation_summary="Get Analysis by ID",
+        operation_description="This endpoint allows fetching an analysis based on its ID.",
+        responses={200: 'Analysis retrieved successfully', 404: 'Analysis not found'}
+    )
+    def get(self, request, *args, **kwargs):
+        analysis_id = kwargs.get('pk')
+        if analysis_id is not None:
+            try:
+                analysis = Analysis.objects.get(pk=analysis_id)
+                serializer = AnalysisSerializer(analysis)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except Analysis.DoesNotExist:
+                return Response({"error": "Analysis not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "Analysis ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+    
+class GetAnalysisView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_summary="Get Analysis",
+        operation_description="This endpoint allows generating analysis based on the provided inputs.",
+        request_body=AnalysisSerializer,
+        responses={200: 'Analysis generated successfully', 400: 'Bad request'}
+    )
+    def post(self, request, *args, **kwargs):
+        serializer = AnalysisSerializer(data=request.data)
+        if serializer.is_valid():
+            data = serializer.validated_data
+
+            # Generate prompt
+            prompt = generate_prompt(
+            )
+
+            images = data['image_file']
+
+            # Run AI analysis with error handling
+            try:
+                analysis_result = analyze_with_openai(prompt, images)
+            except Exception as e:
+                return Response(
+                    {"error": "Failed to analyze images", "details": str(e)},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+            # Save analysis
+            analysis_instance = Analysis.objects.create(
+                number_of_plants=data['number_of_plants'],
+                branches_per_plant=data['branches_per_plant'],
+                desired_goal=data['desired_goal'],
+                image_file=images[0],  # Store the first image
+                state_id=data['state_id'],
+                type_id=data['type_id'],
+                analysis_result=analysis_result,
+                raw_result=prompt,
+                created_by_id=request.user.id
+            )
+
+            # Serialize saved instance to return all fields
+            response_data = {
+                "id": analysis_instance.id,
+                "number_of_plants": analysis_instance.number_of_plants,
+                "branches_per_plant": analysis_instance.branches_per_plant,
+                "desired_goal": analysis_instance.desired_goal,
+                "image_file": request.build_absolute_uri(analysis_instance.image_file.url),
+                "state_id": analysis_instance.state_id,
+                "type_id": analysis_instance.type_id,
+                "analysis_result": analysis_instance.analysis_result,
+                "raw_result": analysis_instance.raw_result,
+                "created_by_id": analysis_instance.created_by_id,
+                "created_at": analysis_instance.created_at,
+                "updated_at": analysis_instance.updated_at,
+            }
+
+            return Response(response_data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

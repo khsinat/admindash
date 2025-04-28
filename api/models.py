@@ -2,6 +2,7 @@
 
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 class ContactUs(models.Model):
     full_name = models.CharField(max_length=255)
@@ -55,18 +56,66 @@ class Package(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True, null=True, blank=True)
     created_by = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True, blank=True)
-
     def __str__(self):
         return self.title
 
+# class Analysis(models.Model):
+#     number_of_plants = models.IntegerField()
+#     branches_per_plant = models.IntegerField()
+#     desired_goals = models.CharField(max_length=255)
+#     created_at = models.DateTimeField(auto_now_add=True)
+
+# class AnalysisImage(models.Model):
+#     analysis = models.ForeignKey(Analysis, related_name='images', on_delete=models.CASCADE)
+#     image = models.ImageField(upload_to='analysis_images/')
+#     ai_response = models.TextField(blank=True, null=True)  
+#     uploaded_at = models.DateTimeField(auto_now_add=True)
+    
+    
+    
+#this part can be separated
+# this is standard that we must follow everywhere
+
 class Analysis(models.Model):
+    PEAK_POTENCY = 1
+    DESIRED_EFFECTS = 2
+    YIELD_OPTIMIZATION = 3
+
+    CAPTURE_WITH_CAMERA = 1
+    UPLOAD_FROM_DEVICE = 2
+
+    STATE_1 = 1
+    STATE_2 = 2
+
+    TYPE_1 = 1
+    TYPE_2 = 2
+    DESIRED_GOAL_CHOICES = [
+        (PEAK_POTENCY, 'Peak Potency'),
+        (DESIRED_EFFECTS, 'Desired Effects'),
+        (YIELD_OPTIMIZATION, 'Yield Optimization'),
+    ]
+    
+    STATE_CHOICES = [
+        (STATE_1, 'State 1'),
+        (STATE_2, 'State 2'),
+    ]
+
+    TYPE_CHOICES = [
+        (TYPE_1, 'Type 1'),
+        (TYPE_2, 'Type 2'),
+    ]
+   
+
     number_of_plants = models.IntegerField()
     branches_per_plant = models.IntegerField()
-    desired_goals = models.CharField(max_length=255)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-class AnalysisImage(models.Model):
-    analysis = models.ForeignKey(Analysis, related_name='images', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='analysis_images/')
-    ai_response = models.TextField(blank=True, null=True)  
-    uploaded_at = models.DateTimeField(auto_now_add=True)
+    desired_goal = models.IntegerField(choices=DESIRED_GOAL_CHOICES)
+    image_file = models.ImageField(upload_to='analysis_files/')
+    state_id = models.IntegerField(choices=STATE_CHOICES)
+    type_id = models.IntegerField(choices=TYPE_CHOICES)
+    analysis_result = models.TextField(null=True, blank=True)
+    raw_result = models.TextField(null=True, blank=True)
+    created_by_id = models.IntegerField(null=True, blank=True)
+    created_at = models.DateTimeField(default=timezone.now)  # Provide a default value
+    updated_at = models.DateTimeField(auto_now=True)
+    def __str__(self):
+            return f"Analysis {self.id}"

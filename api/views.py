@@ -4,7 +4,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
-from .serializers import SignupSerializer,VerifyOTPSerializer,UserSerializer,LoginSerializer,UpdatePasswordSerializer, SendOtpSerializer, ResetPasswordSerializer, ForgotPasswordSerializer, ProfileSerializer, ContactUsSerializer, PageSerializer
+from .serializers import SignupSerializer,VerifyOTPSerializer,UserSerializer,LoginSerializer,UpdatePasswordSerializer, SendOtpSerializer, ResetPasswordSerializer, ForgotPasswordSerializer, ProfileSerializer, ContactUsSerializer, PageSerializer,AnalysisSerializer,AnalysisImageSerializer
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
@@ -23,8 +23,11 @@ from django.contrib.auth import update_session_auth_hash
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404
-
-
+import base64
+from decouple import config
+from openai import OpenAI
+from .prompt import Prompt
+client = OpenAI(api_key=config('OPENAI_API'))
 class SignupView(generics.CreateAPIView):
     serializer_class = SignupSerializer
 
@@ -475,3 +478,90 @@ class ProfileFileDownloadView(APIView):
         except FileNotFoundError:
             raise Http404("File not found.")
         
+class AnalysisCreateView(generics.CreateAPIView):
+    serializer_class = AnalysisSerializer
+
+    @swagger_auto_schema(
+        operation_summary="Create a new cannabis analysis",
+        operation_description="This endpoint allows users to create a new analysis with multiple images of cannabis plants.",
+        request_body=AnalysisSerializer,
+        responses={201: 'Analysis created successfully', 400: 'Validation error'},
+    )
+    def post(self, request, *args, **kwargs):
+        # Serialize the incoming data
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            # Save the analysis and images
+            analysis = serializer.save()
+
+            # Get the cannabis images from the database
+            cannabis_files = request.data.get('cannabis_files', [])
+
+            # Send the images to OpenAI API for analysis
+            analysis_results = self.analyze_images_with_openai(cannabis_files)
+
+            # Return a response with the analysis result
+            return Response({
+                "data": serializer.data,
+                "analysis_results": analysis_results,
+                "message": "Analysis created successfully"
+            }, status=status.HTTP_201_CREATED)
+        if not serializer.is_valid():
+            print(serializer.errors)  # This will show detailed error messages for each missing field
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # If validation fails, return the error message
+        first_error_message = next(iter(serializer.errors.values()))[0]
+        return Response({
+            "error": first_error_message,
+            "message": "Validation errors"
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    def analyze_images_with_openai(self, cannabis_files):
+        """
+        This function sends images to OpenAI API and returns the analysis result.
+        """
+        b64_images = []
+        for file in cannabis_files:
+            b64_image = self.encode_image(file)  # Convert the image to base64 format
+            b64_images.append(f"data:image/jpg;base64,{b64_image}")  # Add the base64-encoded image string to the list
+
+        # Create the input content with the images
+        input_data = [
+            {
+                "role": "user",
+                "content": [
+                    {"type": "input_text", "text": Prompt}
+                ]
+            }
+        ]
+        
+        # Add each base64-encoded image to the input content
+        for b64_image in b64_images:
+            input_data[0]["content"].append({
+                "type": "input_image",
+                "image_url": b64_image
+            })
+
+        # Send the images to OpenAI API
+        response = client.responses.create(
+            model="gpt-4o-mini",  # Ensure you're using the correct OpenAI model
+            input=input_data
+        )
+
+        # Return the OpenAI API response containing the analysis results
+        return response
+
+
+    def encode_image(self, image_file):
+        """Encodes the image to base64."""
+        import base64
+        import io
+        from PIL import Image
+
+        image = Image.open(image_file)
+        byte_io = io.BytesIO()
+        image.save(byte_io, format='JPG')
+        byte_io.seek(0)
+        return base64.b64encode(byte_io.read()).decode('utf-8')

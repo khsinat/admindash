@@ -59,3 +59,14 @@ class Package(models.Model):
     def __str__(self):
         return self.title
 
+class Analysis(models.Model):
+    number_of_plants = models.IntegerField()
+    branches_per_plant = models.IntegerField()
+    desired_goals = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class AnalysisImage(models.Model):
+    analysis = models.ForeignKey(Analysis, related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='analysis_images/')
+    ai_response = models.TextField(blank=True, null=True)  
+    uploaded_at = models.DateTimeField(auto_now_add=True)

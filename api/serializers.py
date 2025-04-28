@@ -1,5 +1,9 @@
 # myapp/serializers.py
 
+import base64
+from .prompt import Prompt
+from decouple import config
+from openai import OpenAI
 from rest_framework import serializers
 from apps.models import User  # Import your custom User model
 import random
@@ -11,6 +15,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth import get_user_model
 from .models import ContactUs
 from .models import Page
+from .models import Analysis, AnalysisImage 
 class SignupSerializer(serializers.ModelSerializer):
     class Meta:
         model = User  # Reference the custom User model
@@ -267,3 +272,29 @@ class ChangePasswordSerializer(serializers.Serializer):
         validate_password(value)
         return value
          
+
+class AnalysisImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AnalysisImage
+        fields = ['image']
+
+class AnalysisSerializer(serializers.ModelSerializer):
+    cannabis_files = serializers.ListField(
+        child=serializers.ImageField(max_length=100000, allow_empty_file=False, use_url=False),
+        write_only=True,
+        required=True
+    )
+
+    class Meta:
+        model = Analysis
+        fields = ['id', 'number_of_plants', 'branches_per_plant', 'desired_goals', 'created_at', 'cannabis_files']
+
+    def create(self, validated_data):
+        cannabis_files = validated_data.pop('cannabis_files') 
+        analysis = Analysis.objects.create(**validated_data)
+
+        # Save the images to the database
+        for file in cannabis_files:
+            AnalysisImage.objects.create(analysis=analysis, image=file)
+
+        return analysis

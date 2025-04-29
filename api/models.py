@@ -99,7 +99,7 @@ class Analysis(models.Model):
     STATE_CHOICES = [
         (STATE_1, 'State 1'),
         (STATE_2, 'State 2'),
-        (STATE_3, 'State_added_to grow logs'),
+        (STATE_3, 'State_added_to_grow_logs'),
     ]
 
     TYPE_CHOICES = [

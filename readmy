@@ -1,3 +1,9 @@
 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
 
 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
+
+
+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
+
+
+(venv) sagar@LAPTOP-CC81FLHA:~/code/admindash$ pip install --no-cache-dir mysqlclient

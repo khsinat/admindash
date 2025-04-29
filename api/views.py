@@ -26,7 +26,14 @@ from django.shortcuts import get_object_or_404
 import base64
 from decouple import config
 from openai import OpenAI
+from rest_framework.generics import ListAPIView
+
+
+
 from .prompt import Prompt
+from rest_framework.pagination import PageNumberPagination
+
+
 client = OpenAI(api_key=config('OPENAI_API'))
 class SignupView(generics.CreateAPIView):
     serializer_class = SignupSerializer
@@ -644,16 +651,17 @@ class GetAnalysisView(APIView):
                 "updated_at": analysis_instance.updated_at,
             }
 
-            return Response(response_data, status=status.HTTP_200_OK)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return create_response(data=response_data, message="Processed Successfully", status_code=status.HTTP_200_OK)
+            # return Response(serializer.data, status=status.HTTP_201_CREATED)
+        first_error_message = next(iter(serializer.errors.values()))[0]    
+        return create_response(error= first_error_message, message="Validation errors", status_code=status.HTTP_400_BAD_REQUEST)
 
 
 class GetGrowLogs(APIView):
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
-        operation_summary="Get Grow logs",
+        operation_summary="Get Grow logs gs",
         operation_description="This endpoint allows you to get grow logs based on the provided inputs.",
         responses={200: 'Grow logs retrieved successfully', 400: 'Bad request'}
     )
@@ -692,3 +700,40 @@ class AddToGrowLogs(APIView):
         
         if not serializer.is_valid():
             return Response({"error":"Bad request serializer not valid"},status=status.HTTP_400_BAD_REQUEST)
+        
+
+
+class GrowLogPagination(PageNumberPagination):
+    page_size = 10  # Default number of records per page
+    page_size_query_param = 'page_size'  # Allows the client to change the page size via URL
+    max_page_size = 100  # Maximum records per page allowed
+
+class UserGrowLogsListView(ListAPIView):
+    permission_classes = [IsAuthenticated]  # Only authenticated users can access this view
+    serializer_class = AnalysisSerializer  # Serializer to convert queryset into JSON
+
+    # Use the custom pagination class
+    pagination_class = GrowLogPagination
+
+    # Filter queryset to return only the user's own entries
+    def get_queryset(self):
+        return Analysis.objects.filter(created_by_id=self.request.user.id)
+
+    @swagger_auto_schema(
+        operation_summary="List Grow Logs by Logged-in User",
+        operation_description="Returns a paginated list of grow logs where the logged-in user is the creator.",
+        responses={200: 'List of grow logs'}
+    )
+    def get(self, request, *args, **kwargs):
+        # Call the superclass method to get the paginated results
+        paginated_results = self.list(request, *args, **kwargs)
+
+        # Extract the paginated data
+        data = paginated_results.data
+
+        # Use `create_response` to return the response in a consistent format
+        return create_response(
+            data=data,
+            message="List of grow logs fetched successfully",
+            status_code=paginated_results.status_code
+        )

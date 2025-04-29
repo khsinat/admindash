@@ -4,7 +4,7 @@ from django.urls import path
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-from .views import SignupView,VerifyOtpView,LoginView,UpdatePasswordView,SendOtpView,ResetPasswordView,LogoutView, ForgotPasswordView, ProfileView, ContactUsView, DeleteAccountView, PageDetailView, ChangePasswordView, ProfileFileDownloadView,AnalysisCreateView,GetAnalysisView,GetGrowLogs,AddToGrowLogs,UserGrowLogsListView
+from .views import SignupView,VerifyOtpView,LoginView,UpdatePasswordView,SendOtpView,ResetPasswordView,LogoutView, ForgotPasswordView, ProfileView, ContactUsView, DeleteAccountView, PageDetailView, ChangePasswordView, ProfileFileDownloadView,AnalysisCreateView,GetAnalysisView,GetGrowLogs,AddToGrowLogs,UserGrowLogsListView,AnalysisFileDownloadView
 
 
 schema_view = get_schema_view(
@@ -44,6 +44,7 @@ urlpatterns = [
     path('api/get-grow-logs/', GetGrowLogs.as_view(), name='get-grow-logs'),
     path('api/add-to-grow-logs/', AddToGrowLogs.as_view(), name='add-to-grow-logs'),
     path('api/grow-logs/', UserGrowLogsListView.as_view(), name='grow-logs'),
+    path('api/analysis-file/', AnalysisFileDownloadView.as_view(), name='analysis-file-download'),
 
 
     # path('api/signup/', signup, name='signup'),

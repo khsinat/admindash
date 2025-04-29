@@ -322,7 +322,7 @@ class AddToGrowLogsSerializer(serializers.Serializer):
 
 class AnalysisSerializerResolver(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)  # Add the id field
-    
+    image_file = serializers.SerializerMethodField()    
 
     class Meta:
         model = Analysis  # Specify the model
@@ -336,3 +336,9 @@ class AnalysisSerializerResolver(serializers.ModelSerializer):
             'type_id', 
             'image_file'  # Include the image URL in the fields
         ]
+    
+    def get_image_file(self, obj):
+        if obj.image_file:
+            file_name = obj.image_file  # Extract just "hey.png"
+            return f"https://cannabis.nexusappdevelopers.com/api/analysis-file?file_name={file_name}"
+        return None

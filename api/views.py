@@ -697,10 +697,15 @@ class AddToGrowLogs(APIView):
             analysis.notes=notes
             analysis.state_id=3
             analysis.save()
-            return Response({"message":"notes added to database"},status=status.HTTP_200_OK)
+            return create_response(
+            data=data,
+            message="notes added.",
+            status_code=status.HTTP_200_OK
+            )
         
         if not serializer.is_valid():
-            return Response({"error":"Bad request serializer not valid"},status=status.HTTP_400_BAD_REQUEST)
+            first_error_message = next(iter(serializer.errors.values()))[0]    
+            return create_response(error= first_error_message, message="Validation errors", status_code=status.HTTP_400_BAD_REQUEST)
         
 
 
@@ -773,3 +778,28 @@ class UserGrowLogsListView(ListAPIView):
             message="List of grow logs fetched successfully",
             status_code=paginated_results.status_code
         )
+    
+
+
+class AnalysisFileDownloadView(APIView):
+    """
+    Endpoint to download image_file from the Analysis model using the file name.
+    Example: GET /api/analysis-file?file_name=hey.png
+    """
+
+    def get(self, request, *args, **kwargs):
+        file_name = request.GET.get('file_name')
+        if not file_name:
+            return create_response(error="File name is required.", status_code=status.HTTP_400_BAD_REQUEST)
+
+        file_path = f"analysis_files/{file_name}"
+
+        analysis = get_object_or_404(Analysis, image_file=file_path)
+
+        try:
+            file = analysis.image_file.open(mode='rb')
+            response = FileResponse(file, content_type='application/force-download')
+            response['Content-Disposition'] = f'attachment; filename="{file_name}"'
+            return response
+        except FileNotFoundError:
+            raise Http404("File not found.")

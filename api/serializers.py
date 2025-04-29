@@ -340,5 +340,5 @@ class AnalysisSerializerResolver(serializers.ModelSerializer):
     def get_image_file(self, obj):
         # Assuming the image_file field is a list of images, return the URL of the first image
         if obj.image_file:
-            return null 
+            return obj.image_file 
         return []

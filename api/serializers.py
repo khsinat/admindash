@@ -317,3 +317,28 @@ class AnalysisSerializer(serializers.Serializer):
 class AddToGrowLogsSerializer(serializers.Serializer):
     analysis_id=serializers.IntegerField() 
     notes=serializers.CharField()
+
+
+
+class AnalysisSerializerResolver(serializers.ModelSerializer):
+    id = serializers.IntegerField(read_only=True)  # Add the id field
+    image_url = serializers.SerializerMethodField()  # Create a method field for the image URL
+
+    class Meta:
+        model = Analysis  # Specify the model
+        fields = [
+            'id', 
+            'number_of_plants', 
+            'branches_per_plant', 
+            'desired_goal', 
+            'state_id', 
+            'type_id', 
+            'image_url'  # Include the image URL in the fields
+        ]
+        read_only_fields = ['image_url']  # Make image_url read-only
+
+    def get_image_url(self, obj):
+        # Assuming the image_file field is a list of images, return the URL of the first image
+        if obj.image_file:
+            return [self.context['request'].build_absolute_uri(image.url) for image in obj.image_file]
+        return []

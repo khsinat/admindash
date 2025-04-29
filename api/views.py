@@ -4,7 +4,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
-from .serializers import SignupSerializer,VerifyOTPSerializer,UserSerializer,LoginSerializer,UpdatePasswordSerializer, SendOtpSerializer, ResetPasswordSerializer, ForgotPasswordSerializer, ProfileSerializer, ContactUsSerializer, PageSerializer,AnalysisSerializer,AddToGrowLogsSerializer
+from .serializers import SignupSerializer,VerifyOTPSerializer,UserSerializer,LoginSerializer,UpdatePasswordSerializer, SendOtpSerializer, ResetPasswordSerializer, ForgotPasswordSerializer, ProfileSerializer, ContactUsSerializer, PageSerializer,AnalysisSerializer,AddToGrowLogsSerializer,AnalysisSerializerResolver
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
@@ -703,6 +703,41 @@ class AddToGrowLogs(APIView):
         
 
 
+# class GrowLogPagination(PageNumberPagination):
+#     page_size = 10  # Default number of records per page
+#     page_size_query_param = 'page_size'  # Allows the client to change the page size via URL
+#     max_page_size = 100  # Maximum records per page allowed
+
+# class UserGrowLogsListView(ListAPIView):
+#     permission_classes = [IsAuthenticated]  # Only authenticated users can access this view
+#     serializer_class = AnalysisSerializer  # Serializer to convert queryset into JSON
+
+#     # Use the custom pagination class
+#     pagination_class = GrowLogPagination
+
+#     # Filter queryset to return only the user's own entries
+#     def get_queryset(self):
+#         return Analysis.objects.filter(created_by_id=self.request.user.id)
+
+#     @swagger_auto_schema(
+#         operation_summary="List Grow Logs by Logged-in User",
+#         operation_description="Returns a paginated list of grow logs where the logged-in user is the creator.",
+#         responses={200: 'List of grow logs'}
+#     )
+#     def get(self, request, *args, **kwargs):
+#         # Call the superclass method to get the paginated results
+#         paginated_results = self.list(request, *args, **kwargs)
+
+#         # Extract the paginated data
+#         data = paginated_results.data
+
+#         # Use `create_response` to return the response in a consistent format
+#         return create_response(
+#             data=data,
+#             message="List of grow logs fetched successfully",
+#             status_code=paginated_results.status_code
+#         )
+
 class GrowLogPagination(PageNumberPagination):
     page_size = 10  # Default number of records per page
     page_size_query_param = 'page_size'  # Allows the client to change the page size via URL
@@ -710,7 +745,7 @@ class GrowLogPagination(PageNumberPagination):
 
 class UserGrowLogsListView(ListAPIView):
     permission_classes = [IsAuthenticated]  # Only authenticated users can access this view
-    serializer_class = AnalysisSerializer  # Serializer to convert queryset into JSON
+    serializer_class = AnalysisSerializerResolver  # Serializer to convert queryset into JSON
 
     # Use the custom pagination class
     pagination_class = GrowLogPagination

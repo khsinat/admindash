@@ -316,7 +316,8 @@ class AnalysisSerializer(serializers.Serializer):
 
 class AddToGrowLogsSerializer(serializers.Serializer):
     analysis_id=serializers.IntegerField() 
-    notes=serializers.CharField()
+    notes = serializers.CharField(required=False, allow_blank=True)
+
 
 
 

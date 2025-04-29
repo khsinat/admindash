@@ -331,6 +331,7 @@ class AnalysisSerializerResolver(serializers.ModelSerializer):
             'number_of_plants', 
             'branches_per_plant', 
             'desired_goal', 
+            'analysis_result',
             'state_id', 
             'type_id', 
             'image_file'  # Include the image URL in the fields

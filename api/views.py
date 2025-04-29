@@ -684,6 +684,7 @@ class AddToGrowLogs(APIView):
     @swagger_auto_schema(
         operation_summary="Add notes to grow logs",
         operation_description="This endpoint allows you to add notes to grow logs.",
+        request_body=AddToGrowLogsSerializer,  # 👈 This is the key part
         responses={200: 'Grow logs added successfully', 400: 'Bad request'}
     )
     def post(self, request, *args, **kwargs):

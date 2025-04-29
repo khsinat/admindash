@@ -117,6 +117,7 @@ class Analysis(models.Model):
     analysis_result = models.TextField(null=True, blank=True)
     raw_result = models.TextField(null=True, blank=True)
     created_by_id = models.IntegerField(null=True, blank=True)
+    notes = models.TextField(null=True, blank=True) 
     created_at = models.DateTimeField(default=timezone.now)  # Provide a default value
     updated_at = models.DateTimeField(auto_now=True)
     def __str__(self):

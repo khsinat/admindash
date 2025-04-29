@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
-from api.models import Page,PAGE_TYPE_TERMS_AND_CONDITIONS,PAGE_TYPE_PRIVACY_POLICY,Package
+from api.models import Page,PAGE_TYPE_TERMS_AND_CONDITIONS,PAGE_TYPE_PRIVACY_POLICY,Package,Analysis
 from django.contrib.auth import get_user_model,update_session_auth_hash
 from .forms import PageForm, ChangePasswordForm,PackageForm
 from django.utils import timezone
@@ -137,6 +137,8 @@ class TotalGrowLogsView(TemplateView):
 
         context = super().get_context_data(**kwargs)
         # Get all users
+        context['grow_logs']=Analysis.objects.all().order_by('-created_at')
+        return context
         user_list = get_user_model().objects.all()  # Replace with your actual user model
         paginator = Paginator(user_list, 10)  # Show 10 users per page
         # Get the current page number from the request

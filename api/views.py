@@ -4,7 +4,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
-from .serializers import SignupSerializer,VerifyOTPSerializer,UserSerializer,LoginSerializer,UpdatePasswordSerializer, SendOtpSerializer, ResetPasswordSerializer, ForgotPasswordSerializer, ProfileSerializer, ContactUsSerializer, PageSerializer,AnalysisSerializer
+from .serializers import SignupSerializer,VerifyOTPSerializer,UserSerializer,LoginSerializer,UpdatePasswordSerializer, SendOtpSerializer, ResetPasswordSerializer, ForgotPasswordSerializer, ProfileSerializer, ContactUsSerializer, PageSerializer,AnalysisSerializer,AddToGrowLogsSerializer
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
@@ -647,3 +647,48 @@ class GetAnalysisView(APIView):
             return Response(response_data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetGrowLogs(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_summary="Get Grow logs",
+        operation_description="This endpoint allows you to get grow logs based on the provided inputs.",
+        responses={200: 'Grow logs retrieved successfully', 400: 'Bad request'}
+    )
+    def get(self, request, *args, **kwargs):
+        analysis_id=request.query_params.get('analysis_id')
+        if not analysis_id:
+            return Response({"error": "analysis id not found"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        analysis=get_object_or_404(Analysis, id=analysis_id)
+
+        return Response({
+            "analysis_id":analysis_id,
+            "peak_potency_achieved":analysis.potency,
+            "trichome_analysis_result":analysis.analysis_result
+        },status=status.HTTP_200_OK)
+    
+class AddToGrowLogs(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_summary="Add notes to grow logs",
+        operation_description="This endpoint allows you to add notes to grow logs.",
+        responses={200: 'Grow logs added successfully', 400: 'Bad request'}
+    )
+    def post(self, request, *args, **kwargs):
+        serializer=AddToGrowLogsSerializer(data=request.data)
+        if serializer.is_valid():
+            data=serializer.validated_data
+            analysis_id=data['analysis_id']
+            notes=data['notes']
+            analysis=get_object_or_404(Analysis,id=analysis_id)
+            analysis.notes=notes
+            analysis.state_id=3
+            analysis.save()
+            return Response({"message":"notes added to database"},status=status.HTTP_200_OK)
+        
+        if not serializer.is_valid():
+            return Response({"error":"Bad request serializer not valid"},status=status.HTTP_400_BAD_REQUEST)

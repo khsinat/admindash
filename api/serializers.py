@@ -322,7 +322,7 @@ class AddToGrowLogsSerializer(serializers.Serializer):
 
 class AnalysisSerializerResolver(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)  # Add the id field
-    image_file = serializers.SerializerMethodField()  # Create a method field for the image URL
+    
 
     class Meta:
         model = Analysis  # Specify the model

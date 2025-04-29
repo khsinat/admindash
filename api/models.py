@@ -86,6 +86,7 @@ class Analysis(models.Model):
 
     STATE_1 = 1
     STATE_2 = 2
+    STATE_3 = 3
 
     TYPE_1 = 1
     TYPE_2 = 2
@@ -98,6 +99,7 @@ class Analysis(models.Model):
     STATE_CHOICES = [
         (STATE_1, 'State 1'),
         (STATE_2, 'State 2'),
+        (STATE_3, 'State_added_to_grow_logs'),
     ]
 
     TYPE_CHOICES = [
@@ -109,7 +111,7 @@ class Analysis(models.Model):
     number_of_plants = models.IntegerField()
     branches_per_plant = models.IntegerField()
     desired_goal = models.IntegerField(choices=DESIRED_GOAL_CHOICES)
-    image_file = models.ImageField(upload_to='analysis_files/')
+    image_file = models.ImageField(null=True, blank=True, upload_to='analysis_files/')
     state_id = models.IntegerField(choices=STATE_CHOICES)
     type_id = models.IntegerField(choices=TYPE_CHOICES)
     analysis_result = models.TextField(null=True, blank=True)

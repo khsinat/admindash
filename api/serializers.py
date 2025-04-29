@@ -335,4 +335,3 @@ class AnalysisSerializerResolver(serializers.ModelSerializer):
             'type_id', 
             'image_file'  # Include the image URL in the fields
         ]
-        read_only_fields = ['image_file']  # Make image_url read-only

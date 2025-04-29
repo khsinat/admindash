@@ -336,9 +336,3 @@ class AnalysisSerializerResolver(serializers.ModelSerializer):
             'image_file'  # Include the image URL in the fields
         ]
         read_only_fields = ['image_file']  # Make image_url read-only
-
-    def get_image_file(self, obj):
-        # Assuming the image_file field is a list of images, return the URL of the first image
-        if obj.image_file:
-            return obj.image_file 
-        return []

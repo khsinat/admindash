@@ -792,7 +792,7 @@ class AnalysisFileDownloadView(APIView):
         if not file_name:
             return create_response(error="File name is required.", status_code=status.HTTP_400_BAD_REQUEST)
 
-        file_path = f"analysis_files/{file_name}"
+        file_path = f"{file_name}"
 
         analysis = get_object_or_404(Analysis, image_file=file_path)
 

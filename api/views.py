@@ -758,7 +758,7 @@ class UserGrowLogsListView(ListAPIView):
 
     # Filter queryset to return only the user's own entries
     def get_queryset(self):
-        return Analysis.objects.filter(created_by_id=self.request.user.id)
+        return Analysis.objects.filter(created_by_id=self.request.user.id).order_by('-created_at')
 
     @swagger_auto_schema(
         operation_summary="List Grow Logs by Logged-in User",

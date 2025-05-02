@@ -335,7 +335,7 @@ class AnalysisSerializerResolver(serializers.ModelSerializer):
             'analysis_result',
             'state_id', 
             'type_id', 
-            'image_file'  # Include the image URL in the fields
+            'image_file',  # Include the image URL in the fields
             'created_at',
             'notes'
         ]

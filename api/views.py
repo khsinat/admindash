@@ -699,7 +699,7 @@ class AddToGrowLogs(APIView):
             analysis.save()
             return create_response(
             data=data,
-            message="notes added.",
+            message="Grow Logs Saved Successfully.",
             status_code=status.HTTP_200_OK
             )
         

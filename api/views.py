@@ -27,7 +27,7 @@ import base64
 from decouple import config
 from openai import OpenAI
 from rest_framework.generics import ListAPIView
-from rest_framework.exceptions import NotFound
+
 
 
 from .prompt import Prompt
@@ -744,73 +744,10 @@ class AddToGrowLogs(APIView):
 #             status_code=paginated_results.status_code
 #         )
 
-# class GrowLogPagination(PageNumberPagination):
-#     page_size = 10  # Default number of records per page
-#     page_size_query_param = 'page_size'  # Allows the client to change the page size via URL
-#     max_page_size = 100  # Maximum records per page allowed
-
-# class UserGrowLogsListView(ListAPIView):
-#     permission_classes = [IsAuthenticated]  # Only authenticated users can access this view
-#     serializer_class = AnalysisSerializerResolver  # Serializer to convert queryset into JSON
-
-#     # Use the custom pagination class
-#     pagination_class = GrowLogPagination
-
-#     # Filter queryset to return only the user's own entries
-#     def get_queryset(self):
-#         return Analysis.objects.filter(created_by_id=self.request.user.id).order_by('-created_at')
-
-#     def paginate_queryset(self, queryset):
-#         """
-#         Custom pagination method to handle invalid pages.
-#         """
-#         try:
-#             return super().paginate_queryset(queryset)
-#         except NotFound:
-#             self.page = None
-
-#             # If the page is not found, return an empty list
-#             return []
-        
-#     @swagger_auto_schema(
-#         operation_summary="List Grow Logs by Logged-in User",
-#         operation_description="Returns a paginated list of grow logs where the logged-in user is the creator.",
-#         responses={200: 'List of grow logs'}
-#     )
-#     def get(self, request, *args, **kwargs):
-#         # Call the superclass method to get the paginated results
-#         paginated_results = self.list(request, *args, **kwargs)
-
-#         # Extract the paginated data
-#         data = paginated_results.data
-
-#         if not data:
-#             return create_response(
-#                 data=[],
-#                 message="List of grow logs fetched successfully",
-#                 status_code=200
-#             )
-#         # Use `create_response` to return the response in a consistent format
-#         return create_response(
-#             data=data,
-#             message="List of grow logs fetched successfully",
-#             status_code=paginated_results.status_code
-#         )
-    
-
 class GrowLogPagination(PageNumberPagination):
     page_size = 10  # Default number of records per page
     page_size_query_param = 'page_size'  # Allows the client to change the page size via URL
     max_page_size = 100  # Maximum records per page allowed
-
-    def paginate_queryset(self, queryset, request, view=None):
-        try:
-            return super().paginate_queryset(queryset, request, view)
-        except NotFound:
-            # If the page is not found, return an empty list
-            self.page = self.paginator.page(1)  # Create a dummy page object
-            self.page.object_list = []
-            return []
 
 class UserGrowLogsListView(ListAPIView):
     permission_classes = [IsAuthenticated]  # Only authenticated users can access this view
@@ -834,11 +771,17 @@ class UserGrowLogsListView(ListAPIView):
 
         # Extract the paginated data
         data = paginated_results.data
+        if not data.get('results'):
+            return create_response(
+                    data=[],
+                    message="No grow logs found",
+                    status_code=200
+                )
 
         if not data:
             return create_response(
                 data=[],
-                message="List of grow logs fetched successfully",
+                message="No grow logs found",
                 status_code=200
             )
         # Use `create_response` to return the response in a consistent format
@@ -847,6 +790,8 @@ class UserGrowLogsListView(ListAPIView):
             message="List of grow logs fetched successfully",
             status_code=paginated_results.status_code
         )
+    
+
 
 class AnalysisFileDownloadView(APIView):
     """

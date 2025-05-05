@@ -760,6 +760,16 @@ class UserGrowLogsListView(ListAPIView):
     def get_queryset(self):
         return Analysis.objects.filter(created_by_id=self.request.user.id).order_by('-created_at')
 
+    def paginate_queryset(self, queryset):
+        """
+        Custom pagination method to handle invalid pages.
+        """
+        try:
+            return super().paginate_queryset(queryset)
+        except NotFound:
+            # If the page is not found, return an empty list
+            return []
+        
     @swagger_auto_schema(
         operation_summary="List Grow Logs by Logged-in User",
         operation_description="Returns a paginated list of grow logs where the logged-in user is the creator.",

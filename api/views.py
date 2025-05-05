@@ -790,7 +790,12 @@ class UserGrowLogsListView(ListAPIView):
 
         if not data:
             return create_response(
-                data=[],
+                data={
+                    "count": 0,
+                    "next": None,
+                    "previous": None,
+                    "results": []
+                },
                 message="No grow logs found",
                 status_code=200
             )

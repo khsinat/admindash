@@ -767,6 +767,8 @@ class UserGrowLogsListView(ListAPIView):
         try:
             return super().paginate_queryset(queryset)
         except NotFound:
+            self.page = None
+
             # If the page is not found, return an empty list
             return []
         

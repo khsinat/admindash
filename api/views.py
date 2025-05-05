@@ -775,7 +775,12 @@ class UserGrowLogsListView(ListAPIView):
         except NotFound:
             # Handle the case where the page is out of range
             return create_response(
-                data=[],
+                data={
+                    "count": 0,
+                    "next": None,
+                    "previous": None,
+                    "results": []
+                },
                 message="No grow logs found",
                 status_code=200
             )

@@ -27,6 +27,7 @@ import base64
 from decouple import config
 from openai import OpenAI
 from rest_framework.generics import ListAPIView
+from rest_framework.exceptions import NotFound
 
 
 
@@ -767,8 +768,17 @@ class UserGrowLogsListView(ListAPIView):
     )
     def get(self, request, *args, **kwargs):
         # Call the superclass method to get the paginated results
-        paginated_results = self.list(request, *args, **kwargs)
-
+        # paginated_results = self.list(request, *args, **kwargs)
+        try:
+            # Call the superclass method to get the paginated results
+            paginated_results = self.list(request, *args, **kwargs)
+        except NotFound:
+            # Handle the case where the page is out of range
+            return create_response(
+                data=[],
+                message="No grow logs found",
+                status_code=200
+            )
         # Extract the paginated data
         data = paginated_results.data
         if not data.get('results'):

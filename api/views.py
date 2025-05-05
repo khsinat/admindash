@@ -27,7 +27,7 @@ import base64
 from decouple import config
 from openai import OpenAI
 from rest_framework.generics import ListAPIView
-
+from rest_framework.exceptions import NotFound
 
 
 from .prompt import Prompt

@@ -772,6 +772,12 @@ class UserGrowLogsListView(ListAPIView):
         # Extract the paginated data
         data = paginated_results.data
 
+        if not data:
+            return create_response(
+                data=[],
+                message="List of grow logs fetched successfully",
+                status_code=200
+            )
         # Use `create_response` to return the response in a consistent format
         return create_response(
             data=data,

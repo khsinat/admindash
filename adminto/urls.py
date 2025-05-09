@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path , include
-from adminto.view import index_view, login_view,logout_view,users_view,user_detail,page_detail,delete_user,contactus_view,total_grow_logs_view,total_analysis_view,packages_view,emails_in_queue_view,transactions_view,cms_view,notifications_view,settings_view,myprofile_view,add_page_view,view_page_view,edit_user_view,edit_page_view,inactivate_user,activate_user,change_password_view,grow_logs_history_view,transaction_history_view,add_package_view,view_package_view,edit_package_view,upload_view
+from adminto.view import index_view, login_view,logout_view,users_view,user_detail,page_detail,delete_user,contactus_view,total_grow_logs_view,total_analysis_view,packages_view,emails_in_queue_view,transactions_view,cms_view,notifications_view,settings_view,myprofile_view,add_page_view,view_page_view,edit_user_view,edit_page_view,inactivate_user,activate_user,change_password_view,grow_logs_history_view,transaction_history_view,add_package_view,view_package_view,edit_package_view,upload_view,grow_log_view
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -27,7 +27,6 @@ urlpatterns = [
     path("login/", login_view, name="admin_login"),  # Login Page
     path("logout/", logout_view, name="admin_logout"),  # Logout Page
     path("users/",users_view,name="users"),
-    path("total-grow-logs/",total_grow_logs_view,name="total-grow-logs"),
     path("total-analysis/",total_analysis_view,name="total-analysis"),
     path("emails-in-queue/",emails_in_queue_view,name="emails-in-queue"),
     path("transactions/",transactions_view,name="transactions"),
@@ -44,6 +43,11 @@ urlpatterns = [
 
     path('user/details/<int:user_id>/', user_detail, name='user_detail'),
     path('user/grow-logs-history/<int:user_id>/', grow_logs_history_view, name='grow-logs-history'),
+
+    path("total-grow-logs/",total_grow_logs_view,name="total-grow-logs"),
+    path("grow-log/<int:analysis_id>",grow_log_view,name="grow-log"),
+
+
     path('user/transaction-history/<int:user_id>/', transaction_history_view, name='transaction-history'),
 
     path("packages/",packages_view,name="packages"),

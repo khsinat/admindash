@@ -151,6 +151,21 @@ class TotalGrowLogsView(TemplateView):
         return context
 
 total_grow_logs_view= TotalGrowLogsView.as_view()
+
+class GrowLogView(TemplateView):
+    template_name="custom/extra-pages/grow-log.html"
+    def get_context_data(self,**kwargs):
+        context=super().get_context_data(**kwargs)
+        analysis_id=self.kwargs.get('analysis_id')
+        analysis=get_object_or_404(Analysis,id=analysis_id)
+        context['analysis']=analysis
+        selected_user=User.objects.get(id=analysis.created_by_id)
+        context['selected_user']=selected_user
+
+        return context
+
+grow_log_view=GrowLogView.as_view()
+        
 class TotalAnalysisView(TemplateView):
 
     template_name = "custom/extra-pages/total-analysis.html"

@@ -10,8 +10,26 @@ Example:
 * Amber: 10% (Amber/brown trichomes, indicating THC→CBN conversion beginning)
 
 Strain Name
-If strain information is provided or visible in the image (e.g., label, metadata), record the strain name. If not provided, indicate "Unknown" or "Not Provided."
+Attempt to extract the strain name using any visible or metadata-based evidence. Acceptable sources include:
+* Labels or tags present in the image
+* Printed or handwritten strain names (apply OCR if needed)
+* Embedded watermark text or packaging info
+* Image filename or metadata (e.g., EXIF title, description, filename analysis)
+Your extraction strategy must:
+* Always attempt to extract a name using all possible clues
+* Return Strain: Unknown only when no identifiable text, metadata, or filename hint is present
+* If uncertain or partially visible, use a confidence estimate, e.g., "Strain: GSC (70% confidence – partial label detected)"
+Never default to "Unknown" without at least checking for text in the image and image metadata.
 Example: Strain: Northern Lights (95% confidence - based on label visible in image)" or "Strain: Unknown (not provided in submission)
+
+THC Estimate
+Offer an approximate THC percentage based on the maturity of visible trichomes. Use the distribution of trichome types (cloudy = peak THC, amber = THC degrading to CBN, clear = immature) to infer potential potency. This is not a lab test result but a visual inference grounded in cultivation knowledge.
+Classification Guidelines:
+* <15% = Early flowering (mostly clear)
+* 15–20% = Mid-maturity (clear-cloudy mix)
+* 20–25% = Peak potency (majority cloudy)
+* 25–30% = Late-stage (amber increasing, CBN conversion begins)
+Example: 23.5%
 
 Trichome Analysis Results
 Provide a description of the overall trichome maturity stage based on the visual assessment.
@@ -28,9 +46,15 @@ Example:
 Approaching optimal window – The trichomes are predominantly cloudy with a small percentage of clear trichomes and minimal amber. This indicates the plant is in its peak THC production phase, but has not yet entered the THC degradation stage.
 * Harvest Recommendation:
 Harvest in the next 3-5 days for balanced effects. If seeking more energetic effects, harvest within 48 hours. For more sedative effects, wait approximately 7-10 days until amber trichomes reach 25-30%.
-* Effect Profile at Current Stage:
-The cannabinoid profile is likely high in THC, with minimal CBN conversion. The resulting effects will be potent, providing a balanced head and body high. Medicinal benefits include strong pain relief while maintaining functional alertness.
 
+AI Confidence Score
+Express how certain the system is in the visual interpretation of trichome classification and harvest recommendation.
+Classification Guideline:
+* 90–100% = High confidence (image is clear, abundant trichomes, well-lit, strong visual consensus)
+* 70–89% = Moderate confidence (minor blurriness, some ambiguity)
+* 50–69% = Low confidence (poor image quality, limited visible area)
+* <50% = Not reliable; recommendation is speculative (image not analyzable)
+Example: 98%
 IMAGE ANALYSIS PROTOCOL
 
 1. Trichome Classification 
@@ -57,6 +81,10 @@ EXAMPLE  RESPONSE FORMAT IN JSON FORMAT
       {
         "strain_name": {
           "primary_key": "Strain Name",
+          "value": ""
+        },
+        "thc_estimate": {
+          "primary_key": "THC Estimate",
           "value": ""
         },
         "trichome_distribution": {
@@ -89,7 +117,7 @@ EXAMPLE  RESPONSE FORMAT IN JSON FORMAT
     "value": "."
   },
   "recommendation": {
-    "primary_key": "Recommendation",
+    "primary_key": "AI Recommendation",
     "value": [
       {
         "harvest_window_status": {
@@ -115,14 +143,22 @@ EXAMPLE  RESPONSE FORMAT IN JSON FORMAT
             }
           ]
         },
-        "effect_profile": {
-          "primary_key": "Effect Profile at Current Stage",
-          "value": ""
+        "ai_verified": {
+          "primary_key": "✅ AI Verified",
+          "value": [
+            {
+              "ai_confidence_score": {
+                "primary_key": "Confidence score",
+                "value": ""
+              }
+            }
+          ]
         }
       }
     ]
   }
 }
+
 
 STRICT INSTRUCTIONS TO FOLLOW 
 When analysing trichome images, you must:
@@ -151,5 +187,10 @@ When analysing trichome images, you must:
     * Clearly differentiate between direct visual data and analytical conclusions
     * Label educational content and general information as distinct from image-specific analysis
     * Use conditional language for recommendations based on limited data
+7. Strain Name Verification:
+    * Always attempt to extract a strain name using OCR, filename parsing, or image metadata.
+    * If a label or text is visible but unreadable, indicate "Strain: Indeterminate (unreadable label text)".
+    * Do not use "Unknown" unless no text, metadata, or contextual clues are present.
+    * If any partial name is detected (e.g., first few letters), include it and report a confidence score.
 
 Output Strictly in JSON Format, Provide only the complete JSON object.No additional text, backticks, markdown formatting, or explanations."""

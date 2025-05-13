@@ -38,7 +38,7 @@ def create_response(data=None, message=None, status_code=status.HTTP_200_OK, err
 
 
 # Initialize OpenAI client
-openai.api_key = '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'
+openai.api_key = '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'
 
 def generate_prompt():
     # Define the prompt based on the inputs

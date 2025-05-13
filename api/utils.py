@@ -119,90 +119,90 @@ Based on trichome ratios, determine the current stage in the harvest window:
 
 EXAMPLE  RESPONSE FORMAT IN JSON FORMAT
 
-{
-  "trichome_analysis_result": {
+{{
+  "trichome_analysis_result": {{
     "primary_key": "Trichome Maturity Description",
     "value": [
-      {
-        "strain_name": {
+      {{
+        "strain_name": {{
           "primary_key": "Strain Name",
           "value": ""
-        },
-        "thc_estimate": {
+        }},
+        "thc_estimate": {{
           "primary_key": "THC Estimate",
           "value": ""
-        },
-        "trichome_distribution": {
+        }},
+        "trichome_distribution": {{
           "primary_key": "Trichome Distribution",
           "value": [
-            {
-              "clear": {
+            {{
+              "clear": {{
                 "primary_key": "Clear",
                 "value": "",
                 "reason": ""
-              },
-              "cloudy": {
+              }},
+              "cloudy": {{
                 "primary_key": "Cloudy",
                 "value": "",
                 "reason": ""
-              },
-              "amber": {
+              }},
+              "amber": {{
                 "primary_key": "Amber",
                 "value": "",
                 "reason": ""
-              }
-            }
+              }}
+            }}
           ]
-        }
-      }
+        }}
+      }}
     ]
-  },
-  "trichome_analysis_results": {
+  }},
+  "trichome_analysis_results": {{
     "primary_key": "Trichome Analysis Results",
     "value": "."
-  },
-  "recommendation": {
+  }},
+  "recommendation": {{
     "primary_key": "AI Recommendation",
     "value": [
-      {
-        "harvest_window_status": {
+      {{
+        "harvest_window_status": {{
           "primary_key": "Harvest Window Status",
           "value": ""
-        },
-        "harvest_recommendation": {
+        }},
+        "harvest_recommendation": {{
           "primary_key": "Harvest Recommendation",
           "value": [
-            {
-              "balanced_effects": {
+            {{
+              "balanced_effects": {{
                 "primary_key": "For Balanced Effects",
                 "value": ""
-              },
-              "energetic_effects": {
+              }},
+              "energetic_effects": {{
                 "primary_key": "For Energetic Effects",
                 "value": ""
-              },
-              "sedative_effects": {
+              }},
+              "sedative_effects": {{
                 "primary_key": "For Sedative Effects",
                 "value": ""
-              }
-            }
+              }}
+            }}
           ]
-        },
-        "ai_verified": {
+        }},
+        "ai_verified": {{
           "primary_key": "✅ AI Verified",
           "value": [
-            {
-              "ai_confidence_score": {
+            {{
+              "ai_confidence_score": {{
                 "primary_key": "Confidence score",
                 "value": ""
-              }
-            }
+              }}
+            }}
           ]
-        }
-      }
+        }}
+      }}
     ]
-  }
-}
+  }}
+}}
 
 
 STRICT INSTRUCTIONS TO FOLLOW 

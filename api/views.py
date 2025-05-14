@@ -635,14 +635,15 @@ class GetAnalysisView(APIView):
                 raw_result=prompt,
                 created_by_id=request.user.id
             )
-
+            domain = "https://cannabis.nexusappdevelopers.com"
             # Serialize saved instance to return all fields
             response_data = {
                 "id": analysis_instance.id,
                 "number_of_plants": analysis_instance.number_of_plants,
                 "branches_per_plant": analysis_instance.branches_per_plant,
                 "desired_goal": analysis_instance.desired_goal,
-                "image_file": request.build_absolute_uri(analysis_instance.image_file.url),
+                #"image_file": request.build_absolute_uri(analysis_instance.image_file.url),
+                "image_file": f"{domain}{analysis_instance.image_file.url}",
                 "state_id": analysis_instance.state_id,
                 "type_id": analysis_instance.type_id,
                 "analysis_result": analysis_instance.analysis_result,

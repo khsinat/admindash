@@ -7,8 +7,10 @@ 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
 
 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
 
+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
+
 (venv) sagar@LAPTOP-CC81FLHA:~/code/admindash$ pip install --no-cache-dir mysqlclient
 gunicorn --workers 3 --bind 127.0.0.1:8000 adminto.wsgi
 
 
-export OPENAI_API=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
+export OPENAI_API=

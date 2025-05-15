@@ -3,6 +3,10 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+import random
+
+def generate_report_id():
+    return random.randint(100000, 999999)
 
 class ContactUs(models.Model):
     full_name = models.CharField(max_length=255)
@@ -118,6 +122,7 @@ class Analysis(models.Model):
     raw_result = models.TextField(null=True, blank=True)
     created_by_id = models.IntegerField(null=True, blank=True)
     notes = models.TextField(null=True, blank=True) 
+    report_id=models.IntegerField(default=generate_report_id, unique=True)
     created_at = models.DateTimeField(default=timezone.now)  # Provide a default value
     updated_at = models.DateTimeField(auto_now=True)
     def __str__(self):

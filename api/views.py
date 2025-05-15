@@ -513,6 +513,7 @@ class AnalysisCreateView(generics.CreateAPIView):
             return Response({
                 "data": serializer.data,
                 "analysis_results": analysis_results,
+                "report_id": analysis.report_id,
                 "message": "Analysis created successfully"
             }, status=status.HTTP_201_CREATED)
         if not serializer.is_valid():

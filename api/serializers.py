@@ -339,7 +339,8 @@ class AnalysisSerializerResolver(serializers.ModelSerializer):
             'type_id', 
             'image_file',  # Include the image URL in the fields
             'created_at',
-            'notes'
+            'notes',
+            'report_id'
         ]
     
     def get_image_file(self, obj):

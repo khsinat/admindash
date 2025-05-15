@@ -20,6 +20,7 @@ from rest_framework.response import Response
 from rest_framework import status
 import base64
 import openai
+from decouple import config
 
 def create_response(data=None, message=None, status_code=status.HTTP_200_OK, error=None):
     response_data = {}
@@ -38,7 +39,8 @@ def create_response(data=None, message=None, status_code=status.HTTP_200_OK, err
 
 
 # Initialize OpenAI client
-openai.api_key = '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'
+openai.api_key = config('OPENAI_API')
+
 
 def generate_prompt():
     # Define the prompt based on the inputs

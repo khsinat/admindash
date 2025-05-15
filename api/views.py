@@ -630,7 +630,7 @@ class GetAnalysisView(APIView):
                 branches_per_plant=data['branches_per_plant'],
                 desired_goal=data['desired_goal'],
                 image_file=images[0],  # Store the first image
-                state_id=data['state_id'],
+                state_id=1,
                 type_id=data['type_id'],
                 analysis_result=analysis_result,
                 raw_result=prompt,
@@ -649,6 +649,7 @@ class GetAnalysisView(APIView):
                 "state_id": analysis_instance.state_id,
                 "type_id": analysis_instance.type_id,
                 "analysis_result": analysis_instance.analysis_result,
+                "report_id": analysis_instance.report_id,
                 "raw_result": analysis_instance.raw_result,
                 "created_by_id": analysis_instance.created_by_id,
                 "created_at": analysis_instance.created_at,
@@ -697,8 +698,12 @@ class AddToGrowLogs(APIView):
             data=serializer.validated_data
             analysis_id=data['analysis_id']
             notes=data['notes']
+            strain_name = data.get('strain_name', '')
+            thc_estimate = data.get('thc_estimate', '')
             analysis=get_object_or_404(Analysis,id=analysis_id)
             analysis.notes=notes
+            analysis.strain_name = strain_name
+            analysis.thc_estimate = thc_estimate
             analysis.state_id=3
             analysis.save()
             return create_response(

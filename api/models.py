@@ -4,9 +4,12 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 import random
+import string
 
-def generate_report_id():
-    return random.randint(100000, 999999)
+
+def generate_report_id(length=10):
+    chars = string.ascii_uppercase + string.digits  # A-Z + 0-9
+    return ''.join(random.choices(chars, k=length))
 
 class ContactUs(models.Model):
     full_name = models.CharField(max_length=255)
@@ -122,8 +125,16 @@ class Analysis(models.Model):
     raw_result = models.TextField(null=True, blank=True)
     created_by_id = models.IntegerField(null=True, blank=True)
     notes = models.TextField(null=True, blank=True) 
-    report_id=models.IntegerField(default=generate_report_id, unique=True)
+    report_id = models.CharField(max_length=20, null=True, blank=True, unique=True)
     created_at = models.DateTimeField(default=timezone.now)  # Provide a default value
     updated_at = models.DateTimeField(auto_now=True)
+    strain_name = models.TextField(null=True, blank=True)
+    thc_estimate = models.TextField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.report_id:
+            self.report_id = generate_report_id()
+        super().save(*args, **kwargs)
+
     def __str__(self):
             return f"Analysis {self.id}"

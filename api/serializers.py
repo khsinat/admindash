@@ -315,8 +315,10 @@ class AnalysisSerializer(serializers.Serializer):
 
 
 class AddToGrowLogsSerializer(serializers.Serializer):
-    analysis_id=serializers.IntegerField() 
+    analysis_id = serializers.IntegerField()
     notes = serializers.CharField(required=False, allow_blank=True)
+    strain_name = serializers.CharField(required=False, allow_blank=True)
+    thc_estimate = serializers.CharField(required=False, allow_blank=True)
 
 
 

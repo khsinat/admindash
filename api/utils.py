@@ -56,28 +56,6 @@ Example:
 * Cloudy: 75% (Cloudy/opaque white trichomes, peak THC production)
 * Amber: 10% (Amber/brown trichomes, indicating THC→CBN conversion beginning)
 
-Strain Name
-Attempt to extract the strain name using any visible or metadata-based evidence. Acceptable sources include:
-* Labels or tags present in the image
-* Printed or handwritten strain names (apply OCR if needed)
-* Embedded watermark text or packaging info
-* Image filename or metadata (e.g., EXIF title, description, filename analysis)
-Your extraction strategy must:
-* Always attempt to extract a name using all possible clues
-* Return Strain: Unknown only when no identifiable text, metadata, or filename hint is present
-* If uncertain or partially visible, use a confidence estimate, e.g., "Strain: GSC (70% confidence – partial label detected)"
-Never default to "Unknown" without at least checking for text in the image and image metadata.
-Example: Northern Lights (95% confidence - based on label visible in image)"
-
-THC Estimate
-Offer an approximate THC percentage based on the maturity of visible trichomes. Use the distribution of trichome types (cloudy = peak THC, amber = THC degrading to CBN, clear = immature) to infer potential potency. This is not a lab test result but a visual inference grounded in cultivation knowledge.
-Classification Guidelines:
-* <15% = Early flowering (mostly clear)
-* 15–20% = Mid-maturity (clear-cloudy mix)
-* 20–25% = Peak potency (majority cloudy)
-* 25–30% = Late-stage (amber increasing, CBN conversion begins)
-Example: 23.5%
-
 Trichome Analysis Results
 Provide a description of the overall trichome maturity stage based on the visual assessment.
 Description:
@@ -124,16 +102,8 @@ EXAMPLE  RESPONSE FORMAT IN JSON FORMAT
 {{
   "trichome_analysis_result": {{
     "primary_key": "Trichome Maturity Description",
-    "value": [
+"value": [
       {{
-        "strain_name": {{
-          "primary_key": "Strain Name",
-          "value": ""
-        }},
-        "thc_estimate": {{
-          "primary_key": "THC Estimate",
-          "value": ""
-        }},
         "trichome_distribution": {{
           "primary_key": "Trichome Distribution",
           "value": [
@@ -217,7 +187,7 @@ When analysing trichome images, you must:
 2. Express appropriate uncertainty:
     * Use confidence levels (low/medium/high) for all assessments
     * Provide percentage ranges rather than precise figures when exact counting is difficult
-* Clearly state when image quality prevents definitive analysis
+    * Clearly state when image quality prevents definitive analysis
 3. Quantify actual observations:
     * Count specific trichomes in defined sample areas when possible
     * Report the actual number of trichomes counted as the basis for percentages
@@ -234,11 +204,6 @@ When analysing trichome images, you must:
     * Clearly differentiate between direct visual data and analytical conclusions
     * Label educational content and general information as distinct from image-specific analysis
     * Use conditional language for recommendations based on limited data
-7. Strain Name Verification:
-    * Always attempt to extract a strain name using OCR, filename parsing, or image metadata.
-    * If a label or text is visible but unreadable, indicate "Strain: Indeterminate (unreadable label text)".
-    * Do not use "Unknown" unless no text, metadata, or contextual clues are present.
-    * If any partial name is detected (e.g., first few letters), include it and report a confidence score.
 
 Output Strictly in JSON Format, Provide only the complete JSON object.No additional text, backticks, markdown formatting, or explanations.
     """
